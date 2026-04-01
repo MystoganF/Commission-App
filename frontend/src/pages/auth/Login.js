@@ -1,130 +1,104 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-// import api from '../../api/axios'; // Uncomment when ready
-import styles from './login.module.css'; 
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import api from '../../api/axios'
+import styles from './login.module.css'
 
-const Login = () => {
-  const [credentials, setCredentials] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+export default function Login() {
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ email: '', password: '' })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+  const handleSubmit = async e => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
     try {
-      // const response = await api.post('/auth/login', credentials);
-      // localStorage.setItem('token', response.data.token);
-      
-      // Simulate login route based on a mock role for now
-      navigate('/dashboard'); 
+      const res = await api.post('/auth/login', form)
+      localStorage.setItem('token', res.data.token)
+      navigate('/dashboard')
     } catch (err) {
-      setError('Invalid email or password.');
+      setError(err.response?.data?.message || 'Invalid email or password.')
+    } finally {
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className={styles.pageContainer}>
-      {/* Top Navigation Bar */}
-      <nav className={styles.navbar}>
-        <div className={styles.logo}>
-          <span className={styles.logoIcon}>🔍</span> 
-          <span className={styles.logoText}>QLTS<strong>Geek</strong></span>
-        </div>
-        <button onClick={() => navigate('/register')} className={styles.navButton}>
-          Register
-        </button>
-      </nav>
+    <div className={styles.page}>
+      {/* Decorative background elements */}
+      <div className={styles.bgOrb1} />
+      <div className={styles.bgOrb2} />
+      <div className={styles.bgLine} />
 
-      <div className={styles.splitLayout}>
-        {/* Left Side - Form */}
-        <div className={styles.formSection}>
-          <div className={styles.formContainer}>
+      <div className={styles.container}>
+        {/* Left panel */}
+        <aside className={styles.aside}>
+          <div className={styles.asideMark}>✦</div>
+          <div className={styles.asideText}>
+            <h1 className={styles.brand}>Robb App :)</h1>
+            <p className={styles.tagline}>Where craft meets commission.</p>
+          </div>
+          <div className={styles.asideFooter}>
+            <span>New here?</span>
+            <Link to="/register" className={styles.switchLink}>Create account →</Link>
+          </div>
+        </aside>
+
+        {/* Right panel */}
+        <main className={styles.main}>
+          <div className={styles.formWrap}>
             <div className={styles.formHeader}>
-              <h2 className={styles.title}>Login to your account</h2>
-              <div className={styles.socialLogin}>
-                <span className={styles.socialText}>Login with</span>
-                <div className={styles.socialIcons}>
-                  <button className={styles.socialBtn}>f</button>
-                  <button className={styles.socialBtn}>G</button>
-                  <button className={styles.socialBtn}>in</button>
-                </div>
-              </div>
+              <span className={styles.formLabel}>Sign in</span>
+              <h2 className={styles.formTitle}>Welcome back.</h2>
             </div>
 
-            {error && <div className={styles.errorMessage}>{error}</div>}
-
-            <form onSubmit={handleSubmit}>
-              <div className={styles.inputGroup}>
+            <form onSubmit={handleSubmit} className={styles.form} noValidate>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="email">Email</label>
                 <input
-                  className={styles.input}
-                  type="email"
+                  id="email"
                   name="email"
-                  placeholder="Your Email"
-                  value={credentials.email}
-                  onChange={handleChange}
+                  type="email"
+                  autoComplete="email"
                   required
+                  className={styles.input}
+                  placeholder="you@example.com"
+                  value={form.email}
+                  onChange={handleChange}
                 />
               </div>
 
-              <div className={styles.inputGroup}>
-                <div className={styles.passwordWrapper}>
-                  <input
-                    className={styles.input}
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Password"
-                    value={credentials.password}
-                    onChange={handleChange}
-                    required
-                  />
-                  <button 
-                    type="button" 
-                    className={styles.eyeIcon}
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    👁️
-                  </button>
-                </div>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  className={styles.input}
+                  placeholder="••••••••"
+                  value={form.password}
+                  onChange={handleChange}
+                />
               </div>
 
-              <div className={styles.actionRow}>
-                <Link to="#" className={styles.forgotLink}>Forgot password?</Link>
-                <button type="submit" className={styles.btnPrimary}>
-                  Log in
-                </button>
-              </div>
+              {error && <p className={styles.error}>{error}</p>}
+
+              <button type="submit" className={styles.btn} disabled={loading}>
+                {loading ? <span className={styles.spinner} /> : 'Continue'}
+              </button>
             </form>
-          </div>
-          
-          {/* Footer inside Left Side */}
-          <div className={styles.footer}>
-            <span>© Copyright QLTSGeek 2026</span>
-            <div className={styles.footerLinks}>
-              <Link to="#">Term & Condition</Link>
-              <Link to="#">Privacy Policy</Link>
-              <Link to="#">Help</Link>
-            </div>
-          </div>
-        </div>
 
-        {/* Right Side - Illustration */}
-        <div className={styles.imageSection}>
-          <div className={styles.illustrationPlaceholder}>
-            {/* Replace this div with your actual illustration image */}
-            <img 
-              src="https://placehold.co/600x400/transparent/7B61FF?text=Illustration+Here" 
-              alt="Login Illustration" 
-            />
+            <p className={styles.mobileSwitch}>
+              Don't have an account? <Link to="/register" className={styles.switchLink}>Register</Link>
+            </p>
           </div>
-        </div>
+        </main>
       </div>
     </div>
-  );
-};
-
-export default Login;
+  )
+}
