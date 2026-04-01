@@ -1,0 +1,272 @@
+.pageContainer {
+  min-height: 100vh;
+  background-color: #F8FAFC; 
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  color: #333;
+}
+
+.logoIcon {
+  color: #7B61FF;
+  font-size: 28px;
+}
+
+.logoText strong {
+  color: #00E5FF;
+}
+
+.navButton {
+  background: transparent;
+  border: 1px solid #E2E8F0;
+  padding: 10px 24px;
+  border-radius: 20px;
+  color: #64748B;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navButton:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+}
+
+/* Layout */
+.splitLayout {
+  display: flex;
+  flex: 1;
+  margin-top: 80px; /* Offset for absolute navbar */
+}
+
+.formSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 10%;
+}
+
+.formContainer {
+  margin: auto 0;
+  max-width: 450px;
+}
+
+/* Header & Social */
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1E293B;
+  margin: 0;
+}
+
+.socialLogin {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.socialText {
+  font-size: 13px;
+  color: #94A3B8;
+}
+
+.socialIcons {
+  display: flex;
+  gap: 10px;
+}
+
+.socialBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background-color: #E2E8F0;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.socialBtn:hover {
+  background-color: #CBD5E1;
+}
+
+/* Form Inputs */
+.inputGroup {
+  margin-bottom: 24px;
+}
+
+.input {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 15px;
+  color: #334155;
+  background-color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+  transition: box-shadow 0.2s;
+}
+
+.input::placeholder {
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: 0 4px 20px rgba(123, 97, 255, 0.15);
+}
+
+.passwordWrapper {
+  position: relative;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94A3B8;
+  font-size: 16px;
+}
+
+.errorMessage {
+  font-size: 13px;
+  color: #EF4444;
+  margin-bottom: 24px;
+}
+
+/* Action Row (Forgot Pass & Button) */
+.actionRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.forgotLink {
+  font-size: 14px;
+  color: #94A3B8;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgotLink:hover {
+  color: #7B61FF;
+}
+
+.btnPrimary {
+  padding: 12px 32px;
+  background-color: #7B61FF; /* Purple from the image */
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 24px; /* Pill shape */
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btnPrimary:hover {
+  background-color: #6A50E5;
+  transform: translateY(-1px);
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #94A3B8;
+  padding-top: 20px;
+}
+
+.footerLinks {
+  display: flex;
+  gap: 20px;
+}
+
+.footerLinks a {
+  color: #94A3B8;
+  text-decoration: none;
+}
+
+.footerLinks a:hover {
+  color: #1E293B;
+}
+
+/* Right Side Image */
+.imageSection {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F8FAFC;
+}
+
+.illustrationPlaceholder {
+  width: 80%;
+  max-width: 600px;
+}
+
+.illustrationPlaceholder img {
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 900px) {
+  .imageSection {
+    display: none;
+  }
+  .formSection {
+    padding: 20px;
+    align-items: center;
+  }
+  .formHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .socialLogin {
+    align-items: flex-start;
+  }
+}
