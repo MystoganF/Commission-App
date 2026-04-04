@@ -12,6 +12,7 @@ public class PortfolioDtos {
         public String category;
         public String year;
         public String imageUrl; // <-- The URL from Supabase
+        public String description;
     }
 
     @Data
@@ -22,5 +23,6 @@ public class PortfolioDtos {
         public String year;
         public String imageUrl;
         public LocalDateTime createdAt;
+        public String description;
     }
 }

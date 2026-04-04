@@ -29,4 +29,7 @@ public class PortfolioWork {
 
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(columnDefinition = "TEXT") // Use TEXT for long descriptions
+    private String description;
 }

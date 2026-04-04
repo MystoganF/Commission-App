@@ -115,6 +115,7 @@
   font-size: 15px;
   color: var(--accent);
   flex-shrink: 0;
+  overflow: hidden; /* Ensures image doesn't break out of the circle */
 }
 
 .info { min-width: 0; }

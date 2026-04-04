@@ -12,6 +12,7 @@ public class ProfileDtos {
         public String facebook;
         public String instagram;
         public String twitter;
+        public String profilePictureUrl;
     }
 
     @Data

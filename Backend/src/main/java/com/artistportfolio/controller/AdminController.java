@@ -41,9 +41,11 @@ public class AdminController {
             @RequestParam String title,
             @RequestParam String category,
             @RequestParam String year,
+            @RequestParam(required = false) String description, // <-- ADDED THIS
             @RequestParam MultipartFile file
     ) throws Exception {
-        return ResponseEntity.ok(adminService.addWork(artist, title, category, year, file));
+        // Pass the description to the service
+        return ResponseEntity.ok(adminService.addWork(artist, title, category, year, description, file));
     }
 
     @DeleteMapping("/portfolio/{id}")
@@ -153,5 +155,21 @@ public class AdminController {
     public ResponseEntity<?> deleteAchievement(@AuthenticationPrincipal User artist, @PathVariable Long id) {
         adminService.deleteAchievement(artist, id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/portfolio/{id}")
+    public ResponseEntity<?> updateWork(
+            @AuthenticationPrincipal User artist,
+            @PathVariable Long id,
+            @RequestBody com.artistportfolio.dto.PortfolioDtos.WorkRequest req) {
+        return ResponseEntity.ok(adminService.updateWork(artist, id, req.title, req.category, req.year, req.description));
+    }
+
+    @PostMapping("/profile/picture")
+    public ResponseEntity<?> updateProfilePicture(
+            @AuthenticationPrincipal User artist,
+            @RequestParam("file") MultipartFile file
+    ) throws Exception {
+        return ResponseEntity.ok(adminService.updateProfilePicture(artist, file));
     }
 }

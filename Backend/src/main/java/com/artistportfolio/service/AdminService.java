@@ -53,14 +53,20 @@ public class AdminService {
     }
 
     public WorkResponse addWork(User artist, String title, String category,
-                                String year, MultipartFile file) throws IOException {
-        String imageUrl = saveFile(file);
+                                String year, String description, MultipartFile file) throws IOException { // <-- ensure description is here
+
+        // 1. Upload to Supabase
+        String imageUrl = supabaseService.uploadFile(file);
+
+        // 2. Save to database
         PortfolioWork work = new PortfolioWork();
         work.setTitle(title);
         work.setCategory(category);
         work.setYear(year);
+        work.setDescription(description); // Save description
         work.setImageUrl(imageUrl);
         work.setArtist(artist);
+
         return toWorkResponse(workRepo.save(work));
     }
 
@@ -123,6 +129,7 @@ public class AdminService {
         res.facebook    = artist.getFacebook();
         res.instagram   = artist.getInstagram();
         res.twitter     = artist.getTwitter();
+        res.profilePictureUrl = artist.getProfilePictureUrl();
         return res;
     }
 
@@ -136,9 +143,13 @@ public class AdminService {
         return getProfile(userRepo.save(artist));
     }
 
-    // ── NEW: LinkedIn Profile Features ──────────────────────────────────────
+    public ProfileResponse updateProfilePicture(User artist, MultipartFile file) throws IOException {
 
-    // Skills
+        String imageUrl = supabaseService.uploadFile(file);
+        artist.setProfilePictureUrl(imageUrl);
+        return getProfile(userRepo.save(artist));
+    }
+
     public List<SkillDto> getSkills(User artist) {
         return skillRepo.findByArtistId(artist.getId()).stream().map(s -> {
             SkillDto dto = new SkillDto(); dto.id = s.getId(); dto.name = s.getName(); return dto;
@@ -221,8 +232,14 @@ public class AdminService {
 
     // ── Helpers ─────────────────────────────────────────────
     private WorkResponse toWorkResponse(PortfolioWork w) {
-        WorkResponse r = new WorkResponse(); r.id = w.getId(); r.title = w.getTitle();
-        r.category = w.getCategory(); r.year = w.getYear(); r.imageUrl = w.getImageUrl(); r.createdAt = w.getCreatedAt();
+        WorkResponse r = new WorkResponse();
+        r.id = w.getId();
+        r.title = w.getTitle();
+        r.category = w.getCategory();
+        r.year = w.getYear();
+        r.description = w.getDescription(); // Map description
+        r.imageUrl = w.getImageUrl();
+        r.createdAt = w.getCreatedAt();
         return r;
     }
     private ServiceResponse toServiceResponse(ArtistServiceEntity s) {
@@ -242,5 +259,17 @@ public class AdminService {
         String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
         Files.copy(file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
         return "/" + UPLOAD_DIR + filename;
+    }
+
+    public WorkResponse updateWork(User artist, Long workId, String title, String category, String year, String description) {
+        PortfolioWork work = workRepo.findById(workId).orElseThrow(() -> new RuntimeException("Work not found."));
+        if (!work.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
+
+        work.setTitle(title);
+        work.setCategory(category);
+        work.setYear(year);
+        work.setDescription(description);
+
+        return toWorkResponse(workRepo.save(work));
     }
 }

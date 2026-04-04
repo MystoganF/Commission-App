@@ -1,25 +1,33 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import api from '../../../api/axios'
 import shared from '../../../styles/shared.module.css'
 import styles from './Profile.module.css'
 
 const SOCIALS = [
   { name: 'facebook',  prefix: 'fb.com/',  placeholder: 'yourpage' },
-  { name: 'instagram', prefix: '@',         placeholder: 'instagram' },
-  { name: 'twitter',   prefix: '@',         placeholder: 'twitter / x' },
+  { name: 'instagram', prefix: '@',        placeholder: 'instagram' },
+  { name: 'twitter',   prefix: '@',        placeholder: 'twitter / x' },
 ]
 
 export default function Profile() {
   const [form, setForm]       = useState({
     username: '', phoneNumber: '', bio: '',
     facebook: '', instagram: '', twitter: '',
+    profilePictureUrl: '' // <-- Added for preview
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving]   = useState(false)
+  const [uploadingPic, setUploadingPic] = useState(false) // <-- New state
   const [toast, setToast]     = useState('')
   const [error, setError]     = useState('')
+  
+  const fileInputRef = useRef(null) // <-- Ref for the hidden file input
 
   useEffect(() => {
+    fetchProfile()
+  }, [])
+
+  function fetchProfile() {
     api.get('/admin/profile')
       .then(res => setForm({
         username:    res.data.username    ?? '',
@@ -28,10 +36,11 @@ export default function Profile() {
         facebook:    res.data.facebook    ?? '',
         instagram:   res.data.instagram   ?? '',
         twitter:     res.data.twitter     ?? '',
+        profilePictureUrl: res.data.profilePictureUrl ?? '' // <-- Load picture URL
       }))
       .catch(() => setError('Failed to load profile.'))
       .finally(() => setLoading(false))
-  }, [])
+  }
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
 
@@ -49,6 +58,29 @@ export default function Profile() {
     }
   }
 
+  // --- NEW: Handle Profile Picture Upload ---
+  async function handlePictureUpload(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingPic(true)
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const res = await api.post('/admin/profile/picture', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      // Update the form state with the new URL returned from the server
+      setForm(prev => ({ ...prev, profilePictureUrl: res.data.profilePictureUrl }))
+      showToast('Profile picture updated!')
+    } catch {
+      showToast('Failed to upload picture.')
+    } finally {
+      setUploadingPic(false)
+    }
+  }
+
   function showToast(msg) {
     setToast(msg)
     setTimeout(() => setToast(''), 2800)
@@ -58,8 +90,42 @@ export default function Profile() {
 
   return (
     <div className={`${shared.pageFade} ${styles.page}`}>
-      <form onSubmit={handleSave} className={styles.form} noValidate>
+      
+      {/* --- NEW: Profile Picture Section --- */}
+      <div className={styles.avatarSection}>
+        <div className={styles.avatarWrapper}>
+          {form.profilePictureUrl ? (
+            <img src={form.profilePictureUrl} alt="Profile" className={styles.avatarImg} />
+          ) : (
+            <div className={styles.avatarPlaceholder}>
+              {form.username ? form.username.charAt(0).toUpperCase() : 'A'}
+            </div>
+          )}
+          
+          <button 
+            type="button" 
+            className={styles.avatarEditBtn} 
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingPic}
+          >
+            {uploadingPic ? '...' : '✎'}
+          </button>
+          
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            style={{ display: 'none' }} 
+            accept="image/*" 
+            onChange={handlePictureUpload} 
+          />
+        </div>
+        <div className={styles.avatarText}>
+          <h3>Profile Picture</h3>
+          <p>Click the icon to upload a new picture (Max 10MB)</p>
+        </div>
+      </div>
 
+      <form onSubmit={handleSave} className={styles.form} noValidate>
         {/* Account info */}
         <div className={shared.card}>
           <div className={shared.cardHeader}>

@@ -1,5 +1,7 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import api from '../../api/axios'
 import styles from './Sidebar.module.css'
 
 const NAV_ITEMS = [
@@ -12,6 +14,19 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   const { user, logout } = useAuth()
+  const [profilePic, setProfilePic] = useState(null)
+
+  // Fetch the profile data when the sidebar loads to get the picture
+  useEffect(() => {
+    api.get('/admin/profile')
+      .then(res => {
+        if (res.data && res.data.profilePictureUrl) {
+          setProfilePic(res.data.profilePictureUrl)
+        }
+      })
+      .catch(err => console.error("Failed to load sidebar profile pic", err))
+  }, [])
+
   const initial = user?.email?.charAt(0).toUpperCase() ?? 'A'
 
   return (
@@ -42,7 +57,18 @@ export default function Sidebar() {
       {/* User chip + logout */}
       <div className={styles.bottom}>
         <div className={styles.chip}>
-          <div className={styles.avatar}>{initial}</div>
+          <div className={styles.avatar}>
+            {/* Show Profile Picture if it exists, otherwise show initial */}
+            {profilePic ? (
+              <img 
+                src={profilePic} 
+                alt="Profile" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} 
+              />
+            ) : (
+              initial
+            )}
+          </div>
           <div className={styles.info}>
             <div className={styles.email}>{user?.email ?? '—'}</div>
             <div className={styles.role}>Artist</div>

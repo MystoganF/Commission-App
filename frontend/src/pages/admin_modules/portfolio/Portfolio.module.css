@@ -1,248 +1,127 @@
-/* Maintain your existing page layout */
-.page { 
-  display: flex; 
-  flex-direction: column; 
-  gap: 20px; 
-  margin-left: 260px; 
-  padding: 30px; 
-  max-width: 1200px;
-}
+.page { display: flex; flex-direction: column; gap: 20px; margin-left: 260px; padding: 30px; max-width: 1200px; }
+.header { display: flex; justify-content: space-between; align-items: center; }
+.layout { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
 
-.header {
+.sectionCard { background: #161616; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+.sectionHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.sectionTitle { font-size: 20px; font-weight: 600; color: #ffffff; margin: 0; }
+.itemDesc { font-size: 14px; color: #b3b3b3; line-height: 1.6; margin: 0; white-space: pre-wrap; }
+
+/* Lists */
+.listContainer { display: flex; flex-direction: column; }
+.listItem { padding: 16px 0; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: flex-start; }
+.listItem:last-child { border-bottom: none; padding-bottom: 0; }
+.itemTitle { font-size: 16px; font-weight: 600; color: #ffffff; margin: 0 0 4px 0; }
+.itemSubtitle { font-size: 14px; color: #dddddd; margin: 0 0 4px 0; }
+.itemDates { font-size: 13px; color: #888888; margin: 0; }
+
+/* Skills Tags */
+.skillGrid { display: flex; flex-wrap: wrap; gap: 10px; }
+.skillTag { background: #2a2a2a; color: #ffffff; padding: 6px 14px; border-radius: 999px; border: 1px solid #444; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+.skillDelete { cursor: pointer; color: #888; font-size: 14px; display: flex; align-items: center; padding-bottom: 1px; transition: color 0.2s; }
+.skillDelete:hover { color: #e74c3c; }
+
+/* Add Button */
+.addTextBtn { background: none; border: none; color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; padding: 0; transition: color 0.2s; }
+.addTextBtn:hover { color: #fff; }
+
+/* Contacts */
+.contactItem { margin-bottom: 16px; }
+.contactLabel { font-size: 12px; text-transform: uppercase; color: #888; letter-spacing: 0.05em; margin: 0 0 4px 0; }
+.contactValue { font-size: 14px; color: #fff; margin: 0; word-break: break-all; }
+
+/* ── FORMS (Fixed Black Text) ── */
+.formGroup { margin-bottom: 16px; }
+.label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: #dddddd; }
+.input, .textarea, select { 
+  width: 100%; 
+  padding: 10px 12px; 
+  border: 1px solid #444; 
+  border-radius: 6px; 
+  background: #222222; /* Dark background */
+  color: #ffffff;      /* WHITE TEXT */
+  font-family: inherit; 
+  font-size: 14px; 
+}
+.input:focus, .textarea:focus, select:focus { border-color: #666; outline: none; background: #2a2a2a; }
+.textarea { resize: vertical; min-height: 100px; }
+.formActions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+
+/* Grid */
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.card { cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; background: #222; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
+.card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.6); border-color: #555; }
+.thumb { aspect-ratio: 4 / 3; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+.card:hover .img { transform: scale(1.05); }
+.meta { padding: 14px; }
+.title { color: #ffffff; font-weight: 600; margin-bottom: 4px; font-size: 15px; }
+.tag { color: #888; font-size: 12px; }
+
+/* ── REDESIGNED VIEW MODAL ── */
+.viewDetails { display: flex; flex-direction: column; gap: 20px; }
+
+.viewImageWrapper {
+  width: 100%;
+  background: #000000;
+  border-radius: 8px;
+  padding: 10px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
 }
 
-.layout {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 24px;
-  align-items: start;
+.viewImage {
+  max-width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  border-radius: 4px;
 }
 
-/* ── Section Cards (LinkedIn Style) ── */
-.sectionCard {
-  background: var(--surface, #fff);
-  border: 1px solid var(--border, #eaeaec);
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 24px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+.viewContent { text-align: center; }
+
+.viewTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 12px 0;
 }
 
-.sectionHeader {
+.viewBadges {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
-.sectionTitle {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text);
-  margin: 0;
-}
-
-/* ── List Items (Experience, Education, etc) ── */
-.listItem {
-  padding: 16px 0;
-  border-bottom: 1px solid var(--border, #f0f0f0);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.listItem:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.itemMain {
-  flex: 1;
-  padding-right: 16px;
-}
-
-.itemTitle {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text);
-  margin: 0 0 4px 0;
-}
-
-.itemSubtitle {
-  font-size: 14px;
-  color: var(--text);
-  margin: 0 0 4px 0;
-}
-
-.itemDates {
-  font-size: 13px;
-  color: var(--muted);
-  margin: 0 0 8px 0;
-}
-
-.itemDesc {
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.5;
-  margin: 0;
-  white-space: pre-wrap;
-}
-
-/* ── Skills Tags (Minimalist Pill Design) ── */
-.skillGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.skillTag {
-  background: #ffffff;
-  color: #1a1a1a;
-  padding: 4px 10px 4px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--border, #eaeaec);
-  font-size: 13px;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.skillDelete {
-  cursor: pointer;
-  color: #888;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 1px;
-  transition: color 0.2s;
-}
-
-.skillDelete:hover { 
-  color: #e74c3c; 
-}
-
-/* Subtle Add Button for headers */
-.addTextBtn {
-  background: none;
-  border: none;
-  color: var(--muted, #888);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s;
-}
-
-.addTextBtn:hover {
-  color: var(--text, #333);
-}
-
-/* ── Contact Info Card ── */
-.contactItem {
-  margin-bottom: 16px;
-}
-.contactLabel {
-  font-size: 12px;
-  text-transform: uppercase;
-  color: var(--muted);
-  letter-spacing: 0.05em;
-  margin: 0 0 4px 0;
-}
-.contactValue {
-  font-size: 14px;
-  color: var(--text);
-  margin: 0;
-  word-break: break-all;
-}
-
-/* ── Forms inside Modals ── */
-.formGroup { margin-bottom: 16px; }
-.label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 6px;
-  color: var(--text);
-}
-.input, .textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
+.badge {
+  background: #2a2a2a;
+  color: #ddd;
+  padding: 6px 12px;
   border-radius: 6px;
-  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #444;
+}
+
+.viewDesc {
   font-size: 14px;
+  color: #cccccc;
+  line-height: 1.6;
+  text-align: left;
+  background: #222222;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 3px solid #555;
+  margin-bottom: 24px;
 }
-.textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-.formActions {
+
+.viewActions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 12px;
-  margin-top: 24px;
+  border-top: 1px solid #333;
+  padding-top: 20px;
 }
-
-/* ── Portfolio Grid & View Modal ── */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-.card {
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-.card:hover {
-  transform: translateY(-2px);
-}
-.thumb {
-  aspect-ratio: 4 / 3;
-  background: var(--surface2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
-.img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* View Modal Specifics */
-.viewDetails {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.viewImageWrapper {
-  width: 100%;
-  max-height: 400px;
-  overflow: hidden;
-  border-radius: 8px;
-  background: #f8f9fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.viewImage {
-  max-width: 100%;
-  max-height: 400px;
-  object-fit: contain;
-}
-.viewMeta {
-  text-align: center;
-}
-.viewTitle { margin: 0 0 8px 0; font-size: 20px; }
-.viewCategory, .viewYear { margin: 0 0 4px 0; color: var(--muted); font-size: 14px; }
-.viewDelete { margin-top: 16px; color: var(--error); border-color: rgba(231, 76, 60, 0.3); }

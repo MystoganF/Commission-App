@@ -38,4 +38,7 @@ public class User {
     private String twitter;
 
     public enum Role { CLIENT, ADMIN }
+
+    @Column(name = "profile_picture_url")
+    private String profilePictureUrl;
 }
