@@ -25,4 +25,8 @@ public class Education {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "artist_id", nullable = false)
     private User artist;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
 }

@@ -4,17 +4,24 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/auth_modules/Login';
 import Register from './pages/auth_modules/Register';
 
-// Admin Modules (Adjust the import paths if your folder structure is slightly different)
+// Admin Modules
 import AdminLayout from './pages/admin_modules/Admin_Layout';
 import Overview from './pages/admin_modules/overview/Overview';
 import Portfolio from './pages/admin_modules/portfolio/Portfolio';
 import Bookings from './pages/admin_modules/bookings/Bookings';
 import Profile from './pages/admin_modules/profile/Profile';
-
-// New Split Services Modules
 import ServicesList from './pages/admin_modules/services/ServicesList';
 import AddService from './pages/admin_modules/services/AddService';
 import ServiceDetail from './pages/admin_modules/services/ServiceDetail';
+
+// Client Modules
+import ClientLayout from './pages/client_modules/Client_Layout'; // Added this import
+import ClientHome from './pages/client_modules/home/Home';
+import ExploreArtists from './pages/client_modules/explore/ExploreArtists';
+import ClientServices from './pages/client_modules/services/ClientServices';
+import MyBookings from './pages/client_modules/bookings/MyBookings';
+import ArtistPortfolioView from './pages/client_modules/explore/ArtistPortfolioView';
+import BookingForm from './pages/client_modules/bookings/BookingForm';
 
 function App() {
   return (
@@ -26,26 +33,29 @@ function App() {
 
         {/* Protected Admin Routes */}
         <Route path="/admin" element={<AdminLayout />}>
-          {/* Automatically redirect /admin to /admin/overview */}
           <Route index element={<Navigate to="overview" replace />} />
-          
-          {/* Nested Dashboard Pages */}
           <Route path="overview" element={<Overview />} />
           <Route path="portfolio" element={<Portfolio />} />
           <Route path="bookings" element={<Bookings />} />
           <Route path="profile" element={<Profile />} />
-
-          {/* ── NEW SERVICES ROUTES (Nested here so they get the Sidebar) ── */}
           <Route path="services" element={<ServicesList />} />
           <Route path="services/new" element={<AddService />} />
           <Route path="services/:id" element={<ServiceDetail />} />
         </Route>
 
-        {/* Future Client View (Referenced in Login.js) */}
-        <Route path="/client" element={<div style={{ padding: '2rem', textAlign: 'center' }}>Client View (Coming Soon)</div>} />
-      
+        {/* ── CLIENT ROUTES ── */}
+        <Route path="/client" element={<ClientLayout />}>
+          <Route index element={<Navigate to="home" replace />} />
+          <Route path="home" element={<ClientHome />} />
+          <Route path="explore" element={<ExploreArtists />} />
+          <Route path="services" element={<ClientServices />} />
+          <Route path="book/:serviceId" element={<BookingForm />} />
+          <Route path="my-bookings" element={<MyBookings />} />
+          <Route path="artist/:id" element={<ArtistPortfolioView />} />
+        </Route>
+
+        {/* Utility Redirects */}
         <Route path="/dashboard" element={<Navigate to="/admin/overview" replace />} />
-        
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

@@ -5,7 +5,7 @@ import com.artistportfolio.dto.PortfolioDtos.*;
 import com.artistportfolio.dto.ProfileDtos.*;
 import com.artistportfolio.dto.ServiceDtos.*;
 import com.artistportfolio.dto.StatsDtos.*;
-import com.artistportfolio.dto.ResumeDtos.*; // <-- New Import
+import com.artistportfolio.dto.ResumeDtos.*;
 import com.artistportfolio.entity.*;
 import com.artistportfolio.entity.Booking.BookingStatus;
 import com.artistportfolio.repository.*;
@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.*;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,16 +26,12 @@ public class AdminService {
     private final PortfolioWorkRepository workRepo;
     private final ArtistServiceRepository serviceRepo;
     private final BookingRepository       bookingRepo;
-
-    // --- New Repositories ---
     private final SkillRepository         skillRepo;
     private final ExperienceRepository    experienceRepo;
     private final EducationRepository     educationRepo;
     private final AchievementRepository   achievementRepo;
 
     private final SupabaseService supabaseService;
-    private static final String UPLOAD_DIR = "uploads/portfolio/";
-
 
     public StatsResponse getStats(User artist) {
         StatsResponse res = new StatsResponse();
@@ -54,20 +48,25 @@ public class AdminService {
     }
 
     public WorkResponse addWork(User artist, String title, String category,
-                                String year, String description, MultipartFile file) throws IOException { // <-- ensure description is here
-
-        // 1. Upload to Supabase
+                                String year, String description, MultipartFile file) throws IOException {
         String imageUrl = supabaseService.uploadFile(file);
-
-        // 2. Save to database
         PortfolioWork work = new PortfolioWork();
         work.setTitle(title);
         work.setCategory(category);
         work.setYear(year);
-        work.setDescription(description); // Save description
+        work.setDescription(description);
         work.setImageUrl(imageUrl);
         work.setArtist(artist);
+        return toWorkResponse(workRepo.save(work));
+    }
 
+    public WorkResponse updateWork(User artist, Long workId, String title, String category, String year, String description) {
+        PortfolioWork work = workRepo.findById(workId).orElseThrow(() -> new RuntimeException("Work not found."));
+        if (!work.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
+        work.setTitle(title);
+        work.setCategory(category);
+        work.setYear(year);
+        work.setDescription(description);
         return toWorkResponse(workRepo.save(work));
     }
 
@@ -82,14 +81,21 @@ public class AdminService {
                 .stream().map(this::toServiceResponse).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public ServiceResponse getServiceById(User artist, Long id) {
+        ArtistServiceEntity s = serviceRepo.findById(id).orElseThrow(() -> new RuntimeException("Service not found."));
+        if (!s.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
+        return toServiceResponse(s);
+    }
+
     public ServiceResponse createService(User artist, ServiceRequest req) {
         ArtistServiceEntity s = new ArtistServiceEntity();
         s.setName(req.name);
         s.setPrice(req.price);
         s.setTurnaround(req.turnaround);
         s.setDescription(req.description);
-        s.setSamples(req.samples); // Now these will be Supabase URLs
-        s.setSkills(req.skills);   // <-- NEW
+        s.setSamples(req.samples);
+        s.setSkills(req.skills);
         s.setArtist(artist);
         return toServiceResponse(serviceRepo.save(s));
     }
@@ -97,14 +103,12 @@ public class AdminService {
     public ServiceResponse updateService(User artist, Long id, ServiceRequest req) {
         ArtistServiceEntity s = serviceRepo.findById(id).orElseThrow(() -> new RuntimeException("Service not found."));
         if (!s.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
-
         s.setName(req.name);
         s.setPrice(req.price);
         s.setTurnaround(req.turnaround);
         s.setDescription(req.description);
         s.setSamples(req.samples);
-        s.setSkills(req.skills); // <--- ADD THIS LINE TO FIX THE BUG
-
+        s.setSkills(req.skills);
         return toServiceResponse(serviceRepo.save(s));
     }
 
@@ -149,12 +153,12 @@ public class AdminService {
     }
 
     public ProfileResponse updateProfilePicture(User artist, MultipartFile file) throws IOException {
-
         String imageUrl = supabaseService.uploadFile(file);
         artist.setProfilePictureUrl(imageUrl);
         return getProfile(userRepo.save(artist));
     }
 
+    // ── Skills & Experience ──
     public List<SkillDto> getSkills(User artist) {
         return skillRepo.findByArtistId(artist.getId()).stream().map(s -> {
             SkillDto dto = new SkillDto(); dto.id = s.getId(); dto.name = s.getName(); return dto;
@@ -171,7 +175,6 @@ public class AdminService {
         skillRepo.delete(s);
     }
 
-    // Experience
     public List<ExperienceDto> getExperiences(User artist) {
         return experienceRepo.findByArtistIdOrderByStartDateDesc(artist.getId()).stream().map(e -> {
             ExperienceDto dto = new ExperienceDto();
@@ -187,27 +190,39 @@ public class AdminService {
         e = experienceRepo.save(e);
         req.id = e.getId(); return req;
     }
+    public ExperienceDto updateExperience(User artist, Long id, ExperienceDto req) {
+        Experience e = experienceRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        if (!e.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
+        e.setTitle(req.title); e.setCompany(req.company); e.setStartDate(req.startDate);
+        e.setEndDate(req.endDate); e.setDescription(req.description);
+        experienceRepo.save(e);
+        req.id = e.getId(); return req;
+    }
     public void deleteExperience(User artist, Long id) {
         Experience e = experienceRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         if (!e.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
         experienceRepo.delete(e);
     }
 
-    // Education
+    // ── NEW: Education ──
     public List<EducationDto> getEducation(User artist) {
-        return educationRepo.findByArtistIdOrderByEndYearDesc(artist.getId()).stream().map(e -> {
-            EducationDto dto = new EducationDto();
-            dto.id = e.getId(); dto.degree = e.getDegree(); dto.institution = e.getInstitution();
-            dto.startYear = e.getStartYear(); dto.endYear = e.getEndYear();
-            return dto;
-        }).collect(Collectors.toList());
+        return educationRepo.findByArtistIdOrderByEndYearDesc(artist.getId()).stream()
+                .map(this::mapToEducationDto).collect(Collectors.toList());
     }
-    public EducationDto addEducation(User artist, EducationDto req) {
+    public EducationDto addEducation(User artist, String degree, String institution, String startYear, String endYear, MultipartFile file) throws Exception {
         Education e = new Education();
-        e.setDegree(req.degree); e.setInstitution(req.institution);
-        e.setStartYear(req.startYear); e.setEndYear(req.endYear); e.setArtist(artist);
-        e = educationRepo.save(e);
-        req.id = e.getId(); return req;
+        e.setDegree(degree); e.setInstitution(institution);
+        e.setStartYear(startYear); e.setEndYear(endYear); e.setArtist(artist);
+        if (file != null && !file.isEmpty()) e.setImageUrl(supabaseService.uploadFile(file));
+        return mapToEducationDto(educationRepo.save(e));
+    }
+    public EducationDto updateEducation(User artist, Long id, String degree, String institution, String startYear, String endYear, MultipartFile file) throws Exception {
+        Education e = educationRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        if (!e.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
+        e.setDegree(degree); e.setInstitution(institution);
+        e.setStartYear(startYear); e.setEndYear(endYear);
+        if (file != null && !file.isEmpty()) e.setImageUrl(supabaseService.uploadFile(file));
+        return mapToEducationDto(educationRepo.save(e));
     }
     public void deleteEducation(User artist, Long id) {
         Education e = educationRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
@@ -215,19 +230,23 @@ public class AdminService {
         educationRepo.delete(e);
     }
 
-    // Achievements
+    // ── NEW: Achievements ──
     public List<AchievementDto> getAchievements(User artist) {
-        return achievementRepo.findByArtistIdOrderByYearDesc(artist.getId()).stream().map(a -> {
-            AchievementDto dto = new AchievementDto();
-            dto.id = a.getId(); dto.title = a.getTitle(); dto.year = a.getYear(); dto.description = a.getDescription();
-            return dto;
-        }).collect(Collectors.toList());
+        return achievementRepo.findByArtistIdOrderByYearDesc(artist.getId()).stream()
+                .map(this::mapToAchievementDto).collect(Collectors.toList());
     }
-    public AchievementDto addAchievement(User artist, AchievementDto req) {
+    public AchievementDto addAchievement(User artist, String title, String year, String description, MultipartFile file) throws Exception {
         Achievement a = new Achievement();
-        a.setTitle(req.title); a.setYear(req.year); a.setDescription(req.description); a.setArtist(artist);
-        a = achievementRepo.save(a);
-        req.id = a.getId(); return req;
+        a.setTitle(title); a.setYear(year); a.setDescription(description); a.setArtist(artist);
+        if (file != null && !file.isEmpty()) a.setImageUrl(supabaseService.uploadFile(file));
+        return mapToAchievementDto(achievementRepo.save(a));
+    }
+    public AchievementDto updateAchievement(User artist, Long id, String title, String year, String description, MultipartFile file) throws Exception {
+        Achievement a = achievementRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        if (!a.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
+        a.setTitle(title); a.setYear(year); a.setDescription(description);
+        if (file != null && !file.isEmpty()) a.setImageUrl(supabaseService.uploadFile(file));
+        return mapToAchievementDto(achievementRepo.save(a));
     }
     public void deleteAchievement(User artist, Long id) {
         Achievement a = achievementRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
@@ -235,64 +254,38 @@ public class AdminService {
         achievementRepo.delete(a);
     }
 
-    // ── Helpers ─────────────────────────────────────────────
+    // ── Helpers ──
     private WorkResponse toWorkResponse(PortfolioWork w) {
         WorkResponse r = new WorkResponse();
-        r.id = w.getId();
-        r.title = w.getTitle();
-        r.category = w.getCategory();
-        r.year = w.getYear();
-        r.description = w.getDescription(); // Map description
-        r.imageUrl = w.getImageUrl();
+        r.id = w.getId(); r.title = w.getTitle(); r.category = w.getCategory();
+        r.year = w.getYear(); r.description = w.getDescription(); r.imageUrl = w.getImageUrl();
         r.createdAt = w.getCreatedAt();
         return r;
     }
     private ServiceResponse toServiceResponse(ArtistServiceEntity s) {
         ServiceResponse r = new ServiceResponse();
-        r.id = s.getId();
-        r.name = s.getName();
-        r.price = s.getPrice();
-        r.turnaround = s.getTurnaround();
-        r.description = s.getDescription();
-
-        // CRITICAL FIX: Convert Hibernate Proxy lists to standard ArrayLists
-        // This prevents the 500 error during JSON serialization
+        r.id = s.getId(); r.name = s.getName(); r.price = s.getPrice();
+        r.turnaround = s.getTurnaround(); r.description = s.getDescription();
         r.samples = s.getSamples() != null ? new java.util.ArrayList<>(s.getSamples()) : new java.util.ArrayList<>();
         r.skills = s.getSkills() != null ? new java.util.ArrayList<>(s.getSkills()) : new java.util.ArrayList<>();
-
         return r;
     }
-
     private BookingResponse toBookingResponse(Booking b) {
         BookingResponse r = new BookingResponse(); r.id = b.getId(); r.clientName = b.getClient().getUsername();
         r.clientEmail = b.getClient().getEmail(); r.serviceName = b.getService().getName(); r.price = b.getService().getPrice();
         r.status = b.getStatus().name(); r.createdAt = b.getCreatedAt();
         return r;
     }
-    private String saveFile(MultipartFile file) throws IOException {
-        Path uploadPath = Paths.get(UPLOAD_DIR);
-        if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
-        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        Files.copy(file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
-        return "/" + UPLOAD_DIR + filename;
+    private EducationDto mapToEducationDto(Education e) {
+        EducationDto dto = new EducationDto();
+        dto.id = e.getId(); dto.degree = e.getDegree(); dto.institution = e.getInstitution();
+        dto.startYear = e.getStartYear(); dto.endYear = e.getEndYear(); dto.imageUrl = e.getImageUrl();
+        return dto;
     }
-
-    public WorkResponse updateWork(User artist, Long workId, String title, String category, String year, String description) {
-        PortfolioWork work = workRepo.findById(workId).orElseThrow(() -> new RuntimeException("Work not found."));
-        if (!work.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
-
-        work.setTitle(title);
-        work.setCategory(category);
-        work.setYear(year);
-        work.setDescription(description);
-
-        return toWorkResponse(workRepo.save(work));
-    }
-
-    @Transactional(readOnly = true)
-    public ServiceResponse getServiceById(User artist, Long id) {
-        ArtistServiceEntity s = serviceRepo.findById(id).orElseThrow(() -> new RuntimeException("Service not found."));
-        if (!s.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
-        return toServiceResponse(s);
+    private AchievementDto mapToAchievementDto(Achievement a) {
+        AchievementDto dto = new AchievementDto();
+        dto.id = a.getId(); dto.title = a.getTitle(); dto.year = a.getYear();
+        dto.description = a.getDescription(); dto.imageUrl = a.getImageUrl();
+        return dto;
     }
 }

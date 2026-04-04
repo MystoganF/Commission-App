@@ -5,8 +5,8 @@ import styles from './login.module.css'
 
 export default function Login() {
   const navigate = useNavigate()
-  const [form, setForm]     = useState({ email: '', password: '' })
-  const [error, setError]   = useState('')
+  const [form, setForm] = useState({ email: '', password: '' })
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
@@ -15,16 +15,23 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     setError('')
+
     try {
       const res = await api.post('/auth/login', form)
+      
       localStorage.setItem('token', res.data.token)
+      const userRole = res.data.role; // This should be 'ADMIN' or 'CLIENT'
 
-      // Redirect based on role returned by the API
-      if (res.data.role === 'ADMIN') {
-        navigate('/admin/overview')
+      if (userRole === 'ADMIN') {
+        // Portfolio owners go to the dashboard
+        navigate('/admin/overview');
+      } else if (userRole === 'CLIENT') {
+        // Customers go to the landing page
+        navigate('/client/home');
       } else {
-        navigate('/client')   // client view (next phase)
+        setError('Unauthorized role. Please contact support.');
       }
+
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password.')
     } finally {

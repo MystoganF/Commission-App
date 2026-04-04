@@ -1,0 +1,152 @@
+.container { max-width: 1300px; margin: 0 auto; padding-bottom: 100px; }
+
+.header { margin-bottom: 40px; padding-top: 20px; }
+.backBtn { background: none; border: none; color: #666; cursor: pointer; margin-bottom: 30px; font-size: 14px; transition: color 0.2s; }
+.backBtn:hover { color: #fff; }
+
+.profileHeader { display: flex; gap: 40px; align-items: flex-start; }
+.avatar { width: 160px; height: 160px; border-radius: 24px; object-fit: cover; border: 1px solid #333; background: #111; }
+.username { font-size: 48px; font-weight: 800; margin: 0 0 10px 0; letter-spacing: -1.5px; color: #fff; }
+
+.stats { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.rating { color: #c9b99a; font-weight: 700; font-size: 20px; }
+.reviewCount { color: #555; font-size: 15px; }
+
+.bio { color: #aaa; line-height: 1.7; max-width: 700px; margin-bottom: 25px; font-size: 15px; }
+
+.skillCloud { display: flex; gap: 10px; flex-wrap: wrap; }
+.skillBadge { background: #111; color: #777; padding: 6px 14px; border-radius: 30px; font-size: 12px; border: 1px solid #222; }
+
+/* Layout Split */
+.contentLayout { display: flex; gap: 60px; }
+.mainContent { flex: 1; }
+.sidebar { width: 360px; }
+
+.sectionTitle { font-size: 24px; font-weight: 700; margin-bottom: 30px; color: #fff; }
+
+/* Gallery */
+.workGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.workCard { height: 280px; border-radius: 16px; overflow: hidden; position: relative; cursor: zoom-in; background: #111; }
+.workCard img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.workCard:hover img { transform: scale(1.1); }
+
+.workOverlay { 
+  position: absolute; inset: 0; padding: 25px;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  opacity: 0; transition: opacity 0.3s;
+}
+.workCard:hover .workOverlay { opacity: 1; }
+.workTitle { color: #fff; font-weight: 600; font-size: 16px; }
+.workYear { color: #888; font-size: 12px; }
+
+/* Sticky Sidebar */
+.stickyBox { position: sticky; top: 100px; background: #111; border: 1px solid #222; padding: 30px; border-radius: 20px; }
+.servicesList { display: flex; flex-direction: column; gap: 24px; }
+.serviceItem { border-bottom: 1px solid #222; padding-bottom: 20px; }
+.serviceItem:last-child { border: none; padding: 0; }
+.serviceMeta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.serviceName { margin: 0; font-size: 17px; color: #fff; }
+.servicePrice { color: #c9b99a; font-weight: 700; font-size: 16px; }
+.serviceDesc { font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 20px; }
+
+.bookBtn { 
+  width: 100%; background: #fff; color: #000; border: none; padding: 12px; 
+  border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+}
+.bookBtn:hover { background: #c9b99a; transform: translateY(-2px); }
+
+/* Reviews */
+.reviewCard { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 25px; border-radius: 16px; margin-bottom: 20px; }
+.revTop { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.revStars { color: #c9b99a; letter-spacing: 3px; font-size: 12px; }
+.revComment { color: #999; font-size: 15px; line-height: 1.6; margin-bottom: 12px; }
+.revDate { font-size: 12px; color: #444; }
+
+.empty { color: #444; font-style: italic; padding: 20px 0; }
+.loading { padding: 150px; text-align: center; color: #444; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px 100px 20px; }
+.backBtn { background: none; border: none; color: #888; cursor: pointer; margin-bottom: 30px; font-size: 14px; }
+.backBtn:hover { color: #fff; }
+
+/* Hero */
+.hero { display: flex; gap: 40px; align-items: flex-start; margin-bottom: 60px; background: #111; padding: 40px; border-radius: 20px; border: 1px solid #222; }
+.avatar { width: 160px; height: 160px; border-radius: 20px; object-fit: cover; }
+.username { font-size: 42px; margin: 0 0 10px 0; color: #fff; }
+.stats { display: flex; gap: 15px; color: #aaa; margin-bottom: 20px; font-size: 14px; }
+.rating { color: #c9b99a; font-weight: 700; }
+.bio { color: #ccc; line-height: 1.6; margin-bottom: 20px; max-width: 800px; }
+.skillCloud { display: flex; gap: 8px; flex-wrap: wrap; }
+.skillBadge { background: #1a1a1a; color: #888; padding: 6px 14px; border-radius: 20px; font-size: 12px; border: 1px solid #333; }
+
+/* Generic Sections */
+.section { margin-bottom: 70px; }
+.sectionHeader { margin-bottom: 30px; }
+.sectionTitle { font-size: 28px; margin: 0 0 5px 0; color: #fff; }
+.sectionSub { color: #888; margin: 0; }
+.empty { color: #555; font-style: italic; }
+
+/* Services Grid (Client Version) */
+.servicesGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+.serviceCard { background: #111; border: 1px solid #222; border-radius: 12px; overflow: hidden; transition: transform 0.2s; }
+.serviceCard:hover { transform: translateY(-4px); border-color: #c9b99a; }
+.cardCover { height: 180px; background: #000; }
+.cardCover img { width: 100%; height: 100%; object-fit: cover; }
+.noImage { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #444; font-size: 13px; }
+.cardMeta { padding: 20px; }
+.serviceName { font-size: 18px; margin: 0 0 10px 0; color: #fff; }
+.serviceDetails { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; }
+.price { color: #c9b99a; font-weight: 700; font-size: 16px; }
+.turnaround { color: #888; font-size: 13px; }
+.bookBtn { width: 100%; background: #fff; color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.bookBtn:hover { background: #c9b99a; }
+
+/* Portfolio Grid */
+.workGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.workCard { height: 260px; border-radius: 12px; overflow: hidden; position: relative; cursor: zoom-in; }
+.workCard img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+.workCard:hover img { transform: scale(1.05); }
+.workOverlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); display: flex; flex-direction: column; opacity: 0; transition: 0.3s; }
+.workCard:hover .workOverlay { opacity: 1; }
+.workTitle { color: #fff; font-weight: 600; margin-bottom: 4px; }
+.workYear { color: #888; font-size: 12px; }
+
+/* Resume Section (Split columns) */
+.resumeSection { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-bottom: 70px; }
+.resumeItem { border-left: 2px solid #333; padding-left: 20px; margin-bottom: 30px; position: relative; }
+.resumeItem::before { content: ''; position: absolute; left: -6px; top: 0; width: 10px; height: 10px; background: #c9b99a; border-radius: 50%; }
+.resumeItem h4 { margin: 0 0 5px 0; color: #fff; font-size: 18px; }
+.resumeMeta { display: block; color: #888; font-size: 13px; margin-bottom: 10px; }
+.resumeItem p { color: #aaa; font-size: 14px; line-height: 1.5; margin: 0; }
+
+/* Reviews */
+.reviewsList { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.reviewCard { background: #111; border: 1px solid #222; padding: 24px; border-radius: 12px; }
+.revTop { display: flex; justify-content: space-between; margin-bottom: 10px; color: #fff; }
+.revStars { color: #c9b99a; letter-spacing: 2px; }
+.revComment { color: #aaa; font-size: 14px; line-height: 1.6; margin-bottom: 15px; }
+.revDate { font-size: 12px; color: #555; }
+
+/* ── NEW: Social Icons ── */
+.socialLinks {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.socialIcon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #888;
+  text-decoration: none;
+  transition: color 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+
+.socialIcon:hover {
+  color: #c9b99a; /* Highlights to your brand gold color */
+  transform: translateY(-2px);
+}

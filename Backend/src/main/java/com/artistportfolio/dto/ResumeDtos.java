@@ -27,6 +27,7 @@ public class ResumeDtos {
         public String institution;
         public String startYear;
         public String endYear;
+        public String imageUrl;
     }
 
     @Data
@@ -35,5 +36,6 @@ public class ResumeDtos {
         public String title;
         public String year;
         public String description;
+        public String imageUrl;
     }
 }

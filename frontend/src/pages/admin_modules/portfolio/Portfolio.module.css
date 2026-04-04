@@ -125,3 +125,42 @@
   border-top: 1px solid #333;
   padding-top: 20px;
 }
+
+/* Update item actions to lay out buttons horizontally */
+.itemActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.editBtn, .deleteBtn {
+  background: none;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0;
+}
+
+.editBtn { color: #aaaaaa; }
+.editBtn:hover { color: #ffffff; }
+
+.deleteBtn { color: #888888; }
+.deleteBtn:hover { color: #e74c3c; }
+
+/* Mini Thumbnail for Resume Items */
+.miniThumb {
+  width: 80px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: zoom-in;
+  border: 1px solid #444;
+  margin-top: 10px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.miniThumb:hover {
+  transform: scale(1.05);
+  border-color: #c9b99a;
+}

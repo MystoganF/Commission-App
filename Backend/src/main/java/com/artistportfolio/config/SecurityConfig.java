@@ -35,6 +35,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
+        // Allow your frontend ports
         config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
@@ -52,15 +53,20 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Public
+                        // 1. PUBLIC ENDPOINTS (No login required)
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/public/**").permitAll() // <── CRITICAL: Added this
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        // 2. ADMIN/ARTIST ENDPOINTS (Requires ARTIST role)
+                        // Note: I added "ARTIST" here to match your portfolio owners
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ARTIST", "ADMIN")
+
+                        // 3. CLIENT ENDPOINTS (Requires CLIENT role)
                         .requestMatchers("/api/client/**").hasAuthority("CLIENT")
 
-                        // Everything else requires authentication
+                        // 4. PROTECT EVERYTHING ELSE
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

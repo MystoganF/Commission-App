@@ -25,6 +25,9 @@ public class Booking {
     @JoinColumn(name = "service_id", nullable = false)
     private ArtistServiceEntity service;
 
+    @Column(length = 2000)
+    private String details;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BookingStatus status = BookingStatus.PENDING;

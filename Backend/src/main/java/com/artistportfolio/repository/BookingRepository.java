@@ -6,9 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-    public interface BookingRepository extends JpaRepository<Booking, Long> {
-        List<Booking> findByServiceArtistIdOrderByCreatedAtDesc(Long artistId);
-        long countByServiceArtistId(Long artistId);
-        long countByServiceArtistIdAndStatus(Long artistId, Booking.BookingStatus status);
+public interface BookingRepository extends JpaRepository<Booking, Long> {
+    // Existing admin method:
+    List<Booking> findByServiceArtistIdOrderByCreatedAtDesc(Long artistId);
+    int countByServiceArtistId(Long artistId);
+    int countByServiceArtistIdAndStatus(Long artistId, Booking.BookingStatus status);
 
+    // ── NEW: Client method ──
+    List<Booking> findByClientIdOrderByCreatedAtDesc(Long clientId);
 }

@@ -1,0 +1,39 @@
+.container { min-height: 100vh; background: #0a0a0a; color: #fff; }
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 50px;
+  height: 70px;
+  background: #111;
+  border-bottom: 1px solid #222;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo { font-size: 22px; font-weight: 700; letter-spacing: -1px; }
+.clientTag { font-size: 10px; text-transform: uppercase; color: #c9b99a; border: 1px solid #c9b99a; padding: 2px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
+
+.links { display: flex; gap: 30px; }
+.links a { text-decoration: none; color: #888; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+.links a:hover { color: #fff; }
+.active { color: #fff !important; }
+
+.content { padding: 40px 50px; max-width: 1400px; margin: 0 auto; }
+
+.loginBtn { background: transparent; border: 1px solid #444; color: #fff; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.loginBtn:hover { background: #fff; color: #000; }
+
+.appContainer {
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #fff;
+}
+
+.mainContent {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px;
+}

@@ -8,6 +8,12 @@ import java.time.LocalDateTime;
 public class BookingDtos {
 
     @Data
+    public static class BookingRequest {
+        public Long serviceId;
+        public String details;
+    }
+
+    @Data
     public static class StatusUpdateRequest {
         public Booking.BookingStatus status;
     }
