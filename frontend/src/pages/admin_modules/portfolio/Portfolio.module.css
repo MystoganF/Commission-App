@@ -1,47 +1,208 @@
+/* Maintain your existing page layout */
 .page { 
   display: flex; 
   flex-direction: column; 
   gap: 20px; 
-  /* Push content past the sidebar. Adjust 260px to your sidebar's actual width */
   margin-left: 260px; 
-  /* Add some padding so the content doesn't stick directly to the edges */
   padding: 30px; 
+  max-width: 1200px;
 }
-.toolbar {
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── Section Cards (LinkedIn Style) ── */
+.sectionCard {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #eaeaec);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+/* ── List Items (Experience, Education, etc) ── */
+.listItem {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border, #f0f0f0);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.listItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.itemMain {
+  flex: 1;
+  padding-right: 16px;
+}
+
+.itemTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 4px 0;
+}
+
+.itemSubtitle {
+  font-size: 14px;
+  color: var(--text);
+  margin: 0 0 4px 0;
+}
+
+.itemDates {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 8px 0;
+}
+
+.itemDesc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* ── Skills Tags (Minimalist Pill Design) ── */
+.skillGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skillTag {
+  background: #ffffff;
+  color: #1a1a1a;
+  padding: 4px 10px 4px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border, #eaeaec);
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skillDelete {
+  cursor: pointer;
+  color: #888;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: center;
+  padding-bottom: 1px;
+  transition: color 0.2s;
 }
 
-.count { font-size: 13px; color: var(--muted); }
+.skillDelete:hover { 
+  color: #e74c3c; 
+}
 
-.error {
+/* Subtle Add Button for headers */
+.addTextBtn {
+  background: none;
+  border: none;
+  color: var(--muted, #888);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.addTextBtn:hover {
+  color: var(--text, #333);
+}
+
+/* ── Contact Info Card ── */
+.contactItem {
+  margin-bottom: 16px;
+}
+.contactLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin: 0 0 4px 0;
+}
+.contactValue {
+  font-size: 14px;
+  color: var(--text);
+  margin: 0;
+  word-break: break-all;
+}
+
+/* ── Forms inside Modals ── */
+.formGroup { margin-bottom: 16px; }
+.label {
+  display: block;
   font-size: 13px;
-  color: var(--error);
-  padding: 10px 14px;
-  border: 1px solid rgba(224,112,112,0.2);
-  border-radius: var(--radius);
-  background: var(--error-dim);
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.input, .textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+}
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
 }
 
-/* ── Grid ── */
+/* ── Portfolio Grid & View Modal ── */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
-
-/* ── Work card ── */
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition: border-color 0.2s, transform 0.2s;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
-.card:hover { border-color: var(--border2); transform: translateY(-2px); }
-
+.card:hover {
+  transform: translateY(-2px);
+}
 .thumb {
   aspect-ratio: 4 / 3;
   background: var(--surface2);
@@ -49,45 +210,39 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 12px;
 }
-
 .img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-  transition: transform 0.4s;
-}
-.card:hover .img { transform: scale(1.03); }
-
-.placeholder { font-size: 36px; color: var(--border2); }
-
-.meta { padding: 16px; }
-
-.title {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 300;
-  color: var(--text);
-  margin-bottom: 4px;
 }
 
-.tag {
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 14px;
+/* View Modal Specifics */
+.viewDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
-
-.actions { display: flex; gap: 8px; }
-
-.loading {
-  font-size: 14px;
-  color: var(--muted);
-  padding: 48px;
+.viewImageWrapper {
+  width: 100%;
+  max-height: 400px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.viewImage {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+.viewMeta {
   text-align: center;
 }
-
-@media (max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 640px)  { .grid { grid-template-columns: 1fr; } }
+.viewTitle { margin: 0 0 8px 0; font-size: 20px; }
+.viewCategory, .viewYear { margin: 0 0 4px 0; color: var(--muted); font-size: 14px; }
+.viewDelete { margin-top: 16px; color: var(--error); border-color: rgba(231, 76, 60, 0.3); }

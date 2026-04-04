@@ -58,7 +58,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         var auth = new UsernamePasswordAuthenticationToken(
                 user,
                 null,
-                List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                List.of(new SimpleGrantedAuthority(role)) // <-- Now it will perfectly match "ADMIN"
         );
         SecurityContextHolder.getContext().setAuthentication(auth);
 

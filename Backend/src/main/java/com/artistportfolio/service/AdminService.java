@@ -5,12 +5,13 @@ import com.artistportfolio.dto.PortfolioDtos.*;
 import com.artistportfolio.dto.ProfileDtos.*;
 import com.artistportfolio.dto.ServiceDtos.*;
 import com.artistportfolio.dto.StatsDtos.*;
+import com.artistportfolio.dto.ResumeDtos.*; // <-- New Import
 import com.artistportfolio.entity.*;
 import com.artistportfolio.entity.Booking.BookingStatus;
 import com.artistportfolio.repository.*;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import com.artistportfolio.entity.ArtistServiceEntity;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -19,75 +20,59 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class AdminService {
 
-    private final UserRepository         userRepo;
+    private final UserRepository          userRepo;
     private final PortfolioWorkRepository workRepo;
     private final ArtistServiceRepository serviceRepo;
-    private final BookingRepository bookingRepo;
+    private final BookingRepository       bookingRepo;
 
-    // Folder where uploaded images will be stored (serve via static resources or CDN)
+    // --- New Repositories ---
+    private final SkillRepository         skillRepo;
+    private final ExperienceRepository    experienceRepo;
+    private final EducationRepository     educationRepo;
+    private final AchievementRepository   achievementRepo;
+
+    private final SupabaseService supabaseService;
     private static final String UPLOAD_DIR = "uploads/portfolio/";
 
-    public AdminService(UserRepository userRepo,
-                        PortfolioWorkRepository workRepo,
-                        ArtistServiceRepository serviceRepo,
-                        BookingRepository bookingRepo) {
-        this.userRepo    = userRepo;
-        this.workRepo    = workRepo;
-        this.serviceRepo = serviceRepo;
-        this.bookingRepo = bookingRepo;
-    }
-
-    // ── Stats ───────────────────────────────────────────────
 
     public StatsResponse getStats(User artist) {
         StatsResponse res = new StatsResponse();
         res.totalWorks    = workRepo.countByArtistId(artist.getId());
         res.totalServices = serviceRepo.countByArtistId(artist.getId());
         res.totalBookings = bookingRepo.countByServiceArtistId(artist.getId());
-        res.pendingCount  = bookingRepo.countByServiceArtistIdAndStatus(
-                artist.getId(), BookingStatus.PENDING);
+        res.pendingCount  = bookingRepo.countByServiceArtistIdAndStatus(artist.getId(), BookingStatus.PENDING);
         return res;
     }
 
-    // ── Portfolio ───────────────────────────────────────────
-
     public List<WorkResponse> getPortfolio(User artist) {
         return workRepo.findByArtistIdOrderByCreatedAtDesc(artist.getId())
-                .stream().map(this::toWorkResponse)
-                .collect(Collectors.toList());
+                .stream().map(this::toWorkResponse).collect(Collectors.toList());
     }
 
     public WorkResponse addWork(User artist, String title, String category,
                                 String year, MultipartFile file) throws IOException {
         String imageUrl = saveFile(file);
-
         PortfolioWork work = new PortfolioWork();
         work.setTitle(title);
         work.setCategory(category);
         work.setYear(year);
         work.setImageUrl(imageUrl);
         work.setArtist(artist);
-
         return toWorkResponse(workRepo.save(work));
     }
 
     public void deleteWork(User artist, Long workId) {
-        PortfolioWork work = workRepo.findById(workId)
-                .orElseThrow(() -> new RuntimeException("Work not found."));
-        if (!work.getArtist().getId().equals(artist.getId())) {
-            throw new RuntimeException("Unauthorized.");
-        }
+        PortfolioWork work = workRepo.findById(workId).orElseThrow(() -> new RuntimeException("Work not found."));
+        if (!work.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
         workRepo.delete(work);
     }
 
-    // ── Services ────────────────────────────────────────────
-
     public List<ServiceResponse> getServices(User artist) {
         return serviceRepo.findByArtistId(artist.getId())
-                .stream().map(this::toServiceResponse)
-                .collect(Collectors.toList());
+                .stream().map(this::toServiceResponse).collect(Collectors.toList());
     }
 
     public ServiceResponse createService(User artist, ServiceRequest req) {
@@ -102,11 +87,8 @@ public class AdminService {
     }
 
     public ServiceResponse updateService(User artist, Long id, ServiceRequest req) {
-        ArtistServiceEntity s = serviceRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Service not found."));
-        if (!s.getArtist().getId().equals(artist.getId())) {
-            throw new RuntimeException("Unauthorized.");
-        }
+        ArtistServiceEntity s = serviceRepo.findById(id).orElseThrow(() -> new RuntimeException("Service not found."));
+        if (!s.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
         s.setName(req.name);
         s.setPrice(req.price);
         s.setTurnaround(req.turnaround);
@@ -116,34 +98,22 @@ public class AdminService {
     }
 
     public void deleteService(User artist, Long id) {
-        ArtistServiceEntity s = serviceRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Service not found."));
-        if (!s.getArtist().getId().equals(artist.getId())) {
-            throw new RuntimeException("Unauthorized.");
-        }
+        ArtistServiceEntity s = serviceRepo.findById(id).orElseThrow(() -> new RuntimeException("Service not found."));
+        if (!s.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
         serviceRepo.delete(s);
     }
 
-    // ── Bookings ────────────────────────────────────────────
-
     public List<BookingResponse> getBookings(User artist) {
         return bookingRepo.findByServiceArtistIdOrderByCreatedAtDesc(artist.getId())
-                .stream().map(this::toBookingResponse)
-                .collect(Collectors.toList());
+                .stream().map(this::toBookingResponse).collect(Collectors.toList());
     }
 
-    public BookingResponse updateBookingStatus(User artist, Long bookingId,
-                                               StatusUpdateRequest req) {
-        Booking booking = bookingRepo.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found."));
-        if (!booking.getService().getArtist().getId().equals(artist.getId())) {
-            throw new RuntimeException("Unauthorized.");
-        }
+    public BookingResponse updateBookingStatus(User artist, Long bookingId, StatusUpdateRequest req) {
+        Booking booking = bookingRepo.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found."));
+        if (!booking.getService().getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
         booking.setStatus(req.status);
         return toBookingResponse(bookingRepo.save(booking));
     }
-
-    // ── Profile ─────────────────────────────────────────────
 
     public ProfileResponse getProfile(User artist) {
         ProfileResponse res = new ProfileResponse();
@@ -166,50 +136,111 @@ public class AdminService {
         return getProfile(userRepo.save(artist));
     }
 
+    // ── NEW: LinkedIn Profile Features ──────────────────────────────────────
+
+    // Skills
+    public List<SkillDto> getSkills(User artist) {
+        return skillRepo.findByArtistId(artist.getId()).stream().map(s -> {
+            SkillDto dto = new SkillDto(); dto.id = s.getId(); dto.name = s.getName(); return dto;
+        }).collect(Collectors.toList());
+    }
+    public SkillDto addSkill(User artist, SkillDto req) {
+        Skill s = new Skill(); s.setName(req.name); s.setArtist(artist);
+        s = skillRepo.save(s);
+        SkillDto dto = new SkillDto(); dto.id = s.getId(); dto.name = s.getName(); return dto;
+    }
+    public void deleteSkill(User artist, Long id) {
+        Skill s = skillRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        if (!s.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
+        skillRepo.delete(s);
+    }
+
+    // Experience
+    public List<ExperienceDto> getExperiences(User artist) {
+        return experienceRepo.findByArtistIdOrderByStartDateDesc(artist.getId()).stream().map(e -> {
+            ExperienceDto dto = new ExperienceDto();
+            dto.id = e.getId(); dto.title = e.getTitle(); dto.company = e.getCompany();
+            dto.startDate = e.getStartDate(); dto.endDate = e.getEndDate(); dto.description = e.getDescription();
+            return dto;
+        }).collect(Collectors.toList());
+    }
+    public ExperienceDto addExperience(User artist, ExperienceDto req) {
+        Experience e = new Experience();
+        e.setTitle(req.title); e.setCompany(req.company); e.setStartDate(req.startDate);
+        e.setEndDate(req.endDate); e.setDescription(req.description); e.setArtist(artist);
+        e = experienceRepo.save(e);
+        req.id = e.getId(); return req;
+    }
+    public void deleteExperience(User artist, Long id) {
+        Experience e = experienceRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        if (!e.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
+        experienceRepo.delete(e);
+    }
+
+    // Education
+    public List<EducationDto> getEducation(User artist) {
+        return educationRepo.findByArtistIdOrderByEndYearDesc(artist.getId()).stream().map(e -> {
+            EducationDto dto = new EducationDto();
+            dto.id = e.getId(); dto.degree = e.getDegree(); dto.institution = e.getInstitution();
+            dto.startYear = e.getStartYear(); dto.endYear = e.getEndYear();
+            return dto;
+        }).collect(Collectors.toList());
+    }
+    public EducationDto addEducation(User artist, EducationDto req) {
+        Education e = new Education();
+        e.setDegree(req.degree); e.setInstitution(req.institution);
+        e.setStartYear(req.startYear); e.setEndYear(req.endYear); e.setArtist(artist);
+        e = educationRepo.save(e);
+        req.id = e.getId(); return req;
+    }
+    public void deleteEducation(User artist, Long id) {
+        Education e = educationRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        if (!e.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
+        educationRepo.delete(e);
+    }
+
+    // Achievements
+    public List<AchievementDto> getAchievements(User artist) {
+        return achievementRepo.findByArtistIdOrderByYearDesc(artist.getId()).stream().map(a -> {
+            AchievementDto dto = new AchievementDto();
+            dto.id = a.getId(); dto.title = a.getTitle(); dto.year = a.getYear(); dto.description = a.getDescription();
+            return dto;
+        }).collect(Collectors.toList());
+    }
+    public AchievementDto addAchievement(User artist, AchievementDto req) {
+        Achievement a = new Achievement();
+        a.setTitle(req.title); a.setYear(req.year); a.setDescription(req.description); a.setArtist(artist);
+        a = achievementRepo.save(a);
+        req.id = a.getId(); return req;
+    }
+    public void deleteAchievement(User artist, Long id) {
+        Achievement a = achievementRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        if (!a.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
+        achievementRepo.delete(a);
+    }
+
     // ── Helpers ─────────────────────────────────────────────
-
     private WorkResponse toWorkResponse(PortfolioWork w) {
-        WorkResponse r = new WorkResponse();
-        r.id        = w.getId();
-        r.title     = w.getTitle();
-        r.category  = w.getCategory();
-        r.year      = w.getYear();
-        r.imageUrl  = w.getImageUrl();
-        r.createdAt = w.getCreatedAt();
+        WorkResponse r = new WorkResponse(); r.id = w.getId(); r.title = w.getTitle();
+        r.category = w.getCategory(); r.year = w.getYear(); r.imageUrl = w.getImageUrl(); r.createdAt = w.getCreatedAt();
         return r;
     }
-
     private ServiceResponse toServiceResponse(ArtistServiceEntity s) {
-        ServiceResponse r = new ServiceResponse();
-        r.id          = s.getId();
-        r.name        = s.getName();
-        r.price       = s.getPrice();
-        r.turnaround  = s.getTurnaround();
-        r.description = s.getDescription();
-        r.samples     = s.getSamples();
+        ServiceResponse r = new ServiceResponse(); r.id = s.getId(); r.name = s.getName();
+        r.price = s.getPrice(); r.turnaround = s.getTurnaround(); r.description = s.getDescription(); r.samples = s.getSamples();
         return r;
     }
-
     private BookingResponse toBookingResponse(Booking b) {
-        BookingResponse r = new BookingResponse();
-        r.id          = b.getId();
-        r.clientName  = b.getClient().getUsername();
-        r.clientEmail = b.getClient().getEmail();
-        r.serviceName = b.getService().getName();
-        r.price       = b.getService().getPrice();
-        r.status      = b.getStatus().name();
-        r.createdAt   = b.getCreatedAt();
+        BookingResponse r = new BookingResponse(); r.id = b.getId(); r.clientName = b.getClient().getUsername();
+        r.clientEmail = b.getClient().getEmail(); r.serviceName = b.getService().getName(); r.price = b.getService().getPrice();
+        r.status = b.getStatus().name(); r.createdAt = b.getCreatedAt();
         return r;
     }
-
     private String saveFile(MultipartFile file) throws IOException {
         Path uploadPath = Paths.get(UPLOAD_DIR);
         if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
-
         String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        Files.copy(file.getInputStream(), uploadPath.resolve(filename),
-                StandardCopyOption.REPLACE_EXISTING);
-
+        Files.copy(file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
         return "/" + UPLOAD_DIR + filename;
     }
 }
