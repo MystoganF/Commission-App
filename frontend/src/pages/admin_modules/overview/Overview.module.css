@@ -1,0 +1,122 @@
+.page { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px; 
+  /* Push content past the sidebar. Adjust 260px to your sidebar's actual width */
+  margin-left: 260px; 
+  /* Add some padding so the content doesn't stick directly to the edges */
+  padding: 30px; 
+}
+
+/* ── Stats ── */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.statCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s;
+}
+.statCard:hover { border-color: var(--border2); }
+
+.statLabel {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1;
+}
+
+.statSub { font-size: 12px; color: var(--muted); }
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 16px;
+}
+
+/* ── Booking rows ── */
+.bookingList { display: flex; flex-direction: column; }
+
+.bookingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.bookingRow:last-child { border-bottom: none; }
+
+.bookingClient { font-size: 14px; color: var(--text); font-weight: 300; }
+.bookingService { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.bookingRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.bookingPrice { font-size: 13px; color: var(--accent); font-weight: 400; }
+
+/* ── Snapshot ── */
+.snapshotList { display: flex; flex-direction: column; gap: 14px; }
+
+.snapshotRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.snapshotThumb {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--border2);
+  flex-shrink: 0;
+}
+
+.snapshotTitle { font-size: 14px; color: var(--text); font-weight: 300; }
+.snapshotMeta {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.loading {
+  font-size: 14px;
+  color: var(--muted);
+  padding: 48px;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .statsRow { grid-template-columns: repeat(2, 1fr); }
+  .grid     { grid-template-columns: 1fr; }
+}

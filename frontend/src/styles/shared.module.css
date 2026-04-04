@@ -1,0 +1,178 @@
+/* ─────────────────────────────────────────────
+   shared.module.css
+   Import alongside page-level CSS modules.
+   All selectors are composes-friendly.
+───────────────────────────────────────────── */
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: var(--border2); }
+
+.cardHeader {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardTitle {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.cardBody { padding: 24px; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 24px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  min-height: 40px;
+}
+.btn:hover  { opacity: 0.85; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.btnPrimary { background: var(--accent); color: #0c0c0d; }
+
+.btnGhost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border2);
+}
+.btnGhost:hover { color: var(--text); border-color: var(--accent); }
+
+.btnDanger {
+  background: transparent;
+  color: var(--error);
+  border: 1px solid rgba(224, 112, 112, 0.25);
+}
+.btnDanger:hover { background: var(--error-dim); }
+
+.btnSm {
+  padding: 6px 14px;
+  font-size: 11px;
+  min-height: 30px;
+}
+
+/* ── Spinner ── */
+.spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(12, 12, 13, 0.3);
+  border-top-color: #0c0c0d;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Form fields ── */
+.field { display: flex; flex-direction: column; gap: 7px; }
+
+.label {
+  font-size: 11px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: var(--radius);
+  padding: 11px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text);
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, background 0.2s;
+}
+.input::placeholder { color: rgba(110, 107, 102, 0.6); }
+.input:hover  { border-color: rgba(255, 255, 255, 0.22); }
+.input:focus  { border-color: var(--accent); background: rgba(201, 185, 154, 0.05); }
+
+.textarea { resize: vertical; min-height: 88px; }
+
+/* ── Status badges ── */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 2px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.badgePending  { background: rgba(201,185,154,0.12); color: var(--accent); }
+.badgeApproved { background: var(--success-dim);      color: var(--success); }
+.badgeDeclined { background: var(--error-dim);         color: var(--error); }
+.badgeCompleted { background: rgba(100,140,200,0.10); color: #8ab4f8; }
+
+/* ── Divider ── */
+.divider { height: 1px; background: var(--border); }
+
+/* ── Empty state ── */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 24px;
+  gap: 14px;
+  text-align: center;
+}
+.emptyIcon { font-size: 32px; color: var(--border2); }
+.emptyText { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  font-size: 13px;
+  color: var(--text);
+  z-index: 200;
+  animation: slideUp 0.3s ease both;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Page fade-in ── */
+.pageFade {
+  animation: fadeIn 0.4s ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

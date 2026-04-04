@@ -1,6 +1,9 @@
 package com.artistportfolio.controller;
 
 import com.artistportfolio.dto.*;
+import com.artistportfolio.dto.AuthDtos.*;
+import com.artistportfolio.dto.AuthDtos.LoginRequest;
+import com.artistportfolio.dto.AuthDtos.RegisterRequest;
 import com.artistportfolio.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

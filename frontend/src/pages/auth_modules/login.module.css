@@ -1,4 +1,4 @@
-/* ─── Tokens ─────────────────────────────────────────────── */
+
 :root {
   --bg: #0c0c0d;
   --surface: #111113;
@@ -13,13 +13,24 @@
   --font-body: 'DM Sans', 'Helvetica Neue', sans-serif;
 }
 
-/* ─── Google Fonts ───────────────────────────────────────── */
+
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.04) inset !important;
+  -webkit-text-fill-color: var(--text) !important;
+  caret-color: var(--text);
+  border: 1px solid rgba(255,255,255,0.14);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap');
 
 /* ─── Reset ──────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ─── Page ───────────────────────────────────────────────── */
+
 .page {
   font-family: var(--font-body);
   background: var(--bg);
@@ -31,7 +42,7 @@
   overflow: hidden;
 }
 
-/* Atmospheric background orbs */
+
 .bgOrb1 {
   position: fixed;
   top: -120px;
@@ -61,7 +72,7 @@
   pointer-events: none;
 }
 
-/* ─── Layout ─────────────────────────────────────────────── */
+
 .container {
   display: flex;
   width: 100%;
@@ -74,7 +85,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── Aside (left) ───────────────────────────────────────── */
+
 .aside {
   width: 38%;
   min-height: 100vh;
@@ -124,7 +135,7 @@
   color: var(--muted);
 }
 
-/* ─── Main (right) ───────────────────────────────────────── */
+
 .main {
   flex: 1;
   display: flex;
@@ -141,7 +152,7 @@
   gap: 36px;
 }
 
-/* ─── Form Header ────────────────────────────────────────── */
+
 .formHeader { display: flex; flex-direction: column; gap: 8px; }
 
 .formLabel {
@@ -160,7 +171,7 @@
   color: var(--text);
 }
 
-/* ─── Form ───────────────────────────────────────────────── */
+
 .form { display: flex; flex-direction: column; gap: 24px; }
 
 .field { display: flex; flex-direction: column; gap: 8px; }
@@ -193,7 +204,7 @@
   background: rgba(201,185,154,0.05);
 }
 
-/* ─── Error ──────────────────────────────────────────────── */
+
 .error {
   font-size: 13px;
   color: var(--error);
@@ -203,7 +214,7 @@
   background: rgba(224,112,112,0.05);
 }
 
-/* ─── Button ─────────────────────────────────────────────── */
+
 .btn {
   align-self: flex-start;
   background: var(--accent);
@@ -228,7 +239,6 @@
 .btn:active { transform: translateY(0); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* ─── Spinner ────────────────────────────────────────────── */
 .spinner {
   width: 16px; height: 16px;
   border: 2px solid rgba(12,12,13,0.3);
@@ -239,7 +249,7 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ─── Link ───────────────────────────────────────────────── */
+
 .switchLink {
   color: var(--accent);
   text-decoration: none;
@@ -249,7 +259,6 @@
 }
 .switchLink:hover { opacity: 0.7; }
 
-/* ─── Mobile switch (hidden on desktop) ─────────────────── */
 .mobileSwitch {
   display: none;
   font-size: 13px;
@@ -257,7 +266,6 @@
   text-align: center;
 }
 
-/* ─── Responsive ─────────────────────────────────────────── */
 @media (max-width: 768px) {
   .aside { display: none; }
   .bgLine { display: none; }

@@ -13,11 +13,25 @@
   --font-body: 'DM Sans', 'Helvetica Neue', sans-serif;
 }
 
+
+
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ─── Page ───────────────────────────────────────────────── */
+/* Fix Chrome autofill background + text color */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.04) inset !important;
+  -webkit-text-fill-color: var(--text) !important;
+  caret-color: var(--text);
+  border: 1px solid rgba(255,255,255,0.14);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 .page {
   font-family: var(--font-body);
   background: var(--bg);

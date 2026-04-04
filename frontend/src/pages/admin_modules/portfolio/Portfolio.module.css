@@ -1,0 +1,93 @@
+.page { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px; 
+  /* Push content past the sidebar. Adjust 260px to your sidebar's actual width */
+  margin-left: 260px; 
+  /* Add some padding so the content doesn't stick directly to the edges */
+  padding: 30px; 
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.count { font-size: 13px; color: var(--muted); }
+
+.error {
+  font-size: 13px;
+  color: var(--error);
+  padding: 10px 14px;
+  border: 1px solid rgba(224,112,112,0.2);
+  border-radius: var(--radius);
+  background: var(--error-dim);
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* ── Work card ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+.thumb {
+  aspect-ratio: 4 / 3;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s;
+}
+.card:hover .img { transform: scale(1.03); }
+
+.placeholder { font-size: 36px; color: var(--border2); }
+
+.meta { padding: 16px; }
+
+.title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.tag {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.actions { display: flex; gap: 8px; }
+
+.loading {
+  font-size: 14px;
+  color: var(--muted);
+  padding: 48px;
+  text-align: center;
+}
+
+@media (max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px)  { .grid { grid-template-columns: 1fr; } }

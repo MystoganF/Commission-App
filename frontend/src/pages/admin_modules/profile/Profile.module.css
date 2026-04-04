@@ -1,0 +1,82 @@
+.page { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px; 
+  /* Push content past the sidebar. Adjust 260px to your sidebar's actual width */
+  margin-left: 260px; 
+  /* Add some padding so the content doesn't stick directly to the edges */
+  padding: 30px; 
+}
+
+.form { display: flex; flex-direction: column; gap: 20px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.fullWidth { grid-column: 1 / -1; }
+
+/* ── Social field ── */
+.socialField {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: var(--radius);
+  padding: 0 14px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.socialField:hover  { border-color: rgba(255,255,255,0.22); }
+.socialField:focus-within {
+  border-color: var(--accent);
+  background: rgba(201,185,154,0.05);
+}
+
+.socialPrefix {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 11px 8px 11px 0;
+  white-space: nowrap;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.socialInput {
+  background: transparent;
+  border: none;
+  padding: 11px 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text);
+  outline: none;
+  flex: 1;
+  min-width: 0;
+}
+.socialInput::placeholder { color: rgba(110,107,102,0.6); }
+
+/* ── Footer ── */
+.saveRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.errorMsg {
+  font-size: 13px;
+  color: var(--error);
+  padding: 10px 14px;
+  border: 1px solid rgba(224,112,112,0.2);
+  border-radius: var(--radius);
+  background: var(--error-dim);
+}
+
+.loading {
+  font-size: 14px;
+  color: var(--muted);
+  padding: 48px;
+  text-align: center;
+}
+
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }

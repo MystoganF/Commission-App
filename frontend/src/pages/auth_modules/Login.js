@@ -5,8 +5,8 @@ import styles from './login.module.css'
 
 export default function Login() {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ email: '', password: '' })
-  const [error, setError] = useState('')
+  const [form, setForm]     = useState({ email: '', password: '' })
+  const [error, setError]   = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
@@ -18,7 +18,13 @@ export default function Login() {
     try {
       const res = await api.post('/auth/login', form)
       localStorage.setItem('token', res.data.token)
-      navigate('/dashboard')
+
+      // Redirect based on role returned by the API
+      if (res.data.role === 'ADMIN') {
+        navigate('/admin/overview')
+      } else {
+        navigate('/client')   // client view (next phase)
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password.')
     } finally {
@@ -28,17 +34,15 @@ export default function Login() {
 
   return (
     <div className={styles.page}>
-      {/* Decorative background elements */}
       <div className={styles.bgOrb1} />
       <div className={styles.bgOrb2} />
       <div className={styles.bgLine} />
 
       <div className={styles.container}>
-        {/* Left panel */}
         <aside className={styles.aside}>
           <div className={styles.asideMark}>✦</div>
           <div className={styles.asideText}>
-            <h1 className={styles.brand}>Robb App :)</h1>
+            <h1 className={styles.brand}>Robb App</h1>
             <p className={styles.tagline}>Where craft meets commission.</p>
           </div>
           <div className={styles.asideFooter}>
@@ -47,7 +51,6 @@ export default function Login() {
           </div>
         </aside>
 
-        {/* Right panel */}
         <main className={styles.main}>
           <div className={styles.formWrap}>
             <div className={styles.formHeader}>
@@ -59,30 +62,20 @@ export default function Login() {
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="email">Email</label>
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className={styles.input}
-                  placeholder="you@example.com"
-                  value={form.email}
-                  onChange={handleChange}
+                  id="email" name="email" type="email"
+                  autoComplete="email" required
+                  className={styles.input} placeholder="you@example.com"
+                  value={form.email} onChange={handleChange}
                 />
               </div>
 
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="password">Password</label>
                 <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className={styles.input}
-                  placeholder="••••••••"
-                  value={form.password}
-                  onChange={handleChange}
+                  id="password" name="password" type="password"
+                  autoComplete="current-password" required
+                  className={styles.input} placeholder="••••••••"
+                  value={form.password} onChange={handleChange}
                 />
               </div>
 
@@ -94,7 +87,8 @@ export default function Login() {
             </form>
 
             <p className={styles.mobileSwitch}>
-              Don't have an account? <Link to="/register" className={styles.switchLink}>Register</Link>
+              Don't have an account?{' '}
+              <Link to="/register" className={styles.switchLink}>Register</Link>
             </p>
           </div>
         </main>
