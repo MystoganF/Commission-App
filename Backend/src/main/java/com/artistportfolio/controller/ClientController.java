@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/client")
@@ -16,12 +17,14 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    // 1. Submit a new booking request
-    @PostMapping("/bookings")
+    @PostMapping(value = "/bookings", consumes = {"multipart/form-data"})
     public ResponseEntity<?> createBooking(
             @AuthenticationPrincipal User client,
-            @RequestBody BookingRequest req) {
-        return ResponseEntity.ok(clientService.createBooking(client, req));
+            @RequestParam Long serviceId,
+            @RequestParam String details,
+            @RequestParam(required = false) MultipartFile file
+    ) throws Exception {
+        return ResponseEntity.ok(clientService.createBooking(client, serviceId, details, file));
     }
 
     // 2. View personal booking history

@@ -139,6 +139,11 @@ public class AdminService {
         res.instagram   = artist.getInstagram();
         res.twitter     = artist.getTwitter();
         res.profilePictureUrl = artist.getProfilePictureUrl();
+        // ── MAP THE NEW FIELDS ──
+        res.gcashName = artist.getGcashName();
+        res.gcashNumber = artist.getGcashNumber();
+        res.paymayaName = artist.getPaymayaName();
+        res.paymayaNumber = artist.getPaymayaNumber();
         return res;
     }
 
@@ -149,6 +154,11 @@ public class AdminService {
         artist.setFacebook(req.facebook);
         artist.setInstagram(req.instagram);
         artist.setTwitter(req.twitter);
+        // ── SAVE THE NEW FIELDS ──
+        artist.setGcashName(req.gcashName);
+        artist.setGcashNumber(req.gcashNumber);
+        artist.setPaymayaName(req.paymayaName);
+        artist.setPaymayaNumber(req.paymayaNumber);
         return getProfile(userRepo.save(artist));
     }
 

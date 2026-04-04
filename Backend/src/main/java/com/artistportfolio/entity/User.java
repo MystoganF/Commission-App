@@ -41,4 +41,9 @@ public class User {
 
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
+
+    private String gcashName;
+    private String gcashNumber;
+    private String paymayaName;
+    private String paymayaNumber;
 }

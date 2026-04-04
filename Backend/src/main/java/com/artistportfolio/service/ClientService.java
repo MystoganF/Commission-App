@@ -10,6 +10,7 @@ import com.artistportfolio.repository.BookingRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,28 +21,23 @@ public class ClientService {
 
     private final BookingRepository bookingRepo;
     private final ArtistServiceRepository serviceRepo;
+    private final SupabaseService supabaseService;
 
-    @Transactional
-    public BookingResponse createBooking(User client, BookingRequest req) {
-        // FIXED: Using standard .getServiceId() instead of .serviceId
-        ArtistServiceEntity service = serviceRepo.findById(req.getServiceId())
-                .orElseThrow(() -> new RuntimeException("Service not found"));
+    public BookingResponse createBooking(User client, Long serviceId, String details, MultipartFile file) throws Exception {
+        ArtistServiceEntity service = serviceRepo.findById(serviceId).orElseThrow();
 
-        // 2. Create the new booking
         Booking booking = new Booking();
         booking.setClient(client);
         booking.setService(service);
-
-        // FIXED: Using standard .getDetails() instead of .details
-        // Ensure your Booking.java entity has 'private String details;' for this to work!
-        booking.setDetails(req.getDetails());
-
+        booking.setDetails(details);
         booking.setStatus(Booking.BookingStatus.PENDING);
 
-        // 3. Save to database
-        booking = bookingRepo.save(booking);
+        if (file != null && !file.isEmpty()) {
+            String url = supabaseService.uploadFile(file);
+            booking.setReferenceImageUrl(url);
+        }
 
-        return toBookingResponse(booking);
+        return toBookingResponse(bookingRepo.save(booking));
     }
 
     @Transactional(readOnly = true)
@@ -52,16 +48,30 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
-    // Helper to map entity to DTO
     private BookingResponse toBookingResponse(Booking b) {
         BookingResponse r = new BookingResponse();
         r.setId(b.getId());
         r.setClientName(b.getClient().getUsername());
         r.setClientEmail(b.getClient().getEmail());
+
+        // Mapping Service Info
         r.setServiceName(b.getService().getName());
+        r.setServiceId(b.getService().getId()); // ── MAP THIS ──
         r.setPrice(b.getService().getPrice());
+
+        // Mapping Artist Info
+        r.setArtistName(b.getService().getArtist().getUsername()); // ── MAP THIS ──
+        r.setArtistId(b.getService().getArtist().getId());         // ── MAP THIS ──
+
+        if (b.getService().getSamples() != null && !b.getService().getSamples().isEmpty()) {
+            r.setServiceSample(b.getService().getSamples().get(0));
+        }
+
         r.setStatus(b.getStatus().name());
         r.setCreatedAt(b.getCreatedAt());
+        r.setDetails(b.getDetails());
+        r.setReferenceImageUrl(b.getReferenceImageUrl());
+
         return r;
     }
 }

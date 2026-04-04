@@ -13,6 +13,11 @@ public class ProfileDtos {
         public String instagram;
         public String twitter;
         public String profilePictureUrl;
+
+        public String gcashName;
+        public String gcashNumber;
+        public String paymayaName;
+        public String paymayaNumber;
     }
 
     @Data
@@ -23,5 +28,10 @@ public class ProfileDtos {
         public String facebook;
         public String instagram;
         public String twitter;
+
+        public String gcashName;
+        public String gcashNumber;
+        public String paymayaName;
+        public String paymayaNumber;
     }
 }

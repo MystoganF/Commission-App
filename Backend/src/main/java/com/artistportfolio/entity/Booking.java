@@ -28,6 +28,8 @@ public class Booking {
     @Column(length = 2000)
     private String details;
 
+
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BookingStatus status = BookingStatus.PENDING;
@@ -36,4 +38,6 @@ public class Booking {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public enum BookingStatus { PENDING, APPROVED, DECLINED, COMPLETED }
+
+    private String referenceImageUrl;
 }

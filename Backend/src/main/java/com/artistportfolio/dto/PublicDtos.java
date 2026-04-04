@@ -20,6 +20,12 @@ public class PublicDtos {
         public String facebook;
         public String instagram;
         public String twitter;
+
+        // ── ADD THESE 4 FIELDS ──
+        public String gcashName;
+        public String gcashNumber;
+        public String paymayaName;
+        public String paymayaNumber;
     }
 
     @Data
@@ -34,6 +40,11 @@ public class PublicDtos {
         public double averageRating;
         public List<String> samples;
         public List<String> skills;
+
+        public String gcashName;
+        public String gcashNumber;
+        public String paymayaName;
+        public String paymayaNumber;
     }
 
     @Data

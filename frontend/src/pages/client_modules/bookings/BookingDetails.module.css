@@ -1,0 +1,93 @@
+.container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+.backBtn { background: none; border: none; color: #888; cursor: pointer; margin-bottom: 30px; font-size: 14px; }
+.backBtn:hover { color: #fff; }
+
+.layout { display: flex; gap: 60px; align-items: flex-start; }
+
+/* Sidebar Summary */
+.summarySidebar { width: 340px; background: #111; border: 1px solid #222; border-radius: 16px; padding: 30px; position: sticky; top: 100px; }
+.summaryTitle { font-size: 20px; color: #fff; margin: 0 0 20px 0; border-bottom: 1px solid #222; padding-bottom: 15px; }
+
+.servicePreview { width: 100%; height: 180px; border-radius: 8px; overflow: hidden; margin-bottom: 20px; background: #000; border: 1px solid #333; }
+.previewImg { width: 100%; height: 100%; object-fit: cover; }
+.noPreview { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #555; }
+
+.serviceName { font-size: 22px; color: #fff; margin: 0 0 5px 0; }
+.artistLink { font-size: 14px; color: #888; margin: 0 0 25px 0; cursor: pointer; }
+.artistLink span { color: #ccc; text-decoration: underline; }
+.artistLink:hover span { color: #c9b99a; }
+
+.detailsBox { background: #1a1a1a; padding: 15px; border-radius: 8px; border: 1px solid #333; margin-bottom: 20px; }
+.detailRow { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; color: #aaa; }
+.detailRow:last-child { margin-bottom: 0; }
+.priceHighlight { color: #c9b99a; font-weight: 700; font-size: 16px; }
+
+/* Payment Channels Style */
+.paymentNotice { background: rgba(201, 185, 154, 0.05); border: 1px solid rgba(201, 185, 154, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+.payNoticeTitle { font-size: 11px; text-transform: uppercase; color: #c9b99a; font-weight: 700; margin-bottom: 10px; }
+.payMethod { font-size: 13px; color: #fff; margin-bottom: 8px; line-height: 1.4; }
+.payMethod small { color: #888; }
+.disclaimer { font-size: 12px; color: #666; font-style: italic; line-height: 1.4; }
+
+/* Main Content Area */
+.formMain { flex: 1; }
+.formTitle { font-size: 36px; color: #fff; margin: 0 0 10px 0; }
+.formSubtitle { color: #888; font-size: 15px; margin-bottom: 40px; }
+
+.displayForm { display: flex; flex-direction: column; gap: 30px; }
+.displayGroup { display: flex; flex-direction: column; gap: 12px; }
+.label { font-size: 13px; font-weight: 700; color: #c9b99a; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Read-Only text box */
+.readOnlyContent { 
+  background: #111; border: 1px solid #222; color: #eee; padding: 20px; 
+  border-radius: 12px; font-size: 15px; line-height: 1.7; white-space: pre-wrap; 
+  min-height: 150px;
+}
+
+/* Submitted Image Thumbnail (Small) */
+.referenceImageContainer { 
+  position: relative;
+  max-width: 280px; 
+  height: 180px; 
+  border-radius: 8px; 
+  overflow: hidden; 
+  border: 1px solid #333; 
+  background: #000; 
+  cursor: zoom-in;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.referenceImageContainer:hover { border-color: #c9b99a; }
+.referenceImg { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+
+/* Hover Overlay */
+.imageOverlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5); color: #fff; display: flex;
+  align-items: center; justify-content: center; font-size: 12px;
+  font-weight: 600; opacity: 0; transition: 0.2s;
+}
+.referenceImageContainer:hover .imageOverlay { opacity: 1; }
+
+/* Modal Full Image (Large) */
+.fullImageWrapper { width: 100%; max-height: 80vh; display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; overflow: hidden; }
+.fullImage { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+.backButtonLarge { 
+  background: #222; color: #fff; font-size: 16px; font-weight: 700; 
+  padding: 16px 30px; border: 1px solid #333; border-radius: 8px; cursor: pointer; 
+  transition: 0.2s; width: 100%;
+}
+.backButtonLarge:hover { background: #333; }
+
+/* Status Colors */
+.statusText { font-weight: 800; text-transform: uppercase; font-size: 12px; }
+.pending { color: #888; }
+.accepted { color: #2196F3; }
+.completed { color: #4CAF50; }
+.rejected { color: #F44336; }
+
+.loading { padding: 150px; text-align: center; color: #444; }
+.errorPage { padding: 100px; text-align: center; color: #e74c3c; font-size: 18px; }

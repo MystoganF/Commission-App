@@ -1,0 +1,209 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px 100px;
+}
+
+.header {
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: 32px;
+  color: #fff;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  color: #888;
+  font-size: 15px;
+}
+
+/* Booking List */
+.bookingList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bookingCard {
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: border-color 0.2s;
+}
+
+.bookingCard:hover {
+  border-color: #444;
+}
+
+.cardMain {
+  flex: 1;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.serviceName {
+  font-size: 18px;
+  color: #fff;
+  margin: 0;
+}
+
+/* Status Badges */
+.statusBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statusPending { background: #333; color: #aaa; }
+.statusAccepted { background: rgba(33, 150, 243, 0.15); color: #2196F3; border: 1px solid rgba(33, 150, 243, 0.3); }
+.statusCompleted { background: rgba(76, 175, 80, 0.15); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); }
+.statusRejected { background: rgba(244, 67, 54, 0.15); color: #F44336; border: 1px solid rgba(244, 67, 54, 0.3); }
+
+.cardBody {
+  display: flex;
+  gap: 40px;
+}
+
+.infoGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoGroup label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #666;
+  letter-spacing: 0.05em;
+}
+
+.infoGroup span {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.price {
+  color: #c9b99a !important;
+  font-weight: 700;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 100px 0;
+  color: #555;
+}
+
+.emptyState p {
+  margin-bottom: 20px;
+}
+
+/* Modal Content */
+.modalHeaderInfo h4 { font-size: 20px; color: #fff; margin-bottom: 5px; }
+.modalHeaderInfo p { font-size: 14px; color: #888; margin-bottom: 20px; }
+
+.detailsBox {
+  background: #111;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #222;
+}
+
+.modalLabel {
+  font-size: 12px;
+  color: #c9b99a;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.detailsText {
+  color: #ddd;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.modalFootnote {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #555;
+  font-style: italic;
+  text-align: center;
+}
+
+.loading { padding: 100px; text-align: center; color: #666; }
+
+.modalSection {
+  margin-bottom: 25px;
+  border-bottom: 1px solid #222;
+  padding-bottom: 15px;
+}
+.modalSection:last-of-type { border-bottom: none; }
+
+.modalLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #c9b99a;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.linkGroup p {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.clickableLink {
+  color: #fff;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.clickableLink:hover { color: #c9b99a; }
+
+.detailsText {
+  background: #111;
+  padding: 15px;
+  border-radius: 8px;
+  color: #ccc;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  border: 1px solid #222;
+}
+
+/* Reference Image Styling */
+.imageWrapper {
+  text-align: center;
+}
+.modalImage {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  cursor: zoom-in;
+  transition: opacity 0.2s;
+}
+.modalImage:hover { opacity: 0.8; }
+.imgHint { font-size: 11px; color: #555; margin-top: 8px; }
+
+.priceHighlight { color: #c9b99a; font-weight: 700; }

@@ -22,7 +22,7 @@ import ClientServices from './pages/client_modules/services/ClientServices';
 import MyBookings from './pages/client_modules/bookings/MyBookings';
 import ArtistPortfolioView from './pages/client_modules/explore/ArtistPortfolioView';
 import BookingForm from './pages/client_modules/bookings/BookingForm';
-
+import BookingDetails from './pages/client_modules/bookings/BookingDetails';
 function App() {
   return (
     <BrowserRouter>
@@ -51,7 +51,9 @@ function App() {
           <Route path="services" element={<ClientServices />} />
           <Route path="book/:serviceId" element={<BookingForm />} />
           <Route path="my-bookings" element={<MyBookings />} />
+          <Route path="bookings/:id" element={<BookingDetails />} />
           <Route path="artist/:id" element={<ArtistPortfolioView />} />
+          
         </Route>
 
         {/* Utility Redirects */}

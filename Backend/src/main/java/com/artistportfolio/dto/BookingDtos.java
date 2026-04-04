@@ -20,12 +20,18 @@ public class BookingDtos {
 
     @Data
     public static class BookingResponse {
-        public Long          id;
-        public String        clientName;
-        public String        clientEmail;
-        public String        serviceName;
-        public String        price;
-        public String        status;
+        public Long id;
+        public String clientName;
+        public String clientEmail;
+        public String serviceName;
+        public Long serviceId;
+        public String artistName;
+        public Long artistId;
+        public String price;
+        public String status;
+        public String details;
+        public String referenceImageUrl;
         public LocalDateTime createdAt;
+        public String serviceSample;
     }
 }
