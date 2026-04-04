@@ -1,124 +1,390 @@
+/* ── BASE LAYOUT ── */
 .page { 
   display: flex; 
   flex-direction: column; 
   gap: 20px; 
-  /* Push content past the sidebar. Adjust 260px to your sidebar's actual width */
-  margin-left: 260px; 
-  /* Add some padding so the content doesn't stick directly to the edges */
+  margin-left: 260px; /* Accommodates your sidebar */
+  padding: 30px; 
+  max-width: 1200px;
+}
+
+.toolbar { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: 20px; 
+}
+
+.backBtn { 
+  background: none; 
+  border: none; 
+  color: #888; 
+  font-size: 14px; 
+  cursor: pointer; 
+  transition: color 0.2s; 
+  padding: 0; 
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.backBtn:hover { 
+  color: #fff; 
+}
+
+.loading { 
+  font-size: 14px; 
+  color: var(--muted, #888); 
+  padding: 48px; 
+  text-align: center; 
+}
+
+
+/* ── 1. GRID VIEW (ServicesList.js) ── */
+.grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+  gap: 24px; 
+}
+
+.serviceCard { 
+  background: var(--surface, #1a1a1a); 
+  border: 1px solid var(--border, #333); 
+  border-radius: 12px; 
+  overflow: hidden; 
+  cursor: pointer; 
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; 
+}
+
+.serviceCard:hover { 
+  transform: translateY(-4px); 
+  border-color: #555; 
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); 
+}
+
+.cardCover { 
+  width: 100%; 
+  height: 200px; 
+  background: #0f0f0f; 
+  border-bottom: 1px solid #333;
+}
+
+.cardCover img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+}
+
+.noImage { 
+  width: 100%; 
+  height: 100%; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  color: #555; 
+  font-style: italic; 
+  font-size: 14px;
+}
+
+.cardMeta { 
+  padding: 20px; 
+}
+
+.serviceName { 
+  margin: 0 0 10px 0; 
+  font-size: 20px; 
+  color: #fff; 
+  font-weight: 600; 
+}
+
+.serviceDetails { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+}
+
+.price { 
+  color: var(--accent, #c9b99a); 
+  font-weight: 600; 
+  font-size: 16px; 
+}
+
+.turnaround { 
+  color: #888; 
+  font-size: 13px; 
+}
+
+
+/* ── 2. FORM VIEW (AddService.js) ── */
+.formWrapper { 
+  background: var(--surface, #1a1a1a); 
+  border: 1px solid var(--border, #333); 
+  border-radius: 12px; 
   padding: 30px; 
 }
 
-.toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.count { font-size: 13px; color: var(--muted); }
-
-/* ── Inline form card ── */
-.formCard { margin-bottom: 4px; }
-
-.form { display: flex; flex-direction: column; gap: 18px; }
-
-.formRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+.form { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 24px; 
 }
 
-.formActions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  padding-top: 4px;
+.formRow { 
+  display: grid; 
+  grid-template-columns: 2fr 1fr; 
+  gap: 20px; 
 }
 
-/* ── Service list ── */
-.list { display: flex; flex-direction: column; gap: 14px; }
+.formActions { 
+  display: flex; 
+  justify-content: flex-end; 
+  gap: 12px; 
+  margin-top: 10px; 
+  border-top: 1px solid var(--border, #333); 
+  padding-top: 24px; 
+}
 
-.serviceCard {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
+/* Custom Price Input Formatting */
+.priceInputWrapper { 
+  display: flex; 
+  align-items: center; 
+  background: #222; 
+  border: 1px solid #444; 
+  border-radius: 6px; 
+  overflow: hidden; 
   transition: border-color 0.2s;
 }
-.serviceCard:hover { border-color: var(--border2); }
 
-.serviceHeader {
-  padding: 20px 24px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
+.priceInputWrapper:focus-within {
+  border-color: #666;
 }
 
-.serviceMeta { flex: 1; }
-
-.serviceName {
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 300;
-  color: var(--text);
-  margin-bottom: 6px;
+.currencySymbol { 
+  padding: 10px 16px; 
+  background: #1a1a1a; 
+  color: #888; 
+  border-right: 1px solid #444; 
+  font-weight: 600; 
+  user-select: none;
 }
 
-.serviceDetails {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
+.priceInput { 
+  flex: 1; 
+  background: transparent; 
+  border: none; 
+  color: #fff; 
+  padding: 10px 12px; 
+  font-family: inherit; 
+  font-size: 14px; 
+  outline: none; 
+  /* Hides arrows on number inputs */
+  -moz-appearance: textfield; 
 }
 
-.price {
-  font-size: 14px;
-  color: var(--accent);
+.priceInput::-webkit-outer-spin-button,
+.priceInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Skills Selector */
+.skillSelector { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 10px; 
+  padding: 14px; 
+  background: #111; 
+  border: 1px solid #333; 
+  border-radius: 6px; 
+  min-height: 48px; /* Ensures it doesn't collapse entirely if empty */
+}
+
+.skillPill { 
+  padding: 6px 16px; 
+  border-radius: 20px; 
+  border: 1px solid #444; 
+  color: #888; 
+  font-size: 13px; 
+  cursor: pointer; 
+  user-select: none; 
+  transition: all 0.2s; 
+}
+
+.skillPill:hover { 
+  border-color: #666; 
+  color: #ccc; 
+}
+
+.skillActive { 
+  background: #fff; 
+  color: #000; 
+  border-color: #fff; 
+  font-weight: 600; 
+}
+
+.skillActive:hover { 
+  background: #e0e0e0; 
+  color: #000; 
+}
+
+/* Image Upload Grid */
+.imageGrid { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 16px; 
+  margin-top: 12px; 
+}
+
+.imagePreview { 
+  position: relative; 
+  width: 120px; 
+  height: 120px; 
+  border-radius: 8px; 
+  overflow: hidden; 
+  border: 1px solid #444; 
+}
+
+.imagePreview img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+}
+
+.removeImgBtn { 
+  position: absolute; 
+  top: 6px; 
+  right: 6px; 
+  background: rgba(0, 0, 0, 0.75); 
+  color: #fff; 
+  border: none; 
+  border-radius: 50%; 
+  width: 24px; 
+  height: 24px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  font-size: 14px; 
+  transition: background 0.2s;
+}
+
+.removeImgBtn:hover { 
+  background: #e74c3c; 
+}
+
+.addImageBox { 
+  width: 120px; 
+  height: 120px; 
+  border: 2px dashed #444; 
+  border-radius: 8px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  color: #888; 
+  font-size: 13px; 
   font-weight: 500;
+  cursor: pointer; 
+  transition: all 0.2s; 
+  text-align: center; 
+  padding: 10px; 
+  background: #111;
 }
 
-.turnaround { font-size: 12px; color: var(--muted); }
-
-.description {
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.6;
-  font-weight: 300;
+.addImageBox:hover { 
+  border-color: var(--accent, #c9b99a); 
+  color: var(--accent, #c9b99a); 
+  background: rgba(201, 185, 154, 0.05); 
 }
 
-.serviceActions { display: flex; gap: 8px; flex-shrink: 0; }
 
-/* ── Samples ── */
-.serviceBody {
-  padding: 14px 24px 18px;
-  border-top: 1px solid var(--border);
+/* ── 3. DETAIL VIEW (ServiceDetail.js) ── */
+.detailHeader { 
+  border-bottom: 1px solid var(--border, #333); 
+  padding-bottom: 24px; 
+  margin-bottom: 32px; 
 }
 
-.samplesLabel {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 500;
-  margin-bottom: 10px;
+.detailTitle { 
+  font-size: 36px; 
+  color: #fff; 
+  margin: 0 0 16px 0; 
+  font-weight: 700; 
+  letter-spacing: -0.5px;
 }
 
-.tags { display: flex; gap: 8px; flex-wrap: wrap; }
-
-.tag {
-  font-size: 12px;
-  padding: 4px 12px;
-  border-radius: 2px;
-  border: 1px solid var(--border2);
-  color: var(--muted);
-  background: var(--surface2);
+.detailMeta { 
+  display: flex; 
+  gap: 24px; 
+  align-items: center; 
 }
 
-.loading {
-  font-size: 14px;
-  color: var(--muted);
-  padding: 48px;
-  text-align: center;
+.detailPrice { 
+  font-size: 22px; 
+  color: var(--accent, #c9b99a); 
+  font-weight: 700; 
 }
 
-@media (max-width: 640px) { .formRow { grid-template-columns: 1fr; } }
+.detailTurnaround { 
+  font-size: 16px; 
+  color: #888; 
+}
+
+.detailBody h3 { 
+  color: #fff; 
+  margin: 0 0 16px 0; 
+  font-size: 20px; 
+  font-weight: 600;
+}
+
+.detailBody p { 
+  color: #ccc; 
+  line-height: 1.7; 
+  margin: 0 0 24px 0; 
+  white-space: pre-wrap;
+  font-size: 15px;
+}
+
+.section { 
+  margin-bottom: 40px; 
+}
+
+/* Image Gallery in Detail View */
+.gallery { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+  gap: 20px; 
+}
+
+.galleryImg { 
+  width: 100%; 
+  height: 220px; 
+  object-fit: cover; 
+  border-radius: 8px; 
+  border: 1px solid #333; 
+  transition: transform 0.3s ease;
+}
+
+.galleryImg:hover {
+  transform: scale(1.02);
+}
+
+/* Responsive adjust for the form layout */
+@media (max-width: 768px) { 
+  .formRow { 
+    grid-template-columns: 1fr; 
+  } 
+}
+.galleryImg { 
+  width: 100%; 
+  height: 220px; 
+  object-fit: cover; 
+  border-radius: 8px; 
+  border: 1px solid #333; 
+  transition: all 0.3s ease;
+  cursor: zoom-in; /* Change cursor on hover */
+}
+
+.galleryImg:hover {
+  transform: scale(1.02);
+  border-color: var(--accent, #c9b99a); /* Highlight border on hover */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}

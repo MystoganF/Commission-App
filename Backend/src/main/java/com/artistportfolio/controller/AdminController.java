@@ -6,6 +6,8 @@ import com.artistportfolio.dto.ServiceDtos.*;
 import com.artistportfolio.dto.ResumeDtos.*; // <-- New Import
 import com.artistportfolio.entity.User;
 import com.artistportfolio.service.AdminService;
+import com.artistportfolio.service.SupabaseService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -14,16 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/admin")
 @CrossOrigin
+@AllArgsConstructor
 public class AdminController {
 
     private final AdminService adminService;
+    private final SupabaseService supabaseService;
 
-    public AdminController(AdminService adminService) {
-        this.adminService = adminService;
-    }
-
-    // ── Existing Endpoints (Stats, Portfolio, Services, Bookings, Profile) ──
-    // (I kept these exactly the same)
 
     @GetMapping("/stats")
     public ResponseEntity<?> getStats(@AuthenticationPrincipal User artist) {
@@ -57,6 +55,11 @@ public class AdminController {
     @GetMapping("/services")
     public ResponseEntity<?> getServices(@AuthenticationPrincipal User artist) {
         return ResponseEntity.ok(adminService.getServices(artist));
+    }
+
+    @GetMapping("/services/{id}")
+    public ResponseEntity<?> getServiceById(@AuthenticationPrincipal User artist, @PathVariable Long id) {
+        return ResponseEntity.ok(adminService.getServiceById(artist, id));
     }
 
     @PostMapping("/services")
@@ -163,6 +166,13 @@ public class AdminController {
             @PathVariable Long id,
             @RequestBody com.artistportfolio.dto.PortfolioDtos.WorkRequest req) {
         return ResponseEntity.ok(adminService.updateWork(artist, id, req.title, req.category, req.year, req.description));
+    }
+
+    @PostMapping("/upload-image")
+    public ResponseEntity<?> uploadGenericImage(@RequestParam("file") MultipartFile file) throws Exception {
+
+        String url = supabaseService.uploadFile(file);
+        return ResponseEntity.ok(java.util.Map.of("url", url));
     }
 
     @PostMapping("/profile/picture")

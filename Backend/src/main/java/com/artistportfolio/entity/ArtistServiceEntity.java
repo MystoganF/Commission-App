@@ -2,7 +2,7 @@ package com.artistportfolio.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,11 +25,17 @@ public class ArtistServiceEntity {
     @Column(length = 1000)
     private String description;
 
-    // Stored as comma-separated string, mapped to List
+    // --- SAMPLES (Stores Supabase Image URLs) ---
     @ElementCollection
     @CollectionTable(name = "service_samples", joinColumns = @JoinColumn(name = "service_id"))
-    @Column(name = "sample")
-    private List<String> samples;
+    @Column(name = "sample_url")
+    private List<String> samples = new ArrayList<>();
+
+    // --- SKILLS (Stores related skill names) ---
+    @ElementCollection
+    @CollectionTable(name = "service_skills", joinColumns = @JoinColumn(name = "service_id"))
+    @Column(name = "skill_name")
+    private List<String> skills = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "artist_id", nullable = false)

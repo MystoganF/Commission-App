@@ -5,19 +5,17 @@ import com.artistportfolio.dto.AuthDtos.*;
 import com.artistportfolio.dto.AuthDtos.LoginRequest;
 import com.artistportfolio.dto.AuthDtos.RegisterRequest;
 import com.artistportfolio.service.AuthService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin
+@AllArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
-
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {

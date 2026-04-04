@@ -8,9 +8,13 @@ import Register from './pages/auth_modules/Register';
 import AdminLayout from './pages/admin_modules/Admin_Layout';
 import Overview from './pages/admin_modules/overview/Overview';
 import Portfolio from './pages/admin_modules/portfolio/Portfolio';
-import Services from './pages/admin_modules/services/Services';
 import Bookings from './pages/admin_modules/bookings/Bookings';
 import Profile from './pages/admin_modules/profile/Profile';
+
+// New Split Services Modules
+import ServicesList from './pages/admin_modules/services/ServicesList';
+import AddService from './pages/admin_modules/services/AddService';
+import ServiceDetail from './pages/admin_modules/services/ServiceDetail';
 
 function App() {
   return (
@@ -28,18 +32,20 @@ function App() {
           {/* Nested Dashboard Pages */}
           <Route path="overview" element={<Overview />} />
           <Route path="portfolio" element={<Portfolio />} />
-          <Route path="services" element={<Services />} />
           <Route path="bookings" element={<Bookings />} />
           <Route path="profile" element={<Profile />} />
+
+          {/* ── NEW SERVICES ROUTES (Nested here so they get the Sidebar) ── */}
+          <Route path="services" element={<ServicesList />} />
+          <Route path="services/new" element={<AddService />} />
+          <Route path="services/:id" element={<ServiceDetail />} />
         </Route>
 
         {/* Future Client View (Referenced in Login.js) */}
         <Route path="/client" element={<div style={{ padding: '2rem', textAlign: 'center' }}>Client View (Coming Soon)</div>} />
-
-        {/* Fallback routing for the /dashboard redirect in Register.js */}
+      
         <Route path="/dashboard" element={<Navigate to="/admin/overview" replace />} />
-
-        {/* Catch-all: Redirect any unknown routes back to login */}
+        
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

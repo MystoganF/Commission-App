@@ -9,6 +9,7 @@ import com.artistportfolio.dto.ResumeDtos.*; // <-- New Import
 import com.artistportfolio.entity.*;
 import com.artistportfolio.entity.Booking.BookingStatus;
 import com.artistportfolio.repository.*;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,7 +88,8 @@ public class AdminService {
         s.setPrice(req.price);
         s.setTurnaround(req.turnaround);
         s.setDescription(req.description);
-        s.setSamples(req.samples);
+        s.setSamples(req.samples); // Now these will be Supabase URLs
+        s.setSkills(req.skills);   // <-- NEW
         s.setArtist(artist);
         return toServiceResponse(serviceRepo.save(s));
     }
@@ -95,11 +97,14 @@ public class AdminService {
     public ServiceResponse updateService(User artist, Long id, ServiceRequest req) {
         ArtistServiceEntity s = serviceRepo.findById(id).orElseThrow(() -> new RuntimeException("Service not found."));
         if (!s.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
+
         s.setName(req.name);
         s.setPrice(req.price);
         s.setTurnaround(req.turnaround);
         s.setDescription(req.description);
         s.setSamples(req.samples);
+        s.setSkills(req.skills); // <--- ADD THIS LINE TO FIX THE BUG
+
         return toServiceResponse(serviceRepo.save(s));
     }
 
@@ -243,10 +248,21 @@ public class AdminService {
         return r;
     }
     private ServiceResponse toServiceResponse(ArtistServiceEntity s) {
-        ServiceResponse r = new ServiceResponse(); r.id = s.getId(); r.name = s.getName();
-        r.price = s.getPrice(); r.turnaround = s.getTurnaround(); r.description = s.getDescription(); r.samples = s.getSamples();
+        ServiceResponse r = new ServiceResponse();
+        r.id = s.getId();
+        r.name = s.getName();
+        r.price = s.getPrice();
+        r.turnaround = s.getTurnaround();
+        r.description = s.getDescription();
+
+        // CRITICAL FIX: Convert Hibernate Proxy lists to standard ArrayLists
+        // This prevents the 500 error during JSON serialization
+        r.samples = s.getSamples() != null ? new java.util.ArrayList<>(s.getSamples()) : new java.util.ArrayList<>();
+        r.skills = s.getSkills() != null ? new java.util.ArrayList<>(s.getSkills()) : new java.util.ArrayList<>();
+
         return r;
     }
+
     private BookingResponse toBookingResponse(Booking b) {
         BookingResponse r = new BookingResponse(); r.id = b.getId(); r.clientName = b.getClient().getUsername();
         r.clientEmail = b.getClient().getEmail(); r.serviceName = b.getService().getName(); r.price = b.getService().getPrice();
@@ -271,5 +287,12 @@ public class AdminService {
         work.setDescription(description);
 
         return toWorkResponse(workRepo.save(work));
+    }
+
+    @Transactional(readOnly = true)
+    public ServiceResponse getServiceById(User artist, Long id) {
+        ArtistServiceEntity s = serviceRepo.findById(id).orElseThrow(() -> new RuntimeException("Service not found."));
+        if (!s.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
+        return toServiceResponse(s);
     }
 }
