@@ -57,11 +57,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
-                        // Admin-only routes
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
-                        // Client-only routes (future)
-                        .requestMatchers("/api/client/**").hasRole("CLIENT")
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/client/**").hasAuthority("CLIENT")
 
                         // Everything else requires authentication
                         .anyRequest().authenticated()
