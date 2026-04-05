@@ -1,5 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
+// Route Guards
+import RequireAuth from './routes/RequireAuth';
+import PublicRoute from './routes/PublicRoute';
+
 // Auth Modules
 import Login from './pages/auth_modules/Login';
 import Register from './pages/auth_modules/Register';
@@ -9,7 +13,7 @@ import AdminLayout from './pages/admin_modules/Admin_Layout';
 import Overview from './pages/admin_modules/overview/Overview';
 import Portfolio from './pages/admin_modules/portfolio/Portfolio';
 import Bookings from './pages/admin_modules/bookings/Bookings';
-import AdminBookingDetail from './pages/admin_modules/bookings/AdminBookingDetail'; // <-- 1. ADDED THIS
+import AdminBookingDetail from './pages/admin_modules/bookings/AdminBookingDetail';
 import Profile from './pages/admin_modules/profile/Profile';
 import ServicesList from './pages/admin_modules/services/ServicesList';
 import AddService from './pages/admin_modules/services/AddService';
@@ -30,36 +34,41 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Auth Routes */}
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-
-        {/* Protected Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Navigate to="overview" replace />} />
-          <Route path="overview" element={<Overview />} />
-          <Route path="portfolio" element={<Portfolio />} />
-          
-          <Route path="bookings" element={<Bookings />} />
-          <Route path="bookings/:id" element={<AdminBookingDetail />} /> 
-          
-          <Route path="profile" element={<Profile />} />
-          <Route path="services" element={<ServicesList />} />
-          <Route path="services/new" element={<AddService />} />
-          <Route path="services/:id" element={<ServiceDetail />} />
+        
+        {/* ── PUBLIC ROUTES (Redirects if already logged in) ── */}
+        <Route element={<PublicRoute />}>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Route>
 
-        {/* ── CLIENT ROUTES ── */}
-        <Route path="/client" element={<ClientLayout />}>
-          <Route index element={<Navigate to="home" replace />} />
-          <Route path="home" element={<ClientHome />} />
-          <Route path="explore" element={<ExploreArtists />} />
-          <Route path="services" element={<ClientServices />} />
-          <Route path="book/:serviceId" element={<BookingForm />} />
-          <Route path="my-bookings" element={<MyBookings />} />
-          <Route path="bookings/:id" element={<BookingDetails />} />
-          <Route path="artist/:id" element={<ArtistPortfolioView />} />
-          <Route path="profile" element={<ClientProfile />} />
+        {/* ── ADMIN PROTECTED ROUTES ── */}
+        <Route element={<RequireAuth allowedRoles={['ADMIN', 'ARTIST']} />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="overview" replace />} />
+            <Route path="overview" element={<Overview />} />
+            <Route path="portfolio" element={<Portfolio />} />
+            <Route path="bookings" element={<Bookings />} />
+            <Route path="bookings/:id" element={<AdminBookingDetail />} /> 
+            <Route path="profile" element={<Profile />} />
+            <Route path="services" element={<ServicesList />} />
+            <Route path="services/new" element={<AddService />} />
+            <Route path="services/:id" element={<ServiceDetail />} />
+          </Route>
+        </Route>
+
+        {/* ── CLIENT PROTECTED ROUTES ── */}
+        <Route element={<RequireAuth allowedRoles={['CLIENT']} />}>
+          <Route path="/client" element={<ClientLayout />}>
+            <Route index element={<Navigate to="home" replace />} />
+            <Route path="home" element={<ClientHome />} />
+            <Route path="explore" element={<ExploreArtists />} />
+            <Route path="services" element={<ClientServices />} />
+            <Route path="book/:serviceId" element={<BookingForm />} />
+            <Route path="my-bookings" element={<MyBookings />} />
+            <Route path="bookings/:id" element={<BookingDetails />} />
+            <Route path="artist/:id" element={<ArtistPortfolioView />} />
+            <Route path="profile" element={<ClientProfile />} />
+          </Route>
         </Route>
 
         {/* Utility Redirects */}
