@@ -24,7 +24,7 @@ public class ClientService {
     private final PaymentRepository paymentRepo;
     private final UserRepository userRepo;
     private final ReviewRepository reviewRepo;
-
+    private final NotificationRepository notificationRepo;
 
     @Transactional
     public BookingResponse createBooking(User client, Long serviceId, String details,
@@ -57,6 +57,12 @@ public class ClientService {
             savedBooking.setPaymentStatus(Booking.PaymentStatus.PARTIALLY_PAID);
             bookingRepo.save(savedBooking);
         }
+
+        Notification n = new Notification();
+        n.setMessage("New commission request: " + service.getName() + " from " + client.getUsername());
+        n.setLink("/admin/bookings/" + savedBooking.getId()); // Points directly to the admin booking detail page
+        n.setRecipient(service.getArtist());
+        notificationRepo.save(n);
 
         return toBookingResponse(savedBooking);
     }
@@ -166,8 +172,7 @@ public class ClientService {
 
     @Transactional
     public void rateBooking(User client, Long bookingId, com.artistportfolio.dto.BookingDtos.RatingRequest req) {
-        Booking booking = bookingRepo.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        Booking booking = bookingRepo.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
 
         if (!booking.getClient().getId().equals(client.getId())) throw new RuntimeException("Unauthorized");
         if (booking.getStatus() != Booking.BookingStatus.COMPLETED) throw new RuntimeException("Cannot rate incomplete work");
@@ -181,6 +186,13 @@ public class ClientService {
         review.setService(booking.getService());
         review.setBooking(booking);
 
+        // ── FIX: Use the correct Rating Notification message and variables ──
+        Notification rn = new Notification();
+        rn.setMessage(client.getUsername() + " left a " + req.rating + "-star rating on " + booking.getService().getName());
+        rn.setLink("/admin/services/" + booking.getService().getId());
+        rn.setRecipient(booking.getService().getArtist());
+
+        notificationRepo.save(rn);
         reviewRepo.save(review);
     }
 

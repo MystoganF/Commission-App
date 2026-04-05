@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import Modal from '../../components/ui/Modal';
-import shared from '../../styles/shared.module.css';
+import NotificationDropdown from '../notifications/NotificationDropdown';
 import styles from './ClientNavbar.module.css';
 
 export default function ClientNavbar() {
@@ -12,7 +12,6 @@ export default function ClientNavbar() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // FIX: Removed the extra "/api" prefix
     api.get('/client/profile')
       .then(res => setUser(res.data))
       .catch(() => console.log("Guest mode"));
@@ -30,7 +29,7 @@ export default function ClientNavbar() {
           <div className={styles.logo} onClick={() => navigate('/client/home')}>
             RobbApp <span className={styles.badge}>Client</span>
           </div>
-
+          
           <div className={styles.links}>
             <NavLink to="/client/home" className={({isActive}) => isActive ? styles.active : ''}>Home</NavLink>
             <NavLink to="/client/explore" className={({isActive}) => isActive ? styles.active : ''}>Artists</NavLink>
@@ -38,14 +37,15 @@ export default function ClientNavbar() {
             <NavLink to="/client/my-bookings" className={({isActive}) => isActive ? styles.active : ''}>My Bookings</NavLink>
           </div>
 
+          {/* Account wrapper includes Bell and Avatar side-by-side */}
+         
           <div className={styles.account}>
-            <div 
-              className={styles.profileTrigger} 
-              onClick={() => setShowDropdown(!showDropdown)}
-            >
+            
+             <NotificationDropdown />
+            <div className={styles.profileTrigger} onClick={() => setShowDropdown(!showDropdown)}>
               <img 
-                src={user?.profilePictureUrl || 'https://via.placeholder.com/150'} 
-                alt="" // Removed "Profile" alt text to prevent overlapping text if image fails
+                src={user?.profilePictureUrl || `https://ui-avatars.com/api/?name=${user?.username || 'Client'}&background=c9b99a&color=fff`} 
+                alt="" 
                 className={styles.avatar}
               />
             </div>
@@ -67,14 +67,12 @@ export default function ClientNavbar() {
               </div>
             )}
           </div>
+          
         </div>
+        
       </nav>
 
-      <Modal 
-        isOpen={showLogoutModal} 
-        onClose={() => setShowLogoutModal(false)} 
-        title="Confirm Logout"
-      >
+      <Modal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)} title="Confirm Logout">
         <div className={styles.modalContent}>
           <p>Are you sure you want to sign out of your account?</p>
           <div className={styles.modalActions}>

@@ -4,9 +4,14 @@ import com.artistportfolio.dto.BookingDtos.*;
 import com.artistportfolio.dto.ProfileDtos.*;
 import com.artistportfolio.dto.ServiceDtos.*;
 import com.artistportfolio.dto.ResumeDtos.*;
+import com.artistportfolio.entity.Booking;
+import com.artistportfolio.entity.Notification;
 import com.artistportfolio.entity.User;
+import com.artistportfolio.repository.BookingRepository;
+import com.artistportfolio.repository.NotificationRepository;
 import com.artistportfolio.service.AdminService;
 import com.artistportfolio.service.SupabaseService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +26,8 @@ public class AdminController {
 
     private final AdminService adminService;
     private final SupabaseService supabaseService;
+    private final BookingRepository bookingRepo;
+    private final NotificationRepository notificationRepo;
 
     @GetMapping("/stats")
     public ResponseEntity<?> getStats(@AuthenticationPrincipal User artist) {
@@ -99,8 +106,13 @@ public class AdminController {
         return ResponseEntity.ok(adminService.updateBookingStatus(artist, id, req));
     }
 
-    @PatchMapping("/bookings/{id}/payment-status")
-    public ResponseEntity<?> updatePaymentStatus(@AuthenticationPrincipal User artist, @PathVariable Long id, @RequestBody PaymentStatusUpdateRequest req) {
+    @PatchMapping("/bookings/{id}/payment-status") // Use your actual route here
+    public ResponseEntity<?> updatePaymentStatus(
+            @AuthenticationPrincipal User artist,
+            @PathVariable Long id,
+            @RequestBody PaymentStatusUpdateRequest req) {
+
+        // ── FIX: Let the Service handle the logic and the response mapping ──
         return ResponseEntity.ok(adminService.updatePaymentStatus(artist, id, req));
     }
 

@@ -30,16 +30,14 @@ public class AdminService {
     private final ExperienceRepository    experienceRepo;
     private final EducationRepository     educationRepo;
     private final AchievementRepository   achievementRepo;
-    private final ReviewRepository reviewRepo;
-
-
-    private final SupabaseService supabaseService;
+    private final ReviewRepository        reviewRepo;
+    private final NotificationRepository  notificationRepo;
+    private final SupabaseService         supabaseService;
 
     @Transactional(readOnly = true)
     public StatsResponse getStats(User artist) {
         StatsResponse res = new StatsResponse();
         res.totalWorks = workRepo.countByArtistId(artist.getId());
-        // Use the new active-only count
         res.totalServices = serviceRepo.countByArtistIdAndActiveTrue(artist.getId());
         res.totalBookings = bookingRepo.countByServiceArtistId(artist.getId());
         res.pendingCount = bookingRepo.countByServiceArtistIdAndStatus(artist.getId(), Booking.BookingStatus.PENDING);
@@ -119,11 +117,8 @@ public class AdminService {
 
     @Transactional
     public void deleteService(User artist, Long id) {
-        ArtistServiceEntity s = serviceRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Service not found."));
+        ArtistServiceEntity s = serviceRepo.findById(id).orElseThrow(() -> new RuntimeException("Service not found."));
         if (!s.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
-
-        // ── SOFT DELETE ──
         s.setActive(false);
         serviceRepo.save(s);
     }
@@ -142,29 +137,42 @@ public class AdminService {
 
     @Transactional
     public BookingResponse updateBookingStatus(User artist, Long bookingId, StatusUpdateRequest req) {
-        Booking booking = bookingRepo.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found."));
-        if (!booking.getService().getArtist().getId().equals(artist.getId())) {
-            throw new RuntimeException("Unauthorized.");
-        }
+        Booking booking = bookingRepo.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found."));
+        if (!booking.getService().getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
 
         booking.setStatus(Booking.BookingStatus.valueOf(req.status));
+        Booking saved = bookingRepo.save(booking);
 
-        return toBookingResponse(bookingRepo.save(booking));
+        // ── 1. CREATE NOTIFICATION ──
+        Notification n = new Notification();
+        String cleanStatus = req.status.replace("_", " ").toLowerCase();
+        n.setMessage("Your commission #" + booking.getId() + " is now " + cleanStatus);
+        n.setLink("/client/bookings/" + booking.getId());
+        n.setRecipient(booking.getClient());
+        notificationRepo.save(n);
+
+        return toBookingResponse(saved);
     }
 
     @Transactional
     public BookingResponse updatePaymentStatus(User artist, Long bookingId, PaymentStatusUpdateRequest req) {
-        Booking booking = bookingRepo.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found."));
-
+        Booking booking = bookingRepo.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found."));
         if (!booking.getService().getArtist().getId().equals(artist.getId())) {
             throw new RuntimeException("Unauthorized.");
         }
 
         booking.setPaymentStatus(Booking.PaymentStatus.valueOf(req.paymentStatus));
+        Booking saved = bookingRepo.save(booking);
 
-        return toBookingResponse(bookingRepo.save(booking));
+        // ── FIX: Changed req.status to req.paymentStatus ──
+        Notification n = new Notification();
+        String cleanPayment = req.paymentStatus.replace("_", " ").toLowerCase();
+        n.setMessage("Payment status for commission #" + booking.getId() + " updated to " + cleanPayment);
+        n.setLink("/client/bookings/" + booking.getId());
+        n.setRecipient(booking.getClient());
+        notificationRepo.save(n);
+
+        return toBookingResponse(saved);
     }
 
     public ProfileResponse getProfile(User artist) {
@@ -208,18 +216,18 @@ public class AdminService {
             SkillDto dto = new SkillDto(); dto.id = s.getId(); dto.name = s.getName(); return dto;
         }).collect(Collectors.toList());
     }
+
     public SkillDto addSkill(User artist, SkillDto req) {
         Skill s = new Skill(); s.setName(req.name); s.setArtist(artist);
         s = skillRepo.save(s);
         SkillDto dto = new SkillDto(); dto.id = s.getId(); dto.name = s.getName(); return dto;
     }
+
     public void deleteSkill(User artist, Long id) {
         Skill s = skillRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         if (!s.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
         skillRepo.delete(s);
     }
-
-
 
     public List<ExperienceDto> getExperiences(User artist) {
         return experienceRepo.findByArtistIdOrderByStartDateDesc(artist.getId()).stream().map(e -> {
@@ -229,6 +237,7 @@ public class AdminService {
             return dto;
         }).collect(Collectors.toList());
     }
+
     public ExperienceDto addExperience(User artist, ExperienceDto req) {
         Experience e = new Experience();
         e.setTitle(req.title); e.setCompany(req.company); e.setStartDate(req.startDate);
@@ -236,6 +245,7 @@ public class AdminService {
         e = experienceRepo.save(e);
         req.id = e.getId(); return req;
     }
+
     public ExperienceDto updateExperience(User artist, Long id, ExperienceDto req) {
         Experience e = experienceRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         if (!e.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
@@ -244,6 +254,7 @@ public class AdminService {
         experienceRepo.save(e);
         req.id = e.getId(); return req;
     }
+
     public void deleteExperience(User artist, Long id) {
         Experience e = experienceRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         if (!e.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
@@ -254,6 +265,7 @@ public class AdminService {
         return educationRepo.findByArtistIdOrderByEndYearDesc(artist.getId()).stream()
                 .map(this::mapToEducationDto).collect(Collectors.toList());
     }
+
     public EducationDto addEducation(User artist, String degree, String institution, String startYear, String endYear, MultipartFile file) throws Exception {
         Education e = new Education();
         e.setDegree(degree); e.setInstitution(institution);
@@ -261,6 +273,7 @@ public class AdminService {
         if (file != null && !file.isEmpty()) e.setImageUrl(supabaseService.uploadFile(file));
         return mapToEducationDto(educationRepo.save(e));
     }
+
     public EducationDto updateEducation(User artist, Long id, String degree, String institution, String startYear, String endYear, MultipartFile file) throws Exception {
         Education e = educationRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         if (!e.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
@@ -269,6 +282,7 @@ public class AdminService {
         if (file != null && !file.isEmpty()) e.setImageUrl(supabaseService.uploadFile(file));
         return mapToEducationDto(educationRepo.save(e));
     }
+
     public void deleteEducation(User artist, Long id) {
         Education e = educationRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         if (!e.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
@@ -279,12 +293,14 @@ public class AdminService {
         return achievementRepo.findByArtistIdOrderByYearDesc(artist.getId()).stream()
                 .map(this::mapToAchievementDto).collect(Collectors.toList());
     }
+
     public AchievementDto addAchievement(User artist, String title, String year, String description, MultipartFile file) throws Exception {
         Achievement a = new Achievement();
         a.setTitle(title); a.setYear(year); a.setDescription(description); a.setArtist(artist);
         if (file != null && !file.isEmpty()) a.setImageUrl(supabaseService.uploadFile(file));
         return mapToAchievementDto(achievementRepo.save(a));
     }
+
     public AchievementDto updateAchievement(User artist, Long id, String title, String year, String description, MultipartFile file) throws Exception {
         Achievement a = achievementRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         if (!a.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
@@ -292,6 +308,7 @@ public class AdminService {
         if (file != null && !file.isEmpty()) a.setImageUrl(supabaseService.uploadFile(file));
         return mapToAchievementDto(achievementRepo.save(a));
     }
+
     public void deleteAchievement(User artist, Long id) {
         Achievement a = achievementRepo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         if (!a.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized");
@@ -315,7 +332,7 @@ public class AdminService {
         r.description = s.getDescription();
         r.samples = s.getSamples() != null ? new ArrayList<>(s.getSamples()) : new ArrayList<>();
         r.skills = s.getSkills() != null ? new ArrayList<>(s.getSkills()) : new ArrayList<>();
-        r.active = s.isActive(); // ── MAP FLAG ──
+        r.active = s.isActive();
         return r;
     }
 
@@ -374,7 +391,6 @@ public class AdminService {
 
         return r;
     }
-
 
     private EducationDto mapToEducationDto(Education e) {
         EducationDto dto = new EducationDto();
