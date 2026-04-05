@@ -35,39 +35,67 @@ export default function MyBookings() {
     setTimeout(() => setToast(''), 4000);
   };
 
-  if (loading) return <div className={styles.loading}>Loading your requests...</div>;
+  if (loading) return <div className={styles.loading}>Synchronizing...</div>;
 
   return (
     <div className={`${shared.pageFade} ${styles.container}`}>
       <header className={styles.header}>
-        <h1 className={styles.title}>My Commission Requests</h1>
-        <p className={styles.subtitle}>Track your bookings and view progress.</p>
+        <h1 className={styles.title}>My Commissions</h1>
+        <p className={styles.subtitle}>Track your requested art pieces and progress.</p>
       </header>
 
       {bookings.length === 0 ? (
         <div className={styles.emptyState}>
-          <p>You haven't requested any commissions yet.</p>
-          <button className={shared.btnPrimary} onClick={() => navigate('/client/explore')}>Explore Artists</button>
+          <p>No active commission requests found.</p>
+          <button className={shared.btnPrimary} onClick={() => navigate('/client/explore')}>
+            Discover Artists
+          </button>
         </div>
       ) : (
         <div className={styles.bookingList}>
           {bookings.map((b) => (
             <div key={b.id} className={styles.bookingCard}>
+              
+              <div className={styles.serviceImageContainer}>
+                {b.serviceSample ? (
+                  <img src={b.serviceSample} alt="" className={styles.serviceImage} />
+                ) : (
+                  <div className={styles.noImagePlaceholder}>No Preview</div>
+                )}
+              </div>
+
               <div className={styles.cardMain}>
                 <div className={styles.cardHeader}>
                   <h3 className={styles.serviceName}>{b.serviceName}</h3>
                   <span className={`${styles.statusBadge} ${styles[b.status.toLowerCase()]}`}>
-                    {b.status}
+                    {b.status.replace('_', ' ')}
                   </span>
                 </div>
-                <p className={styles.artistNameSmall}>Artist: {b.artistName}</p>
+                
+                <div className={styles.cardBody}>
+                  <div className={styles.infoGroup}>
+                    <label>Artist</label>
+                    <span>{b.artistName}</span>
+                  </div>
+                  <div className={styles.infoGroup}>
+                    <label>Price</label>
+                    <span className={styles.priceHighlight}>₱ {Number(b.price).toLocaleString()}</span>
+                  </div>
+                  <div className={styles.infoGroup}>
+                    <label>Requested On</label>
+                    <span>{new Date(b.createdAt).toLocaleDateString()}</span>
+                  </div>
+                </div>
               </div>
-              <button 
-                className={`${shared.btn} ${shared.btnGhost}`}
-                onClick={() => navigate(`/client/bookings/${b.id}`)}
-              >
-                View Details
-              </button>
+
+              <div className={styles.cardActions}>
+                <button 
+                  className={`${shared.btn} ${shared.btnGhost}`}
+                  onClick={() => navigate(`/client/bookings/${b.id}`)}
+                >
+                  Details →
+                </button>
+              </div>
             </div>
           ))}
         </div>

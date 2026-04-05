@@ -3,14 +3,8 @@ package com.artistportfolio.service;
 import com.artistportfolio.dto.BookingDtos.BookingResponse;
 import com.artistportfolio.dto.ProfileDtos.ProfileResponse;
 import com.artistportfolio.dto.ProfileDtos.ProfileUpdateRequest;
-import com.artistportfolio.entity.ArtistServiceEntity;
-import com.artistportfolio.entity.Booking;
-import com.artistportfolio.entity.Payment;
-import com.artistportfolio.entity.User;
-import com.artistportfolio.repository.ArtistServiceRepository;
-import com.artistportfolio.repository.BookingRepository;
-import com.artistportfolio.repository.PaymentRepository;
-import com.artistportfolio.repository.UserRepository;
+import com.artistportfolio.entity.*;
+import com.artistportfolio.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +23,8 @@ public class ClientService {
     private final SupabaseService supabaseService;
     private final PaymentRepository paymentRepo;
     private final UserRepository userRepo;
+    private final ReviewRepository reviewRepo;
 
-    // ── BOOKING MANAGEMENT ──
 
     @Transactional
     public BookingResponse createBooking(User client, Long serviceId, String details,
@@ -67,6 +61,36 @@ public class ClientService {
         return toBookingResponse(savedBooking);
     }
 
+    // Add this method to your ClientService.java
+    @Transactional
+    public BookingResponse addPayment(User client, Long bookingId, String refId, MultipartFile file) throws Exception {
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        // Security Check: Only the owner can add payments
+        if (!booking.getClient().getId().equals(client.getId())) {
+            throw new RuntimeException("Unauthorized access");
+        }
+
+        // 1. Upload proof to Supabase
+        String imageUrl = supabaseService.uploadFile(file);
+
+        // 2. Create and Save the Payment Entity
+        Payment payment = new Payment();
+        payment.setReferenceId(refId);
+        payment.setProofImageUrl(imageUrl);
+        payment.setBooking(booking);
+        paymentRepo.save(payment);
+
+        // 3. Optional: Auto-update status to PARTIALLY_PAID if it was UNPAID
+        if (booking.getPaymentStatus() == Booking.PaymentStatus.UNPAID) {
+            booking.setPaymentStatus(Booking.PaymentStatus.PARTIALLY_PAID);
+        }
+
+        // 4. Return the updated booking details
+        return toBookingResponse(bookingRepo.save(booking));
+    }
+
     @Transactional(readOnly = true)
     public List<BookingResponse> getMyBookings(User client) {
         return bookingRepo.findByClientIdOrderByCreatedAtDesc(client.getId())
@@ -75,8 +99,92 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
-    // ── PROFILE MANAGEMENT ──
+    @Transactional(readOnly = true)
+    public BookingResponse getBookingDetails(User client, Long id) {
+        Booking booking = bookingRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
 
+        if (!booking.getClient().getId().equals(client.getId())) {
+            throw new RuntimeException("Unauthorized access");
+        }
+
+        return toBookingResponse(booking);
+    }
+
+    // ── UPDATED MAPPING HELPER ──
+    private BookingResponse toBookingResponse(Booking b) {
+        BookingResponse r = new BookingResponse();
+        r.setId(b.getId());
+        r.setServiceName(b.getService().getName());
+        r.setServiceId(b.getService().getId());
+        r.setPrice(b.getService().getPrice());
+        r.setStatus(b.getStatus().name());
+        r.setPaymentStatus(b.getPaymentStatus() != null ? b.getPaymentStatus().name() : "UNPAID");
+
+        // 1. MAP SERVICE PICTURE
+        if (b.getService().getSamples() != null && !b.getService().getSamples().isEmpty()) {
+            r.setServiceSample(b.getService().getSamples().get(0));
+        }
+
+        // 2. MAP ARTIST INFO + PAYMENT CHANNELS
+        User artist = b.getService().getArtist();
+        r.setArtistName(artist.getUsername());
+        r.setArtistId(artist.getId());
+        r.setGcashName(artist.getGcashName());
+        r.setGcashNumber(artist.getGcashNumber());
+        r.setPaymayaName(artist.getPaymayaName());
+        r.setPaymayaNumber(artist.getPaymayaNumber());
+
+        // 3. MAP INSTRUCTIONS & DATES
+        r.setDetails(b.getDetails());
+        r.setReferenceImageUrl(b.getReferenceImageUrl());
+        r.setCreatedAt(b.getCreatedAt());
+
+        // 4. MAP PAYMENT HISTORY
+        if (b.getPayments() != null) {
+            r.setPaymentHistory(b.getPayments().stream().map(p -> {
+                BookingResponse.PaymentDto pdto = new BookingResponse.PaymentDto();
+                pdto.setReferenceId(p.getReferenceId());
+                pdto.setProofImageUrl(p.getProofImageUrl());
+                pdto.setSubmittedAt(p.getSubmittedAt());
+                return pdto;
+            }).collect(Collectors.toList()));
+        } else {
+            r.setPaymentHistory(new ArrayList<>());
+        }
+
+        // 5. MAP RATING DATA
+        reviewRepo.findByBookingId(b.getId()).ifPresent(rev -> {
+            r.setRated(true);
+            r.setUserRating(rev.getRating());
+            r.setUserComment(rev.getComment());
+            r.setReviewDate(rev.getCreatedAt());
+        });
+
+        return r;
+    }
+
+    @Transactional
+    public void rateBooking(User client, Long bookingId, com.artistportfolio.dto.BookingDtos.RatingRequest req) {
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (!booking.getClient().getId().equals(client.getId())) throw new RuntimeException("Unauthorized");
+        if (booking.getStatus() != Booking.BookingStatus.COMPLETED) throw new RuntimeException("Cannot rate incomplete work");
+        if (reviewRepo.existsByClientIdAndBookingId(client.getId(), bookingId)) throw new RuntimeException("Already rated");
+
+        Review review = new Review();
+        review.setRating(req.rating);
+        review.setComment(req.comment);
+        review.setClient(client);
+        review.setArtist(booking.getService().getArtist());
+        review.setService(booking.getService());
+        review.setBooking(booking);
+
+        reviewRepo.save(review);
+    }
+
+    // ── PROFILE MANAGEMENT ──
     @Transactional(readOnly = true)
     public ProfileResponse getProfile(User client) {
         ProfileResponse res = new ProfileResponse();
@@ -106,7 +214,6 @@ public class ClientService {
         client.setGcashNumber(req.gcashNumber);
         client.setPaymayaName(req.paymayaName);
         client.setPaymayaNumber(req.paymayaNumber);
-
         return getProfile(userRepo.save(client));
     }
 
@@ -115,48 +222,5 @@ public class ClientService {
         String imageUrl = supabaseService.uploadFile(file);
         client.setProfilePictureUrl(imageUrl);
         return getProfile(userRepo.save(client));
-    }
-
-    // ── MAPPING HELPERS ──
-
-    private BookingResponse toBookingResponse(Booking b) {
-        BookingResponse r = new BookingResponse();
-        r.setId(b.getId());
-        r.setClientName(b.getClient().getUsername());
-        r.setClientEmail(b.getClient().getEmail());
-        r.setServiceName(b.getService().getName());
-        r.setServiceId(b.getService().getId());
-        r.setPrice(b.getService().getPrice());
-
-        if (b.getService().getSamples() != null && !b.getService().getSamples().isEmpty()) {
-            r.setServiceSample(b.getService().getSamples().get(0));
-        }
-
-        User artist = b.getService().getArtist();
-        r.setArtistName(artist.getUsername());
-        r.setArtistId(artist.getId());
-        r.setGcashName(artist.getGcashName());
-        r.setGcashNumber(artist.getGcashNumber());
-        r.setPaymayaName(artist.getPaymayaName());
-        r.setPaymayaNumber(artist.getPaymayaNumber());
-
-        r.setStatus(b.getStatus().name());
-        r.setPaymentStatus(b.getPaymentStatus().name());
-        r.setCreatedAt(b.getCreatedAt());
-        r.setDetails(b.getDetails());
-        r.setReferenceImageUrl(b.getReferenceImageUrl());
-
-        if (b.getPayments() != null) {
-            r.setPaymentHistory(b.getPayments().stream().map(p -> {
-                BookingResponse.PaymentDto pdto = new BookingResponse.PaymentDto();
-                pdto.setReferenceId(p.getReferenceId());
-                pdto.setProofImageUrl(p.getProofImageUrl());
-                pdto.setSubmittedAt(p.getSubmittedAt());
-                return pdto;
-            }).collect(Collectors.toList()));
-        } else {
-            r.setPaymentHistory(new ArrayList<>());
-        }
-        return r;
     }
 }

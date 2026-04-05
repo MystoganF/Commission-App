@@ -1,11 +1,15 @@
 // src/main/java/com/artistportfolio/controller/PublicController.java
 package com.artistportfolio.controller;
 
+import com.artistportfolio.dto.ReviewDto;
 import com.artistportfolio.service.AdminService;
 import com.artistportfolio.service.PublicService; // We will create this
+import com.artistportfolio.service.ReviewService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/public")
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class PublicController {
 
     private final PublicService publicService;
+    private final ReviewService reviewService;
 
     @GetMapping("/services")
     public ResponseEntity<?> getAllServices() {
@@ -35,6 +40,12 @@ public class PublicController {
     @GetMapping("/artists/{id}/portfolio")
     public ResponseEntity<?> getArtistPortfolio(@PathVariable Long id) {
         return ResponseEntity.ok(publicService.getArtistFullDetails(id));
+    }
+
+    @GetMapping("/services/{serviceId}/reviews")
+    public ResponseEntity<List<ReviewDto>> getServiceReviews(@PathVariable Long serviceId) {
+        // You'll need to map your Review entity to a DTO that includes clientName
+        return ResponseEntity.ok(reviewService.getReviewsByService(serviceId));
     }
 
     // 3. Get top rated services for the landing page

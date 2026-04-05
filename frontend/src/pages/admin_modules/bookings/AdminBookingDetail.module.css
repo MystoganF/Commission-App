@@ -202,3 +202,75 @@
 }
 
 
+/* ── REVIEWS DROPDOWN ── */
+.reviewsDropdown {
+  margin-bottom: 5px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.dropdownToggle {
+  width: 100%;
+  padding: 14px 15px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: background 0.2s;
+}
+
+.dropdownToggle:hover {
+  background: rgba(201, 185, 154, 0.05);
+}
+
+.arrowUp { transform: rotate(180deg); transition: 0.2s; }
+.arrowDown { transform: rotate(0deg); transition: 0.2s; }
+
+.reviewsList {
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid var(--border);
+}
+
+.reviewItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reviewStars {
+  color: var(--accent);
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.reviewComment {
+  font-size: 14px;
+  color: #eee;
+  line-height: 1.5;
+  margin: 0;
+  font-style: italic;
+}
+
+.reviewUser {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.noReviews {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  padding: 5px 0;
+  font-style: italic;
+}

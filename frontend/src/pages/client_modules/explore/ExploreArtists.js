@@ -89,7 +89,7 @@ export default function ExploreArtists() {
       <div className={styles.main}>
         <div className={styles.header}>
           <h2>Explore Artists</h2>
-          <p>{filtered.length} professional artists found</p>
+          <p>{filtered.length}  artists found</p>
         </div>
 
         {filtered.length === 0 ? (

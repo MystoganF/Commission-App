@@ -30,6 +30,8 @@ public class AdminService {
     private final ExperienceRepository    experienceRepo;
     private final EducationRepository     educationRepo;
     private final AchievementRepository   achievementRepo;
+    private final ReviewRepository reviewRepo;
+
 
     private final SupabaseService supabaseService;
 
@@ -209,6 +211,8 @@ public class AdminService {
         skillRepo.delete(s);
     }
 
+
+
     public List<ExperienceDto> getExperiences(User artist) {
         return experienceRepo.findByArtistIdOrderByStartDateDesc(artist.getId()).stream().map(e -> {
             ExperienceDto dto = new ExperienceDto();
@@ -345,6 +349,15 @@ public class AdminService {
             }).collect(Collectors.toList()));
         } else {
             r.setPaymentHistory(new ArrayList<>());
+        }
+
+        if (reviewRepo != null) {
+            reviewRepo.findByBookingId(b.getId()).ifPresent(rev -> {
+                r.setRated(true);
+                r.setUserRating(rev.getRating());
+                r.setUserComment(rev.getComment());
+                r.setReviewDate(rev.getCreatedAt());
+            });
         }
 
         return r;

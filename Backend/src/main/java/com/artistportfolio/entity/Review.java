@@ -31,4 +31,8 @@ public class Review {
     private ArtistServiceEntity service; // If reviewing a specific service
 
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @OneToOne // One booking gets one review
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
 }

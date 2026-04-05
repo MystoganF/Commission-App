@@ -54,7 +54,7 @@ export default function ClientNavbar() {
               <div className={styles.dropdown} onMouseLeave={() => setShowDropdown(false)}>
                 <div className={styles.dropdownHeader}>
                   <p className={styles.dropName}>{user?.username || 'Client'}</p>
-                  <p className={styles.dropRole}>Standard Account</p>
+                  <p className={styles.dropRole}>Client</p>
                 </div>
                 <div className={styles.dropdownDivider} />
                 <div className={styles.dropdownItem} onClick={() => { navigate('/client/profile'); setShowDropdown(false); }}>

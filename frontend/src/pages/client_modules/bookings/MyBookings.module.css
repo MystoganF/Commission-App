@@ -207,3 +207,170 @@
 .imgHint { font-size: 11px; color: #555; margin-top: 8px; }
 
 .priceHighlight { color: #c9b99a; font-weight: 700; }
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px 100px;
+}
+
+.header {
+  margin-bottom: 48px;
+  border-left: 3px solid var(--accent);
+  padding-left: 20px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 300;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+/* Booking List Container */
+.bookingList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── THE CARD ── */
+.bookingCard {
+  background: #111;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.bookingCard:hover {
+  border-color: rgba(201, 185, 154, 0.4);
+  transform: translateY(-2px);
+  background: #141414;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+/* Service Thumbnail */
+.serviceImageContainer {
+  width: 140px;
+  height: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #000;
+  border: 1px solid #222;
+}
+
+.serviceImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.bookingCard:hover .serviceImage {
+  transform: scale(1.08);
+}
+
+/* Content Layout */
+.cardMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.serviceName {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: #fff;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Information Grid */
+.cardBody {
+  display: flex;
+  gap: 40px;
+}
+
+.infoGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.infoGroup label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+
+.infoGroup span {
+  font-size: 15px;
+  color: #eee;
+  font-weight: 300;
+}
+
+.priceHighlight {
+  color: var(--accent) !important;
+  font-weight: 600 !important;
+}
+
+/* ── STATUS BADGES ── */
+.statusBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pending { background: rgba(255,255,255,0.05); color: #888; border: 1px solid #333; }
+.accepted { background: rgba(33, 150, 243, 0.1); color: #2196F3; border: 1px solid rgba(33, 150, 243, 0.2); }
+.completed { background: rgba(76, 175, 80, 0.1); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.2); }
+.cancelled { background: rgba(244, 67, 54, 0.1); color: #F44336; border: 1px solid rgba(244, 67, 54, 0.2); }
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 120px 0;
+  border: 1px dashed #333;
+  border-radius: 20px;
+}
+
+.emptyState p {
+  color: var(--muted);
+  margin-bottom: 24px;
+  font-size: 16px;
+}
+
+.loading {
+  padding: 150px;
+  text-align: center;
+  color: var(--muted);
+  font-family: var(--font-display);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}

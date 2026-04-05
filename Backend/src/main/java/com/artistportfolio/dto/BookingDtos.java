@@ -26,6 +26,12 @@ public class BookingDtos {
     }
 
     @Data
+    public static class RatingRequest {
+        public int rating;
+        public String comment;
+    }
+
+    @Data
     public static class BookingResponse {
         public Long id;
         public String clientName;
@@ -48,11 +54,18 @@ public class BookingDtos {
         public String paymayaNumber;
         public List<PaymentDto> paymentHistory;
 
+        public boolean rated;
+        public int userRating;         // Generates setUserRating()
+        public String userComment;     // Generates setUserComment()
+        public LocalDateTime reviewDate; // Generates setReviewDate()
+
         @Data
         public static class PaymentDto {
             public String referenceId;
             public String proofImageUrl;
             public LocalDateTime submittedAt;
         }
+
+
     }
 }

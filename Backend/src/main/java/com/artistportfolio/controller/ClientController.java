@@ -2,9 +2,11 @@ package com.artistportfolio.controller;
 
 import com.artistportfolio.dto.BookingDtos;
 import com.artistportfolio.dto.BookingDtos.BookingRequest;
+import com.artistportfolio.dto.ProfileDtos;
 import com.artistportfolio.entity.User;
 import com.artistportfolio.service.ClientService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ClientController {
 
     private final ClientService clientService;
+
 
     @PostMapping(value = "/bookings", consumes = {"multipart/form-data"})
     public ResponseEntity<BookingDtos.BookingResponse> createBooking(
@@ -60,11 +63,41 @@ public class ClientController {
         return ResponseEntity.ok(clientService.updateProfile(client, req));
     }
 
-    @PostMapping(value = "/profile/picture", consumes = {"multipart/form-data"}) // Added consumes
+    @PostMapping(value = "/profile/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProfilePicture(
             @AuthenticationPrincipal User client,
             @RequestParam("file") MultipartFile file
     ) throws Exception {
-        return ResponseEntity.ok(clientService.updateProfilePicture(client, file));
+        // Call your service logic here
+        ProfileDtos.ProfileResponse updatedProfile = clientService.updateProfilePicture(client, file);
+
+        return ResponseEntity.ok(updatedProfile);
+    }
+    @PostMapping("/bookings/{id}/rate")
+    public ResponseEntity<?> rateBooking(
+            @AuthenticationPrincipal User client,
+            @PathVariable Long id,
+            @RequestBody com.artistportfolio.dto.BookingDtos.RatingRequest req) {
+        clientService.rateBooking(client, id, req);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/bookings/{id}")
+    public ResponseEntity<BookingDtos.BookingResponse> getBookingDetails(
+            @AuthenticationPrincipal User client,
+            @PathVariable Long id) {
+        // We call a new service method we're about to create
+        return ResponseEntity.ok(clientService.getBookingDetails(client, id));
+    }
+
+    @PostMapping(value = "/bookings/{id}/payments", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BookingDtos.BookingResponse> addFurtherPayment(
+            @AuthenticationPrincipal User client,
+            @PathVariable Long id,
+            @RequestParam("referenceId") String referenceId,
+            @RequestParam("file") MultipartFile file
+    ) throws Exception {
+        // We call a new service method
+        return ResponseEntity.ok(clientService.addPayment(client, id, referenceId, file));
     }
 }

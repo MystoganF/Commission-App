@@ -43,9 +43,6 @@ export default function ClientProfile() {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      // Update the user state with the returned object
-      // Note: check if your backend returns { profilePictureUrl: "url" } 
-      // or the whole user object.
       setUser(prev => ({ ...prev, profilePictureUrl: res.data.profilePictureUrl }));
       showToast("Identity photo updated.");
     } catch (err) { 

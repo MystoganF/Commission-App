@@ -12,36 +12,36 @@ export default function BookingDetails() {
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
-  // Lightbox State (Zoomed image URL)
   const [lightbox, setLightbox] = useState(null); 
 
-  // Further Payment Form State
+  // ── RESTORED: Further Payment State ──
   const [newPayRef, setNewPayRef] = useState('');
   const [newPayFile, setNewPayFile] = useState(null);
   const [submittingPay, setSubmittingPay] = useState(false);
 
-  useEffect(() => {
-    loadData();
-  }, [id]);
+  // Rating State
+  const [rating, setRating] = useState(0); 
+  const [comment, setComment] = useState('');
+  const [submittingRating, setSubmittingRating] = useState(false);
+  const [toast, setToast] = useState('');
+
+  useEffect(() => { loadData(); }, [id]);
 
   async function loadData() {
     try {
-      const res = await api.get('/client/bookings');
-      const found = res.data.find((b) => b.id.toString() === id);
-      if (found) setBooking(found);
-      else setError("Booking request not found.");
+      const res = await api.get(`/client/bookings/${id}`);
+      setBooking(res.data);
     } catch {
-      setError("Failed to load details. Please try again later.");
+      setError("Failed to load booking details.");
     } finally {
       setLoading(false);
     }
   }
 
+  // ── RESTORED: Payment Upload Logic ──
   const handleFurtherPayment = async (e) => {
     e.preventDefault();
-    if (!newPayFile) return alert("Please select a proof image first.");
-
+    if (!newPayFile) return showToast("Please select a proof image.");
     setSubmittingPay(true);
     const formData = new FormData();
     formData.append('referenceId', newPayRef);
@@ -51,19 +51,38 @@ export default function BookingDetails() {
       await api.post(`/client/bookings/${id}/payments`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      // Clear form and refresh data
-      setNewPayRef('');
+      setNewPayRef(''); 
       setNewPayFile(null);
       loadData(); 
+      showToast("Payment proof uploaded.");
     } catch {
-      alert("Error uploading payment proof. Check your connection.");
+      showToast("Upload failed.");
     } finally {
       setSubmittingPay(false);
     }
   };
 
-  if (loading) return <div className={styles.loading}>Loading Details...</div>;
+  const handleRatingSubmit = async (e) => {
+    e.preventDefault();
+    if (rating === 0) return showToast("Select a star rating.");
+    setSubmittingRating(true);
+    try {
+      await api.post(`/client/bookings/${id}/rate`, { rating, comment });
+      showToast("Review submitted!");
+      loadData(); 
+    } catch {
+      showToast("Rating submission failed.");
+    } finally {
+      setSubmittingRating(false);
+    }
+  };
+
+  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000); };
+
+  if (loading) return <div className={styles.loading}>Synchronizing Details...</div>;
   if (error || !booking) return <div className={styles.errorPage}>{error}</div>;
+
+  const isCompleted = booking.status === 'COMPLETED';
 
   return (
     <div className={`${shared.pageFade} ${styles.container}`}>
@@ -72,18 +91,16 @@ export default function BookingDetails() {
       </button>
 
       <div className={styles.layout}>
-        {/* ── LEFT SIDE: SUMMARY SIDEBAR ── */}
+        {/* ── SIDEBAR SUMMARY ── */}
         <aside className={styles.summarySidebar}>
           <h2 className={styles.summaryTitle}>Booking Summary</h2>
-
           <div className={styles.servicePreview}>
             {booking.serviceSample ? (
-              <img src={booking.serviceSample} alt={booking.serviceName} className={styles.previewImg} />
+              <img src={booking.serviceSample} alt="" className={styles.previewImg} />
             ) : (
               <div className={styles.noPreview}>No Image</div>
             )}
           </div>
-
           <h3 className={styles.serviceName}>{booking.serviceName}</h3>
           <p className={styles.artistLink} onClick={() => navigate(`/client/artist/${booking.artistId}`)}>
             Artist: <span>{booking.artistName}</span>
@@ -92,14 +109,14 @@ export default function BookingDetails() {
           <div className={styles.detailsBox}>
             <div className={styles.detailRow}>
               <span>Status</span>
-              <span className={`${styles.statusText} ${styles[booking.status.toLowerCase()]}`}>
-                {booking.status}
+              <span className={`${styles.statusBadge} ${styles[booking.status.toLowerCase()]}`}>
+                {booking.status.replace('_', ' ')}
               </span>
             </div>
             <div className={styles.detailRow}>
               <span>Payment</span>
-              <span className={`${styles.statusText} ${styles[booking.paymentStatus?.toLowerCase() || 'unpaid']}`}>
-                {booking.paymentStatus || 'UNPAID'}
+              <span className={`${styles.statusBadge} ${styles[booking.paymentStatus?.toLowerCase() || 'unpaid']}`}>
+                {booking.paymentStatus?.replace('_', ' ') || 'UNPAID'}
               </span>
             </div>
             <div className={styles.detailRow}>
@@ -108,62 +125,45 @@ export default function BookingDetails() {
             </div>
           </div>
 
-          {/* Payment Channels Display */}
           {(booking.gcashNumber || booking.paymayaNumber) && (
             <div className={styles.paymentNotice}>
               <p className={styles.payNoticeTitle}>Artist Payment Channels:</p>
-              {booking.gcashNumber && (
-                <div className={styles.payMethod}>
-                  <strong>GCash:</strong> {booking.gcashNumber} <br />
-                  <small>({booking.gcashName})</small>
-                </div>
-              )}
-              {booking.paymayaNumber && (
-                <div className={styles.payMethod}>
-                  <strong>Paymaya:</strong> {booking.paymayaNumber} <br />
-                  <small>({booking.paymayaName})</small>
-                </div>
-              )}
+              {booking.gcashNumber && <div className={styles.payMethod}><strong>GCash:</strong> {booking.gcashNumber}<br/><small>({booking.gcashName})</small></div>}
+              {booking.paymayaNumber && <div className={styles.payMethod}><strong>Paymaya:</strong> {booking.paymayaNumber}<br/><small>({booking.paymayaName})</small></div>}
             </div>
           )}
-          
-          <p className={styles.disclaimer}>
-            Status updates will reflect once the artist verifies your proofs.
-          </p>
         </aside>
 
-        {/* ── RIGHT SIDE: MAIN CONTENT ── */}
+        {/* ── MAIN CONTENT ── */}
         <main className={styles.formMain}>
-          <h1 className={styles.formTitle}>Instructions & Progress</h1>
-
-          {/* Instructions Box */}
-          <div className={styles.displayGroup}>
+          {/* Instructions Card */}
+          <div className={styles.card}>
+            <h1 className={styles.formTitle}>Instructions & Progress</h1>
             <label className={styles.label}>Instructions Sent</label>
             <div className={styles.readOnlyContent}>{booking.details}</div>
+            
+            {booking.referenceImageUrl && (
+              <div style={{ marginTop: '30px' }}>
+                <label className={styles.label}>Visual Reference</label>
+                <div className={styles.thumbContainer} onClick={() => setLightbox(booking.referenceImageUrl)}>
+                  <img src={booking.referenceImageUrl} className={styles.thumbImg} alt="Ref" />
+                  <div className={styles.thumbOverlay}>View Full</div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Clickable Reference Thumbnail */}
-          {booking.referenceImageUrl && (
-            <div className={styles.displayGroup} style={{ marginTop: '30px' }}>
-              <label className={styles.label}>Visual Reference</label>
-              <div className={styles.thumbContainer} onClick={() => setLightbox(booking.referenceImageUrl)}>
-                <img src={booking.referenceImageUrl} className={styles.thumbImg} alt="Ref" />
-                <div className={styles.thumbOverlay}>Click to view full</div>
-              </div>
-            </div>
-          )}
-
-          {/* Payment History Grid */}
-          <section className={styles.historySection}>
+          {/* ── RESTORED: PAYMENT HISTORY & FURTHER PAYMENT ── */}
+          <section className={styles.card}>
             <h2 className={styles.subTitle}>Payment Proof History</h2>
             {booking.paymentHistory?.length > 0 ? (
               <div className={styles.historyGrid}>
                 {booking.paymentHistory.map((p, i) => (
                   <div key={i} className={styles.historyCard}>
-                    <img
-                      src={p.proofImageUrl}
-                      className={styles.smallThumb}
-                      onClick={() => setLightbox(p.proofImageUrl)}
+                    <img 
+                      src={p.proofImageUrl} 
+                      className={styles.smallThumb} 
+                      onClick={() => setLightbox(p.proofImageUrl)} 
                       alt="Proof"
                     />
                     <div className={styles.historyInfo}>
@@ -173,65 +173,100 @@ export default function BookingDetails() {
                   </div>
                 ))}
               </div>
-            ) : (
-              <p style={{ color: '#555', fontStyle: 'italic', fontSize: '14px' }}>No payments recorded.</p>
+            ) : <p className={styles.emptyMsg}>No payments recorded yet.</p>}
+
+            {booking.paymentStatus !== 'FULLY_PAID' && (
+              <div className={styles.innerFormBox}>
+                <h3 className={styles.formLabel}>Submit Further Payment</h3>
+                <form onSubmit={handleFurtherPayment} className={styles.furtherForm}>
+                  <div className={styles.field}>
+                    <label className={styles.label}>Reference ID</label>
+                    <input 
+                      className={styles.input} 
+                      placeholder="Ref #" 
+                      value={newPayRef} 
+                      onChange={(e) => setNewPayRef(e.target.value)} 
+                      required 
+                    />
+                  </div>
+                  <div className={styles.field}>
+                    <label className={styles.label}>Proof Image</label>
+                    <div className={styles.fileUploadWrapper}>
+                      <div className={styles.filePlaceholder}>
+                        {newPayFile ? newPayFile.name : "Select image..."} 
+                        <span>Browse</span>
+                      </div>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={(e) => setNewPayFile(e.target.files[0])} 
+                        required 
+                        className={styles.fileInput} 
+                      />
+                    </div>
+                  </div>
+                  <button className={styles.btn} disabled={submittingPay}>
+                    {submittingPay ? 'Processing...' : 'Upload Proof →'}
+                  </button>
+                </form>
+              </div>
             )}
           </section>
 
-          {/* ── REDESIGNED ROBB APP STYLE PAYMENT FORM ── */}
-          {booking.paymentStatus !== 'FULLY_PAID' && (
-            <div className={styles.furtherPaymentBox}>
-              <div className={styles.formHeader}>
-                <span className={styles.formLabel}>Payments</span>
-                <h2 className={styles.formTitle} style={{ fontSize: '32px' }}>Submit Further Payment</h2>
-              </div>
+          {/* ── FIXED: RATING SECTION ── */}
+          <section className={`${styles.card} ${!isCompleted ? styles.lockedSection : ''}`}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.subTitle}>Rate this Commission</h2>
+              {!isCompleted && <span className={styles.lockedBadge}>Unlocked after completion</span>}
+            </div>
 
-              <form onSubmit={handleFurtherPayment} className={styles.furtherForm}>
-                {/* Text Input - Specifically Styled to match the Login and File Wrapper design */}
-                <div className={styles.field}>
-                  <label className={styles.label}>Reference ID</label>
-                  <input
-                    className={styles.input}
-                    placeholder="Enter GCash or Paymaya Ref #"
-                    value={newPayRef}
-                    onChange={(e) => setNewPayRef(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Masked File Input */}
-                <div className={styles.field}>
-                  <label className={styles.label}>Proof of Payment</label>
-                  <div className={styles.fileUploadWrapper}>
-                    <div className={styles.filePlaceholder}>
-                      {newPayFile ? newPayFile.name : "Select proof image..."}
-                      <span>Browse</span>
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setNewPayFile(e.target.files[0])}
-                      required
-                      className={styles.fileInput}
-                    />
+            {booking.rated ? (
+              <div className={styles.reviewDisplay}>
+                <div className={styles.reviewHeader}>
+                  <div className={styles.starRatingDisplay}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span key={star} className={star <= booking.userRating ? styles.starActive : styles.starInactive}>★</span>
+                    ))}
                   </div>
+                  <span className={styles.reviewDate}>{new Date(booking.reviewDate).toLocaleDateString()}</span>
                 </div>
-
-                <button className={styles.btn} disabled={submittingPay}>
-                  {submittingPay ? <span className={styles.spinner} /> : 'Upload Proof →'}
+                <p className={styles.savedComment}>"{booking.userComment}"</p>
+                <div className={styles.successBadge}>✦ Feedback Submitted</div>
+              </div>
+            ) : (
+              <form onSubmit={handleRatingSubmit} className={styles.ratingForm}>
+                <div className={styles.starRating}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span 
+                      key={star} 
+                      className={star <= rating ? styles.starActive : styles.starInactive}
+                      onClick={() => isCompleted && setRating(star)}
+                    >★</span>
+                  ))}
+                </div>
+                <textarea 
+                  className={styles.textarea} 
+                  value={comment} 
+                  onChange={e => setComment(e.target.value)} 
+                  disabled={!isCompleted}
+                  placeholder={isCompleted ? "Describe your experience working with this artist..." : "Finish commission to unlock feedback."}
+                  required
+                />
+                <button className={styles.btn} disabled={!isCompleted || rating === 0}>
+                  {submittingRating ? 'Synchronizing...' : 'Submit Review'}
                 </button>
               </form>
-            </div>
-          )}
+            )}
+          </section>
         </main>
       </div>
 
-      {/* Lightbox Modal */}
+      {/* LIGHTBOX MODAL */}
       <Modal isOpen={!!lightbox} onClose={() => setLightbox(null)} title="Image Preview">
-        <div className={styles.lightboxWrapper}>
-          <img src={lightbox} className={styles.lightboxImg} alt="Preview" />
-        </div>
+        <div className={styles.lightboxWrapper}><img src={lightbox} className={styles.lightboxImg} alt="Preview" /></div>
       </Modal>
+
+      {toast && <div className={shared.toast}>✦ &nbsp;{toast}</div>}
     </div>
   );
 }

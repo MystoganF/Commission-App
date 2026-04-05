@@ -614,3 +614,298 @@
 .input::placeholder {
   color: rgba(110, 107, 102, 0.7);
 }
+
+/* ... existing styles ... */
+
+.card {
+  background: #111;
+  border: 1px solid #222;
+  padding: 30px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+
+/* ── Rating Stars ── */
+.starRating {
+  display: flex;
+  gap: 10px;
+  margin: 5px 0;
+}
+.starRating span {
+  font-size: 32px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.starActive { color: var(--accent); }
+.starInactive { color: #333; }
+.starRating span:hover { transform: scale(1.2); }
+
+.textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 15px;
+  color: #fff;
+  font-family: var(--font-body);
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* ── Locked State ── */
+.lockedSection {
+  opacity: 0.5;
+  filter: grayscale(0.5);
+  cursor: not-allowed;
+  position: relative;
+}
+.lockedSection form {
+  pointer-events: none;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.lockedBadge {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: #222;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.alreadyRated {
+  background: var(--accent-dim);
+  color: var(--accent);
+  padding: 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ── Status Badges ── */
+.statusBadge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+.completed { background: rgba(46, 204, 113, 0.1); color: #2ecc71; }
+.pending { background: rgba(255, 255, 255, 0.05); color: #888; }
+/* ... add other statuses as needed ... */
+
+.reviewDisplay {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  padding: 25px;
+  border-radius: 12px;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.reviewDate {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.savedComment {
+  font-size: 15px;
+  color: #eee;
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.successBadge {
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+/* Star Hover Effect Fix */
+.starRating span:hover {
+  transform: scale(1.1);
+  color: #fff;
+}
+/* ── RATING SECTION CONTAINER ── */
+.ratingForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between stars, textarea, and button */
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* ── STAR SYSTEM ── */
+.starRating {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.starRating span {
+  font-size: 28px;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+  line-height: 1;
+}
+
+.starActive { 
+  color: var(--accent); 
+  text-shadow: 0 0 10px rgba(201, 185, 154, 0.3);
+}
+
+.starInactive { 
+  color: #333; 
+}
+
+.starRating span:hover { 
+  transform: scale(1.2); 
+}
+
+/* ── TEXTAREA FIX ── */
+.textarea {
+  width: 100%; /* Ensures it doesn't shrink */
+  min-height: 120px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical; /* Only allow vertical resizing */
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.textarea:focus {
+  border-color: var(--accent);
+  background: rgba(201, 185, 154, 0.05);
+}
+
+/* ── BUTTON ALIGNMENT ── */
+.ratingForm .btn {
+  align-self: flex-start; /* Keeps the button from stretching to full width */
+  margin-top: 5px;
+}
+
+/* ── LOCKED STATE STYLING ── */
+.lockedSection {
+  position: relative;
+  opacity: 0.4;
+  filter: grayscale(0.8);
+  pointer-events: none; /* Prevents clicking stars while locked */
+  user-select: none;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.lockedBadge {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: #222;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #333;
+}
+
+/* ── PAYMENT HISTORY & FORM ── */
+.historyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+.historyCard {
+  background: #000;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 8px;
+}
+.smallThumb {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.historyInfo p { font-size: 12px; margin: 0; color: #fff; }
+.historyInfo small { font-size: 10px; color: #555; }
+
+.innerFormBox {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 25px;
+}
+.formLabel { font-size: 14px; color: var(--accent); margin-bottom: 15px; display: block; }
+.furtherForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── RATING FORM FIX ── */
+.ratingForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+.starRating {
+  display: flex;
+  gap: 10px;
+}
+.starRating span {
+  font-size: 28px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.starActive { color: var(--accent); text-shadow: 0 0 10px rgba(201, 185, 154, 0.3); }
+.starInactive { color: #333; }
+.starRating span:hover { transform: scale(1.2); }
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Status Badges refinement */
+.statusBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.completed { background: rgba(76, 175, 80, 0.1); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.2); }
+.pending { background: #222; color: #888; border: 1px solid #333; }
+.fully_paid { background: rgba(201, 185, 154, 0.1); color: var(--accent); border: 1px solid rgba(201, 185, 154, 0.2); }

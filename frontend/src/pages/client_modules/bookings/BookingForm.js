@@ -22,11 +22,21 @@ export default function BookingForm() {
   const [payRef, setPayRef] = useState('');
   const [payFile, setPayFile] = useState(null);
 
+  // ── NEW: Ratings & Feedback State ──
+  const [reviews, setReviews] = useState([]);
+  const [showReviews, setShowReviews] = useState(false); // Initially closed
+
   useEffect(() => {
+    // 1. Fetch Service Details
     api.get(`/public/services/${serviceId}`)
       .then(res => setService(res.data))
       .catch(() => setError("Service unavailable."))
       .finally(() => setLoading(false));
+
+    // 2. Fetch Service Reviews
+    api.get(`/public/services/${serviceId}/reviews`)
+      .then(res => setReviews(res.data))
+      .catch(err => console.error("Could not load reviews", err));
   }, [serviceId]);
 
   const downpayment = service ? Number(service.price) * 0.3 : 0;
@@ -76,7 +86,7 @@ export default function BookingForm() {
       <button className={styles.backBtn} onClick={() => navigate(-1)}>← Back</button>
       
       <div className={styles.layout}>
-        {/* ── LEFT SIDE: SUMMARY ── */}
+        {/* ── LEFT SIDE: SUMMARY SIDEBAR ── */}
         <aside className={styles.summarySidebar}>
           <h2 className={styles.summaryTitle}>Booking Summary</h2>
           <div className={styles.servicePreview}>
@@ -90,6 +100,36 @@ export default function BookingForm() {
           <p className={styles.artistLink} onClick={() => navigate(`/client/artist/${service.artistId}`)}>
             Artist: <span>{service.artistName}</span>
           </p>
+
+          {/* ── RATINGS ACCORDION ── */}
+          <div className={styles.reviewsDropdown}>
+            <button 
+              type="button"
+              className={styles.dropdownToggle} 
+              onClick={() => setShowReviews(!showReviews)}
+            >
+              <span>⭐ {reviews.length} Ratings</span>
+              <span className={showReviews ? styles.arrowUp : styles.arrowDown}>▾</span>
+            </button>
+
+            {showReviews && (
+              <div className={styles.reviewsList}>
+                {reviews.length > 0 ? (
+                  reviews.map((rev, i) => (
+                    <div key={i} className={styles.reviewItem}>
+                      <div className={styles.reviewStars}>
+                        {"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}
+                      </div>
+                      <p className={styles.reviewComment}>{rev.comment}</p>
+                      <small className={styles.reviewUser}>— {rev.clientName || 'Anonymous'}</small>
+                    </div>
+                  ))
+                ) : (
+                  <p className={styles.noReviews}>No ratings yet for this service.</p>
+                )}
+              </div>
+            )}
+          </div>
           
           <div className={styles.detailsBox}>
             <div className={styles.detailRow}>
@@ -120,7 +160,7 @@ export default function BookingForm() {
           <p className={styles.disclaimer}>Note: Work officially begins once the 30% downpayment is verified.</p>
         </aside>
 
-        {/* ── RIGHT SIDE: FORM ── */}
+        {/* ── RIGHT SIDE: REQUEST FORM ── */}
         <main className={styles.formMain}>
           <div className={styles.formHeader}>
             <span className={styles.formLabel}>New Commission</span>
@@ -128,7 +168,7 @@ export default function BookingForm() {
           </div>
 
           <form onSubmit={handleSubmit} className={styles.form}>
-            {/* Instructions */}
+            {/* Project Instructions */}
             <div className={styles.field}>
               <label className={styles.label}>Instructions <span className={styles.required}>*</span></label>
               <textarea 
@@ -141,7 +181,7 @@ export default function BookingForm() {
               />
             </div>
 
-            {/* Optional Reference Image */}
+            {/* Visual Reference File */}
             <div className={styles.field}>
               <label className={styles.label}>Reference Image (Optional)</label>
               <div className={styles.fileUploadWrapper}>
@@ -153,7 +193,7 @@ export default function BookingForm() {
               </div>
             </div>
 
-            {/* MANDATORY PAYMENT SECTION */}
+            {/* Downpayment Proof (Mandatory) */}
             <div className={styles.paymentSubmissionBox}>
                <div className={styles.formHeader} style={{marginBottom: '20px'}}>
                   <span className={styles.formLabel}>Payment</span>
