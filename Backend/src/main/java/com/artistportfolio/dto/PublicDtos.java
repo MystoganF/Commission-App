@@ -45,6 +45,8 @@ public class PublicDtos {
         public String gcashNumber;
         public String paymayaName;
         public String paymayaNumber;
+
+        public boolean active;
     }
 
     @Data

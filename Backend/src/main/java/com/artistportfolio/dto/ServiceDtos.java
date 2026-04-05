@@ -25,6 +25,7 @@ public class ServiceDtos {
         public String description;
         public List<String> samples;
         public List<String> skills; // <-- NEW
+        public boolean active; // ── ADDED ──
     }
 
 }

@@ -35,12 +35,14 @@ public class AdminService {
 
     private final SupabaseService supabaseService;
 
+    @Transactional(readOnly = true)
     public StatsResponse getStats(User artist) {
         StatsResponse res = new StatsResponse();
-        res.totalWorks    = workRepo.countByArtistId(artist.getId());
-        res.totalServices = serviceRepo.countByArtistId(artist.getId());
+        res.totalWorks = workRepo.countByArtistId(artist.getId());
+        // Use the new active-only count
+        res.totalServices = serviceRepo.countByArtistIdAndActiveTrue(artist.getId());
         res.totalBookings = bookingRepo.countByServiceArtistId(artist.getId());
-        res.pendingCount  = bookingRepo.countByServiceArtistIdAndStatus(artist.getId(), Booking.BookingStatus.PENDING);
+        res.pendingCount = bookingRepo.countByServiceArtistIdAndStatus(artist.getId(), Booking.BookingStatus.PENDING);
         return res;
     }
 
@@ -78,8 +80,9 @@ public class AdminService {
         workRepo.delete(work);
     }
 
+    @Transactional(readOnly = true)
     public List<ServiceResponse> getServices(User artist) {
-        return serviceRepo.findByArtistId(artist.getId())
+        return serviceRepo.findByArtistIdAndActiveTrue(artist.getId())
                 .stream().map(this::toServiceResponse).collect(Collectors.toList());
     }
 
@@ -114,10 +117,15 @@ public class AdminService {
         return toServiceResponse(serviceRepo.save(s));
     }
 
+    @Transactional
     public void deleteService(User artist, Long id) {
-        ArtistServiceEntity s = serviceRepo.findById(id).orElseThrow(() -> new RuntimeException("Service not found."));
+        ArtistServiceEntity s = serviceRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Service not found."));
         if (!s.getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
-        serviceRepo.delete(s);
+
+        // ── SOFT DELETE ──
+        s.setActive(false);
+        serviceRepo.save(s);
     }
 
     public List<BookingResponse> getBookings(User artist) {
@@ -300,10 +308,14 @@ public class AdminService {
 
     private ServiceResponse toServiceResponse(ArtistServiceEntity s) {
         ServiceResponse r = new ServiceResponse();
-        r.id = s.getId(); r.name = s.getName(); r.price = s.getPrice();
-        r.turnaround = s.getTurnaround(); r.description = s.getDescription();
-        r.samples = s.getSamples() != null ? new java.util.ArrayList<>(s.getSamples()) : new java.util.ArrayList<>();
-        r.skills = s.getSkills() != null ? new java.util.ArrayList<>(s.getSkills()) : new java.util.ArrayList<>();
+        r.id = s.getId();
+        r.name = s.getName();
+        r.price = s.getPrice();
+        r.turnaround = s.getTurnaround();
+        r.description = s.getDescription();
+        r.samples = s.getSamples() != null ? new ArrayList<>(s.getSamples()) : new ArrayList<>();
+        r.skills = s.getSkills() != null ? new ArrayList<>(s.getSkills()) : new ArrayList<>();
+        r.active = s.isActive(); // ── MAP FLAG ──
         return r;
     }
 
@@ -362,6 +374,7 @@ public class AdminService {
 
         return r;
     }
+
 
     private EducationDto mapToEducationDto(Education e) {
         EducationDto dto = new EducationDto();

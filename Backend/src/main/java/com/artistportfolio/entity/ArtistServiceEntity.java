@@ -40,4 +40,8 @@ public class ArtistServiceEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "artist_id", nullable = false)
     private User artist;
+
+    // ── SOFT DELETE FLAG ──
+    @Column(nullable = false)
+    private boolean active = true;
 }

@@ -50,6 +50,10 @@ export default function ArtistPortfolioView() {
 
   const { profile, works, services, reviews, experiences, education, achievements } = data;
 
+  // ── FIX: Filter out soft-deleted services ──
+  // This ensures that even if the backend sends them, they won't appear to the client.
+  const activeServices = services?.filter(s => s.active !== false);
+
   return (
     <div className={`${shared.pageFade} ${styles.container}`}>
       <button className={styles.backBtn} onClick={() => navigate('/client/explore')}>← Back to Artists</button>
@@ -81,7 +85,7 @@ export default function ArtistPortfolioView() {
         </div>
       </header>
 
-      {/* ── 2. PAYMENT DETAILS (Fixed & Styled) ── */}
+      {/* ── 2. PAYMENT DETAILS ── */}
       {(profile.gcashNumber || profile.paymayaNumber) && (
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Payment Details</h2>
@@ -104,23 +108,27 @@ export default function ArtistPortfolioView() {
         </section>
       )}
 
-      {/* ── 3. COMMISSION SERVICES ── */}
+      {/* ── 3. COMMISSION SERVICES (Filtered) ── */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Commission Services</h2>
-        <div className={styles.servicesGrid}>
-          {services?.map(s => (
-            <div key={s.id} className={styles.serviceCard}>
-              <div className={styles.cardCover}>
-                {s.samples?.[0] ? <img src={s.samples[0]} alt={s.name} /> : <div className={styles.noImage}>No Sample</div>}
+        {activeServices?.length > 0 ? (
+          <div className={styles.servicesGrid}>
+            {activeServices.map(s => (
+              <div key={s.id} className={styles.serviceCard}>
+                <div className={styles.cardCover}>
+                  {s.samples?.[0] ? <img src={s.samples[0]} alt={s.name} /> : <div className={styles.noImage}>No Sample</div>}
+                </div>
+                <div className={styles.cardMeta}>
+                  <h3 className={styles.serviceName}>{s.name}</h3>
+                  <span className={styles.price}>₱ {Number(s.price).toLocaleString()}</span>
+                  <button className={styles.bookBtn} onClick={() => navigate(`/client/book/${s.id}`)}>Select & Book</button>
+                </div>
               </div>
-              <div className={styles.cardMeta}>
-                <h3 className={styles.serviceName}>{s.name}</h3>
-                <span className={styles.price}>₱ {Number(s.price).toLocaleString()}</span>
-                <button className={styles.bookBtn} onClick={() => navigate(`/client/book/${s.id}`)}>Select & Book</button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.emptyMsg}>This artist is currently not accepting new commission requests.</p>
+        )}
       </section>
 
       {/* ── 4. FEATURED WORKS ── */}
@@ -139,7 +147,7 @@ export default function ArtistPortfolioView() {
         </div>
       </section>
 
-      {/* ── 5. EXPERIENCE (Horizontal Grid) ── */}
+      {/* ── 5. EXPERIENCE ── */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}><FaBriefcase style={{marginRight: '10px'}} /> Experience</h2>
         <div className={styles.itemsGrid}>
@@ -154,7 +162,7 @@ export default function ArtistPortfolioView() {
         </div>
       </section>
 
-      {/* ── 6. EDUCATION & AWARDS (Horizontal Grid) ── */}
+      {/* ── 6. EDUCATION & AWARDS ── */}
       <section className={styles.section}>
         <div className={styles.dualGrid}>
           <div className={styles.gridColumn}>
@@ -165,7 +173,7 @@ export default function ArtistPortfolioView() {
                   <h4>{edu.degree}</h4>
                   <p className={styles.cardSubtitle}>{edu.institution}</p>
                   <span className={styles.cardDate}>{edu.startYear} – {edu.endYear}</span>
-                  {edu.imageUrl && <img src={edu.imageUrl} className={styles.miniThumb} onClick={() => handleViewItem(edu, 'education')} />}
+                  {edu.imageUrl && <img src={edu.imageUrl} className={styles.miniThumb} onClick={() => handleViewItem(edu, 'education')} alt="Cert" />}
                 </div>
               ))}
             </div>
@@ -178,7 +186,7 @@ export default function ArtistPortfolioView() {
                   <h4>{ach.title}</h4>
                   <span className={styles.cardDate}>{ach.year}</span>
                   <p className={styles.cardDesc}>{ach.description}</p>
-                  {ach.imageUrl && <img src={ach.imageUrl} className={styles.miniThumb} onClick={() => handleViewItem(ach, 'achievement')} />}
+                  {ach.imageUrl && <img src={ach.imageUrl} className={styles.miniThumb} onClick={() => handleViewItem(ach, 'achievement')} alt="Award" />}
                 </div>
               ))}
             </div>
@@ -190,7 +198,7 @@ export default function ArtistPortfolioView() {
       <Modal isOpen={!!selectedItem} onClose={() => setSelectedItem(null)} title={selectedItem?.modalTitle}>
         {selectedItem && (
           <div className={styles.viewDetails}>
-            <div className={styles.viewImageWrapper}><img src={selectedItem.imageUrl} className={styles.viewImage} /></div>
+            <div className={styles.viewImageWrapper}><img src={selectedItem.imageUrl} className={styles.viewImage} alt="Details" /></div>
             <div className={styles.viewContent}>
               <h3 className={styles.viewTitle}>{selectedItem.title}</h3>
               <div className={styles.viewBadges}><span className={styles.badge}>{selectedItem.category}</span><span className={styles.badge}>{selectedItem.year}</span></div>
