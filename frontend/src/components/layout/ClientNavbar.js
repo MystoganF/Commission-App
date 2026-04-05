@@ -5,6 +5,13 @@ import Modal from '../../components/ui/Modal';
 import NotificationDropdown from '../notifications/NotificationDropdown';
 import styles from './ClientNavbar.module.css';
 
+const NAV_ITEMS = [
+  { to: '/client/home',       label: 'Home',       icon: '◈' },
+  { to: '/client/explore',    label: 'Artists',    icon: '◻' },
+  { to: '/client/services',   label: 'Services',   icon: '◇' },
+  { to: '/client/my-bookings',label: 'Bookings',   icon: '◉' },
+];
+
 export default function ClientNavbar() {
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -22,54 +29,69 @@ export default function ClientNavbar() {
     navigate('/');
   };
 
+  const initial = user?.username?.charAt(0).toUpperCase() ?? 'C';
+
   return (
     <>
       <nav className={styles.navbar}>
         <div className={styles.navInner}>
-          <div className={styles.logo} onClick={() => navigate('/client/home')}>
-            RobbApp <span className={styles.badge}>Client</span>
-          </div>
-          
-          <div className={styles.links}>
-            <NavLink to="/client/home" className={({isActive}) => isActive ? styles.active : ''}>Home</NavLink>
-            <NavLink to="/client/explore" className={({isActive}) => isActive ? styles.active : ''}>Artists</NavLink>
-            <NavLink to="/client/services" className={({isActive}) => isActive ? styles.active : ''}>Services</NavLink>
-            <NavLink to="/client/my-bookings" className={({isActive}) => isActive ? styles.active : ''}>My Bookings</NavLink>
+
+          {/* Brand */}
+          <div className={styles.brand} onClick={() => navigate('/client/home')}>
+            <div className={styles.brandName}>Robb App</div>
+            <div className={styles.brandMark}>Client Portal</div>
           </div>
 
-          {/* Account wrapper includes Bell and Avatar side-by-side */}
-         
-          <div className={styles.account}>
-            
-             <NotificationDropdown />
-            <div className={styles.profileTrigger} onClick={() => setShowDropdown(!showDropdown)}>
-              <img 
-                src={user?.profilePictureUrl || `https://ui-avatars.com/api/?name=${user?.username || 'Client'}&background=c9b99a&color=fff`} 
-                alt="" 
-                className={styles.avatar}
-              />
+          {/* Nav Links */}
+          <ul className={styles.nav}>
+            {NAV_ITEMS.map((item, idx) => (
+              <li key={idx}>
+                <NavLink
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `${styles.navItem} ${isActive ? styles.active : ''}`
+                  }
+                >
+                  <span className={styles.icon}>{item.icon}</span>
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+
+          {/* Right side */}
+          <div className={styles.right}>
+            <NotificationDropdown alignMenu="right" />
+
+            <div className={styles.chip} onClick={() => setShowDropdown(!showDropdown)}>
+              <div className={styles.avatar}>
+                {user?.profilePictureUrl
+                  ? <img src={user.profilePictureUrl} alt="" className={styles.avatarImg} />
+                  : initial}
+              </div>
+              <div className={styles.info}>
+                <div className={styles.username}>{user?.username ?? 'Client'}</div>
+                <div className={styles.role}>Client</div>
+              </div>
             </div>
 
             {showDropdown && (
               <div className={styles.dropdown} onMouseLeave={() => setShowDropdown(false)}>
-                <div className={styles.dropdownHeader}>
-                  <p className={styles.dropName}>{user?.username || 'Client'}</p>
-                  <p className={styles.dropRole}>Client</p>
+                <div className={styles.dropdownItem}
+                  onClick={() => { navigate('/client/profile'); setShowDropdown(false); }}>
+                  <span className={styles.icon}>◎</span> My Profile
                 </div>
                 <div className={styles.dropdownDivider} />
-                <div className={styles.dropdownItem} onClick={() => { navigate('/client/profile'); setShowDropdown(false); }}>
-                  My Profile
-                </div>
-                <div className={styles.dropdownDivider} />
-                <div className={`${styles.dropdownItem} ${styles.logout}`} onClick={() => setShowLogoutModal(true)}>
-                  Log Out
+                <div
+                  className={`${styles.dropdownItem} ${styles.logoutItem}`}
+                  onClick={() => { setShowDropdown(false); setShowLogoutModal(true); }}>
+                  <span className={styles.icon}>↩</span> Log Out
                 </div>
               </div>
             )}
           </div>
-          
+
         </div>
-        
       </nav>
 
       <Modal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)} title="Confirm Logout">

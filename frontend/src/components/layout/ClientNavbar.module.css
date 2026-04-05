@@ -1,8 +1,7 @@
 .navbar {
-  height: 70px;
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(15px);
-  border-bottom: 1px solid #222;
+  height: 60px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -15,170 +14,218 @@
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-}
-
-.logo {
-  font-size: 22px;
-  font-weight: 800;
-  cursor: pointer;
-  letter-spacing: -1px;
-  color: #fff;
-}
-.badge {
-  font-size: 10px;
-  text-transform: uppercase;
-  color: #c9b99a;
-  border: 1px solid #c9b99a;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-left: 6px;
-}
-
-.links {
-  display: flex;
   gap: 32px;
-}
-.links a {
-  text-decoration: none;
-  color: #888;
-  font-size: 14px;
-  font-weight: 500;
-  transition: 0.2s;
-}
-.links a:hover,
-.active {
-  color: #fff !important;
+  padding: 0 24px;
 }
 
-.account {
-  position: relative;
-}
-.profileTrigger {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
+/* ── Brand ── */
+.brand {
   cursor: pointer;
-  border: 2px solid transparent;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.brandName {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  line-height: 1;
+}
+.brandMark {
+  font-size: 9px;
+  color: var(--accent);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.nav {
+  list-style: none;
+  display: flex;
+  flex-direction: row;   /* ← force horizontal */
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+.navItem:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+.navItem.active {
+  color: var(--text);
+  background: var(--accent-dim);
+}
+.navItem.active .icon {
+  color: var(--accent);
+}
+
+.icon {
+  font-size: 13px;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ── Right Section ── */
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px 5px 5px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  cursor: pointer;
   transition: 0.2s;
 }
-.profileTrigger:hover {
-  border-color: #c9b99a;
+.chip:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border2);
 }
+
 .avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--accent);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.avatarImg {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.dropdown {
-  position: absolute;
-  top: calc(100% + 15px);
-  right: 0;
-  background: #111;
-  border: 1px solid #222;
-  border-radius: 12px;
-  min-width: 200px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
-  animation: slideIn 0.2s ease-out;
+.info {
+  line-height: 1;
+}
+.username {
+  font-size: 12px;
+  color: var(--text);
+  white-space: nowrap;
+}
+.role {
+  font-size: 9px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-top: 3px;
 }
 
-.dropdownHeader {
-  padding: 15px;
-  background: #161616;
-}
-.dropName {
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
-}
-.dropRole {
-  color: #666;
-  font-size: 11px;
-  margin: 2px 0 0 0;
-  text-transform: uppercase;
+/* ── Dropdown ── */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-width: 180px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: slideIn 0.15s ease-out;
+  z-index: 100;
 }
 
 .dropdownItem {
-  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
   font-size: 13px;
-  color: #aaa;
+  color: var(--muted);
   cursor: pointer;
   transition: 0.2s;
 }
 .dropdownItem:hover {
-  background: #1a1a1a;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
 }
+.logoutItem:hover {
+  color: var(--error);
+}
+
 .dropdownDivider {
   height: 1px;
-  background: #222;
-}
-.logout {
-  color: #ff5e5e;
+  background: var(--border);
 }
 
-/* Modal Content */
-/* ── Logout Modal Text Fix ── */
-.modalContent { 
-  padding: 10px 0; 
+/* ── Modal ── */
+.modalContent {
+  padding: 10px 0;
   text-align: center;
-  color: #ffffff; /* Forces text to white */
 }
-
 .modalContent p {
-  color: #ffffff; /* Ensures paragraph text is specifically white */
-  font-size: 15px;
+  color: var(--text);
+  font-size: 14px;
   line-height: 1.6;
 }
-
-.modalActions { 
-  display: flex; 
-  gap: 12px; 
-  margin-top: 30px; 
-  justify-content: center; 
+.modalActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+  justify-content: center;
 }
-
-.confirmBtn { 
-  background: #ff5e5e; 
-  color: #fff; 
-  border: none; 
-  padding: 10px 24px; 
-  border-radius: 6px; 
-  cursor: pointer; 
-  font-weight: 600; 
-  transition: opacity 0.2s;
+.confirmBtn {
+  background: transparent;
+  color: var(--error);
+  border: 1px solid rgba(224, 112, 112, 0.3);
+  padding: 8px 22px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: 0.2s;
 }
-
 .confirmBtn:hover {
-  opacity: 0.9;
+  background: rgba(224, 112, 112, 0.08);
 }
-
-.cancelBtn { 
-  background: #222; 
-  color: #aaa; 
-  border: none; 
-  padding: 10px 24px; 
-  border-radius: 6px; 
-  cursor: pointer; 
-  transition: background 0.2s, color 0.2s;
+.cancelBtn {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 8px 22px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
 }
-
 .cancelBtn:hover {
-  background: #333;
-  color: #fff;
+  color: var(--text);
+  border-color: var(--border2);
 }
+
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
