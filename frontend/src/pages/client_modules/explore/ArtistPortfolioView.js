@@ -9,10 +9,10 @@ import { FaFacebook, FaInstagram, FaTwitter, FaPhone, FaWallet, FaGraduationCap,
 export default function ArtistPortfolioView() {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedItem, setSelectedItem] = useState(null); 
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     api.get(`/public/artists/${id}/portfolio`)
@@ -45,39 +45,43 @@ export default function ArtistPortfolioView() {
     }
   };
 
-  if (loading) return <div className={styles.loading}>Loading Artist Profile...</div>;
-  if (!data) return <div className={styles.loading}>Artist data not available.</div>;
+  if (loading) return <div className={styles.loading}>Loading Artist Profile…</div>;
+  if (!data)   return <div className={styles.loading}>Artist data not available.</div>;
 
   const { profile, works, services, reviews, experiences, education, achievements } = data;
-
-  // ── FIX: Filter out soft-deleted services ──
-  // This ensures that even if the backend sends them, they won't appear to the client.
   const activeServices = services?.filter(s => s.active !== false);
 
   return (
     <div className={`${shared.pageFade} ${styles.container}`}>
+
       <button className={styles.backBtn} onClick={() => navigate('/client/explore')}>← Back to Artists</button>
 
-      {/* ── 1. HERO & PROFILE ── */}
+      {/* ── 1. HERO ── */}
       <header className={styles.hero}>
-        <img 
-          src={profile.profilePictureUrl || 'https://via.placeholder.com/150'} 
-          alt={profile.username} 
-          className={styles.avatar} 
+        <img
+          src={profile.profilePictureUrl || `https://ui-avatars.com/api/?name=${profile.username}&background=1a1a1a&color=888`}
+          alt={profile.username}
+          className={styles.avatar}
         />
         <div className={styles.heroInfo}>
           <h1 className={styles.username}>{profile.username}</h1>
           <div className={styles.stats}>
             <span className={styles.rating}>★ {profile.averageRating.toFixed(1)} ({profile.totalReviews} Reviews)</span>
           </div>
-
           <div className={styles.socialLinks}>
-            {profile.phoneNumber && <div className={styles.socialIcon}><FaPhone size={16} /> <span>{profile.phoneNumber}</span></div>}
-            {profile.facebook && <a href={`https://facebook.com/${profile.facebook}`} target="_blank" rel="noreferrer" className={styles.socialIcon}><FaFacebook size={22} /></a>}
-            {profile.instagram && <a href={`https://instagram.com/${profile.instagram}`} target="_blank" rel="noreferrer" className={styles.socialIcon}><FaInstagram size={22} /></a>}
-            {profile.twitter && <a href={`https://twitter.com/${profile.twitter}`} target="_blank" rel="noreferrer" className={styles.socialIcon}><FaTwitter size={22} /></a>}
+            {profile.phoneNumber && (
+              <div className={styles.socialIcon}><FaPhone size={12} /><span>{profile.phoneNumber}</span></div>
+            )}
+            {profile.facebook && (
+              <a href={`https://facebook.com/${profile.facebook}`} target="_blank" rel="noreferrer" className={styles.socialIcon}><FaFacebook size={14} /><span>Facebook</span></a>
+            )}
+            {profile.instagram && (
+              <a href={`https://instagram.com/${profile.instagram}`} target="_blank" rel="noreferrer" className={styles.socialIcon}><FaInstagram size={14} /><span>Instagram</span></a>
+            )}
+            {profile.twitter && (
+              <a href={`https://twitter.com/${profile.twitter}`} target="_blank" rel="noreferrer" className={styles.socialIcon}><FaTwitter size={14} /><span>Twitter</span></a>
+            )}
           </div>
-
           <p className={styles.bio}>{profile.bio || "No bio available."}</p>
           <div className={styles.skillCloud}>
             {profile.skills?.map(s => <span key={s} className={styles.skillBadge}>{s}</span>)}
@@ -85,43 +89,52 @@ export default function ArtistPortfolioView() {
         </div>
       </header>
 
-      {/* ── 2. PAYMENT DETAILS ── */}
+      {/* ── 2. PAYMENT ── */}
       {(profile.gcashNumber || profile.paymayaNumber) && (
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Payment Details</h2>
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}><FaWallet size={11} /> Payment Details</h2>
+          </div>
           <div className={styles.paymentGrid}>
             {profile.gcashNumber && (
               <div className={styles.paymentCard}>
-                <div className={styles.payHeader}><FaWallet color="#2196F3" /> <span>GCash</span></div>
+                <div className={styles.payHeader}><FaWallet color="#2196F3" size={12} /> GCash</div>
                 <p className={styles.payNumber}>{profile.gcashNumber}</p>
                 <p className={styles.payName}>{profile.gcashName}</p>
               </div>
             )}
             {profile.paymayaNumber && (
               <div className={styles.paymentCard}>
-                <div className={styles.payHeader}><FaWallet color="#6200EE" /> <span>Paymaya</span></div>
+                <div className={styles.payHeader}><FaWallet color="#6200EE" size={12} /> Paymaya</div>
                 <p className={styles.payNumber}>{profile.paymayaNumber}</p>
                 <p className={styles.payName}>{profile.paymayaName}</p>
               </div>
             )}
           </div>
-        </section>
+        </div>
       )}
 
-      {/* ── 3. COMMISSION SERVICES (Filtered) ── */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Commission Services</h2>
+      {/* ── 3. SERVICES ── */}
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>◇ Commission Services</h2>
+        </div>
         {activeServices?.length > 0 ? (
           <div className={styles.servicesGrid}>
             {activeServices.map(s => (
               <div key={s.id} className={styles.serviceCard}>
                 <div className={styles.cardCover}>
-                  {s.samples?.[0] ? <img src={s.samples[0]} alt={s.name} /> : <div className={styles.noImage}>No Sample</div>}
+                  {s.samples?.[0]
+                    ? <img src={s.samples[0]} alt={s.name} />
+                    : <div className={styles.noImage}>◻</div>
+                  }
                 </div>
                 <div className={styles.cardMeta}>
-                  <h3 className={styles.serviceName}>{s.name}</h3>
-                  <span className={styles.price}>₱ {Number(s.price).toLocaleString()}</span>
-                  <button className={styles.bookBtn} onClick={() => navigate(`/client/book/${s.id}`)}>Select & Book</button>
+                  <div className={styles.serviceName}>{s.name}</div>
+                  <div className={styles.price}>₱ {Number(s.price).toLocaleString()}</div>
+                  <button className={styles.bookBtn} onClick={() => navigate(`/client/book/${s.id}`)}>
+                    Select & Book
+                  </button>
                 </div>
               </div>
             ))}
@@ -129,27 +142,31 @@ export default function ArtistPortfolioView() {
         ) : (
           <p className={styles.emptyMsg}>This artist is currently not accepting new commission requests.</p>
         )}
-      </section>
+      </div>
 
-      {/* ── 4. FEATURED WORKS ── */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Featured Works</h2>
+      {/* ── 4. WORKS ── */}
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>◻ Featured Works</h2>
+        </div>
         <div className={styles.workGrid}>
           {works?.map(work => (
             <div key={work.id} className={styles.workCard} onClick={() => handleViewItem(work, 'work')}>
               <img src={work.imageUrl} alt={work.title} />
               <div className={styles.workOverlay}>
                 <span className={styles.workTitle}>{work.title}</span>
-                <span className={styles.workYear}>{work.category} • {work.year}</span>
+                <span className={styles.workYear}>{work.category} · {work.year}</span>
               </div>
             </div>
           ))}
         </div>
-      </section>
+      </div>
 
       {/* ── 5. EXPERIENCE ── */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}><FaBriefcase style={{marginRight: '10px'}} /> Experience</h2>
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}><FaBriefcase size={11} /> Experience</h2>
+        </div>
         <div className={styles.itemsGrid}>
           {experiences?.map(exp => (
             <div key={exp.id} className={styles.infoCard}>
@@ -160,53 +177,65 @@ export default function ArtistPortfolioView() {
             </div>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* ── 6. EDUCATION & AWARDS ── */}
-      <section className={styles.section}>
+      {/* ── 6. EDUCATION & ACHIEVEMENTS ── */}
+      <div className={styles.section}>
         <div className={styles.dualGrid}>
           <div className={styles.gridColumn}>
-            <h2 className={styles.sectionTitle}><FaGraduationCap style={{marginRight: '10px'}} /> Education</h2>
+            <div className={styles.columnHeader}><FaGraduationCap size={11} /> Education</div>
             <div className={styles.verticalItems}>
               {education?.map(edu => (
                 <div key={edu.id} className={styles.infoCard}>
                   <h4>{edu.degree}</h4>
                   <p className={styles.cardSubtitle}>{edu.institution}</p>
                   <span className={styles.cardDate}>{edu.startYear} – {edu.endYear}</span>
-                  {edu.imageUrl && <img src={edu.imageUrl} className={styles.miniThumb} onClick={() => handleViewItem(edu, 'education')} alt="Cert" />}
+                  {edu.imageUrl && (
+                    <img src={edu.imageUrl} className={styles.miniThumb} onClick={() => handleViewItem(edu, 'education')} alt="Cert" />
+                  )}
                 </div>
               ))}
             </div>
           </div>
           <div className={styles.gridColumn}>
-            <h2 className={styles.sectionTitle}><FaTrophy style={{marginRight: '10px'}} /> Achievements</h2>
+            <div className={styles.columnHeader}><FaTrophy size={11} /> Achievements</div>
             <div className={styles.verticalItems}>
               {achievements?.map(ach => (
                 <div key={ach.id} className={styles.infoCard}>
                   <h4>{ach.title}</h4>
                   <span className={styles.cardDate}>{ach.year}</span>
                   <p className={styles.cardDesc}>{ach.description}</p>
-                  {ach.imageUrl && <img src={ach.imageUrl} className={styles.miniThumb} onClick={() => handleViewItem(ach, 'achievement')} alt="Award" />}
+                  {ach.imageUrl && (
+                    <img src={ach.imageUrl} className={styles.miniThumb} onClick={() => handleViewItem(ach, 'achievement')} alt="Award" />
+                  )}
                 </div>
               ))}
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* ── MODAL ── */}
       <Modal isOpen={!!selectedItem} onClose={() => setSelectedItem(null)} title={selectedItem?.modalTitle}>
         {selectedItem && (
           <div className={styles.viewDetails}>
-            <div className={styles.viewImageWrapper}><img src={selectedItem.imageUrl} className={styles.viewImage} alt="Details" /></div>
+            <div className={styles.viewImageWrapper}>
+              <img src={selectedItem.imageUrl} className={styles.viewImage} alt="Details" />
+            </div>
             <div className={styles.viewContent}>
               <h3 className={styles.viewTitle}>{selectedItem.title}</h3>
-              <div className={styles.viewBadges}><span className={styles.badge}>{selectedItem.category}</span><span className={styles.badge}>{selectedItem.year}</span></div>
-              {selectedItem.description && <div className={styles.viewDesc}>{selectedItem.description}</div>}
+              <div className={styles.viewBadges}>
+                <span className={styles.badge}>{selectedItem.category}</span>
+                <span className={styles.badge}>{selectedItem.year}</span>
+              </div>
+              {selectedItem.description && (
+                <div className={styles.viewDesc}>{selectedItem.description}</div>
+              )}
             </div>
           </div>
         )}
       </Modal>
+
     </div>
   );
 }

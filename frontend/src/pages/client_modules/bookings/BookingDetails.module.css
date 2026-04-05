@@ -1,52 +1,65 @@
 .container {
   max-width: 1100px;
   margin: 0 auto;
-  padding-bottom: 100px;
-}
-.backBtn {
-  background: none;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  margin-bottom: 30px;
-  font-size: 14px;
-}
-.backBtn:hover {
-  color: #fff;
+  padding: 30px 30px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
+/* ── Back Button ── */
+.backBtn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  transition: 0.2s;
+  align-self: flex-start;
+  letter-spacing: 0.04em;
+}
+.backBtn:hover {
+  border-color: var(--border2);
+  color: var(--text);
+}
+
+/* ── Layout ── */
 .layout {
   display: flex;
-  gap: 60px;
+  gap: 24px;
   align-items: flex-start;
 }
 
-/* Sidebar Summary */
+/* ── Sidebar ── */
 .summarySidebar {
-  width: 340px;
-  background: #111;
-  border: 1px solid #222;
-  border-radius: 16px;
-  padding: 30px;
+  width: 300px;
+  flex-shrink: 0;
   position: sticky;
-  top: 100px;
+  top: 92px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
+
 .summaryTitle {
-  font-size: 20px;
-  color: #fff;
-  margin: 0 0 20px 0;
-  border-bottom: 1px solid #222;
-  padding-bottom: 15px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  margin: 0;
 }
 
 .servicePreview {
   width: 100%;
-  height: 180px;
-  border-radius: 8px;
+  height: 160px;
+  background: var(--surface2);
   overflow: hidden;
-  margin-bottom: 20px;
-  background: #000;
-  border: 1px solid #333;
 }
 .previewImg {
   width: 100%;
@@ -59,477 +72,133 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #555;
+  color: var(--border2);
+  font-size: 24px;
 }
 
 .serviceName {
-  font-size: 22px;
-  color: #fff;
-  margin: 0 0 5px 0;
-}
-.artistLink {
-  font-size: 14px;
-  color: #888;
-  margin: 0 0 25px 0;
-  cursor: pointer;
-}
-.artistLink span {
-  color: #ccc;
-  text-decoration: underline;
-}
-.artistLink:hover span {
-  color: #c9b99a;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--text);
+  margin: 0;
+  padding: 16px 20px 4px;
 }
 
-.detailsBox {
-  background: #1a1a1a;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #333;
-  margin-bottom: 20px;
+.artistLink {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 0 20px 16px;
+  cursor: pointer;
+  display: block;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
 }
+.artistLink span { color: var(--accent); }
+.artistLink:hover span { text-decoration: underline; }
+
+.detailsBox {
+  display: flex;
+  flex-direction: column;
+}
+
 .detailRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
-  font-size: 13px;
-  color: #aaa;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
 }
-.detailRow:last-child {
-  margin-bottom: 0;
-}
+.detailRow:last-child { border-bottom: none; }
+
 .priceHighlight {
-  color: #c9b99a;
-  font-weight: 700;
+  font-family: var(--font-display);
   font-size: 16px;
+  color: var(--accent);
+  font-weight: 300;
 }
 
-/* Payment Channels Style */
+/* ── Payment Notice ── */
 .paymentNotice {
-  background: rgba(201, 185, 154, 0.05);
-  border: 1px solid rgba(201, 185, 154, 0.2);
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-.payNoticeTitle {
-  font-size: 11px;
-  text-transform: uppercase;
-  color: #c9b99a;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-.payMethod {
-  font-size: 13px;
-  color: #fff;
-  margin-bottom: 8px;
-  line-height: 1.4;
-}
-.payMethod small {
-  color: #888;
-}
-.disclaimer {
-  font-size: 12px;
-  color: #666;
-  font-style: italic;
-  line-height: 1.4;
-}
-
-/* Main Content Area */
-.formMain {
-  flex: 1;
-}
-.formTitle {
-  font-size: 36px;
-  color: #fff;
-  margin: 0 0 10px 0;
-}
-.formSubtitle {
-  color: #888;
-  font-size: 15px;
-  margin-bottom: 40px;
-}
-
-.displayForm {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-.displayGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.label {
-  font-size: 13px;
-  font-weight: 700;
-  color: #c9b99a;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Read-Only text box */
-.readOnlyContent {
-  background: #111;
-  border: 1px solid #222;
-  color: #eee;
-  padding: 20px;
-  border-radius: 12px;
-  font-size: 15px;
-  line-height: 1.7;
-  white-space: pre-wrap;
-  min-height: 150px;
-}
-
-/* Submitted Image Thumbnail (Small) */
-.referenceImageContainer {
-  position: relative;
-  max-width: 280px;
-  height: 180px;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #333;
-  background: #000;
-  cursor: zoom-in;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.referenceImageContainer:hover {
-  border-color: #c9b99a;
-}
-.referenceImg {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  display: block;
-}
-
-/* Hover Overlay */
-.imageOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  opacity: 0;
-  transition: 0.2s;
-}
-.referenceImageContainer:hover .imageOverlay {
-  opacity: 1;
-}
-
-/* Modal Full Image (Large) */
-.fullImageWrapper {
-  width: 100%;
-  max-height: 80vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #000;
-  border-radius: 8px;
-  overflow: hidden;
-}
-.fullImage {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.backButtonLarge {
-  background: #222;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 16px 30px;
-  border: 1px solid #333;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s;
-  width: 100%;
-}
-.backButtonLarge:hover {
-  background: #333;
-}
-
-/* Status Colors */
-.statusText {
-  font-weight: 800;
-  text-transform: uppercase;
-  font-size: 12px;
-}
-.pending {
-  color: #888;
-}
-.accepted {
-  color: #2196f3;
-}
-.completed {
-  color: #4caf50;
-}
-.rejected {
-  color: #f44336;
-}
-
-.loading {
-  padding: 150px;
-  text-align: center;
-  color: #444;
-}
-.errorPage {
-  padding: 100px;
-  text-align: center;
-  color: #e74c3c;
-  font-size: 18px;
-}
-/* Sidebar and Layout matching original Booking.module.css */
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding-bottom: 100px;
-}
-.layout {
-  display: flex;
-  gap: 50px;
-  align-items: flex-start;
-}
-.summarySidebar {
-  width: 340px;
-  background: #111;
-  border: 1px solid #222;
-  border-radius: 16px;
-  padding: 25px;
-  position: sticky;
-  top: 100px;
-}
-
-/* Image Thumbnails */
-.thumbContainer {
-  width: 200px;
-  height: 140px;
-  border-radius: 8px;
-  overflow: hidden;
-  position: relative;
-  cursor: zoom-in;
-  border: 1px solid #333;
-  background: #000;
-}
-.thumbImg {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-.thumbOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  opacity: 0;
-  transition: 0.2s;
-}
-.thumbContainer:hover .thumbOverlay {
-  opacity: 1;
-}
-
-/* Payment History */
-.historySection {
-  margin-top: 40px;
-  padding-top: 30px;
-  border-top: 1px solid #222;
-}
-.historyGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
-}
-.historyCard {
-  background: #161616;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #222;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.smallThumb {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.historyInfo p {
   margin: 0;
-  font-size: 13px;
-  color: #fff;
-}
-.historyInfo small {
-  color: #555;
-  font-size: 11px;
-}
-
-/* Further Payment Form */
-.furtherPaymentBox {
-  margin-top: 30px;
-  background: #111;
-  padding: 25px;
-  border-radius: 12px;
-  border: 1px solid #222;
-}
-.furtherForm {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Status Styles */
-.statusText {
-  font-weight: 700;
-  font-size: 12px;
-}
-.pending {
-  color: #888;
-}
-.unpaid {
-  color: #e74c3c;
-}
-.partially_paid {
-  color: #f1c40f;
-}
-.fully_paid {
-  color: #2ecc71;
-}
-
-/* Lightbox Modal */
-.lightboxWrapper {
-  background: #000;
-  padding: 10px;
-  border-radius: 8px;
-}
-.lightboxImg {
-  max-width: 100%;
-  max-height: 80vh;
-  display: block;
-  margin: 0 auto;
-}
-/* --- Further Payment Section --- */
-.furtherPaymentBox {
-  margin-top: 60px;
-  padding-top: 40px;
   border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  animation: fadeIn 0.8s ease both;
 }
 
-.furtherForm {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-width: 480px; /* Keeps the form elegant and not too wide */
-}
-
-/* Custom File Input Styling to match Login Inputs */
-.fileUploadWrapper {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.fileUploadWrapper:hover {
-  border-color: rgba(255, 255, 255, 0.24);
-}
-
-.fileInput {
-  font-family: var(--font-body);
-  font-size: 13px;
-  color: var(--muted);
-  cursor: pointer;
-  width: 100%;
-}
-
-.fileInput::file-selector-button {
-  background: var(--accent-dim);
-  color: var(--accent);
-  border: none;
-  padding: 6px 12px;
-  border-radius: 2px;
-  margin-right: 12px;
+.payNoticeTitle {
   font-size: 11px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.fileInput::file-selector-button:hover {
-  background: rgba(201, 185, 154, 0.2);
-}
-
-/* Reusing your Login Button style */
-.btn {
-  align-self: flex-start;
-  background: var(--accent);
-  color: #0c0c0d;
-  border: none;
-  padding: 13px 32px;
-  font-family: var(--font-body);
-  font-size: 12px;
+  color: var(--muted);
   font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  border-radius: var(--radius);
-  transition: opacity 0.2s, transform 0.15s;
-  min-width: 160px;
-  margin-top: 8px;
+  padding: 14px 20px 10px;
+  margin: 0;
 }
 
-.btn:hover {
-  opacity: 0.88;
-  transform: translateY(-1px);
+.payMethod {
+  font-size: 13px;
+  color: var(--text);
+  padding: 8px 20px;
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-weight: 300;
 }
+.payMethod strong { color: var(--accent); font-weight: 500; }
+.payMethod small { color: var(--muted); font-size: 11px; }
 
-/* Reuse the spinner from your login.module.css */
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(12, 12, 13, 0.3);
-  border-top-color: #0c0c0d;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  display: inline-block;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Container for the file field - matches .field from Login */
-.field {
+/* ── Main Content ── */
+.formMain {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 100%;
+  gap: 16px;
 }
 
-/* The Label - matches your Login uppercase style */
+/* ── Cards ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.cardHeader {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.formTitle {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+.subTitle {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+  margin: 0;
+}
+
+.cardBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Labels ── */
 .label {
   font-size: 11px;
   letter-spacing: 0.12em;
@@ -538,374 +207,416 @@
   font-weight: 500;
 }
 
-/* This is the "Box" that replaces the ugly browser input */
-.fileUploadWrapper {
-  position: relative;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+/* ── Read Only Content ── */
+.readOnlyContent {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 16px 20px;
   border-radius: var(--radius);
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  transition: border-color 0.2s, background 0.2s;
-  cursor: pointer;
-  min-height: 46px;
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  min-height: 120px;
+  font-weight: 300;
 }
 
-.fileUploadWrapper:hover {
-  border-color: rgba(255, 255, 255, 0.24);
-  background: rgba(255, 255, 255, 0.06);
+/* ── Thumbnail ── */
+.thumbContainer {
+  width: 180px;
+  height: 120px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  cursor: zoom-in;
+  border: 1px solid var(--border);
+  background: var(--surface2);
 }
-
-/* The actual file input - hidden but clickable */
-.fileInput {
-  position: absolute;
-  top: 0;
-  left: 0;
+.thumbImg {
   width: 100%;
   height: 100%;
-  opacity: 0; /* Makes it invisible */
-  cursor: pointer;
+  object-fit: contain;
 }
-
-/* The "Fake" UI text inside the box */
-.filePlaceholder {
-  font-size: 14px;
-  font-weight: 300;
-  color: var(--muted);
+.thumbOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--text);
   display: flex;
-  justify-content: space-between;
-  width: 100%;
   align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: 0.2s;
+}
+.thumbContainer:hover .thumbOverlay { opacity: 1; }
+
+/* ── Payment History ── */
+.historyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
-.filePlaceholder span {
-  color: var(--accent);
-  font-size: 11px;
-  text-transform: uppercase;
+.historyCard {
+  background: var(--bg);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: background 0.2s;
+}
+.historyCard:hover { background: var(--surface); }
+
+.smallThumb {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+.smallThumb:hover { border-color: var(--accent); }
+
+.historyInfo p {
+  font-size: 12px;
+  margin: 0;
+  color: var(--text);
+  font-weight: 300;
+}
+.historyInfo small {
+  font-size: 10px;
+  color: var(--muted);
   letter-spacing: 0.05em;
-  border-left: 1px solid rgba(255,255,255,0.1);
-  padding-left: 12px;
+}
+
+.emptyMsg {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 24px;
+  text-align: center;
+}
+
+/* ── Inner Form Box ── */
+.innerFormBox {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formLabel {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+  margin: 0;
+}
+
+.furtherForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .input {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface2);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 12px 14px;
-  font-family: var(--font-body);
-  font-size: 14px;
+  padding: 10px 14px;
+  font-size: 13px;
   font-weight: 300;
   color: var(--text);
   outline: none;
   transition: border-color 0.2s, background 0.2s;
   width: 100%;
 }
-
-.input:hover {
-  border-color: rgba(255, 255, 255, 0.24);
-}
-
+.input:hover { border-color: var(--border2); }
 .input:focus {
   border-color: var(--accent);
-  background: rgba(201, 185, 154, 0.05);
+  background: rgba(201, 185, 154, 0.04);
 }
+.input::placeholder { color: var(--muted); }
 
-.input::placeholder {
-  color: rgba(110, 107, 102, 0.7);
-}
-
-/* ... existing styles ... */
-
-.card {
-  background: #111;
-  border: 1px solid #222;
-  padding: 30px;
-  border-radius: 16px;
-  margin-bottom: 24px;
-}
-
-/* ── Rating Stars ── */
-.starRating {
+/* ── File Upload ── */
+.fileUploadWrapper {
+  position: relative;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
   display: flex;
-  gap: 10px;
-  margin: 5px 0;
-}
-.starRating span {
-  font-size: 32px;
+  align-items: center;
+  transition: border-color 0.2s;
   cursor: pointer;
+  min-height: 42px;
+}
+.fileUploadWrapper:hover { border-color: var(--border2); }
+
+.fileInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.filePlaceholder {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+.filePlaceholder span {
+  color: var(--accent);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-left: 1px solid var(--border);
+  padding-left: 12px;
+}
+
+/* ── Button ── */
+.btn {
+  align-self: flex-start;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 9px 24px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--radius);
   transition: 0.2s;
 }
-.starActive { color: var(--accent); }
-.starInactive { color: #333; }
-.starRating span:hover { transform: scale(1.2); }
-
-.textarea {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 15px;
-  color: #fff;
-  font-family: var(--font-body);
-  min-height: 100px;
-  resize: vertical;
+.btn:hover {
+  background: var(--accent);
+  color: var(--bg);
 }
-
-/* ── Locked State ── */
-.lockedSection {
-  opacity: 0.5;
-  filter: grayscale(0.5);
+.btn:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
-  position: relative;
-}
-.lockedSection form {
-  pointer-events: none;
 }
 
+/* ── Section Header ── */
 .sectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+}
+
+/* ── Locked Section ── */
+.lockedSection {
+  opacity: 0.4;
+  filter: grayscale(0.8);
+  pointer-events: none;
+  user-select: none;
 }
 
 .lockedBadge {
   font-size: 10px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  background: #222;
-  padding: 4px 10px;
-  border-radius: 4px;
-}
-
-.alreadyRated {
-  background: var(--accent-dim);
-  color: var(--accent);
-  padding: 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  text-align: center;
-}
-
-/* ── Status Badges ── */
-.statusBadge {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-weight: 700;
-}
-.completed { background: rgba(46, 204, 113, 0.1); color: #2ecc71; }
-.pending { background: rgba(255, 255, 255, 0.05); color: #888; }
-/* ... add other statuses as needed ... */
-
-.reviewDisplay {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border);
-  padding: 25px;
-  border-radius: 12px;
-}
-
-.reviewHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.reviewDate {
-  font-size: 12px;
   color: var(--muted);
-}
-
-.savedComment {
-  font-size: 15px;
-  color: #eee;
-  font-style: italic;
-  line-height: 1.6;
-  margin-bottom: 20px;
-}
-
-.successBadge {
-  font-size: 11px;
-  color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-weight: 600;
+  background: var(--surface2);
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
 }
 
-/* Star Hover Effect Fix */
-.starRating span:hover {
-  transform: scale(1.1);
-  color: #fff;
-}
-/* ── RATING SECTION CONTAINER ── */
+/* ── Rating Form ── */
 .ratingForm {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Space between stars, textarea, and button */
-  width: 100%;
-  margin-top: 10px;
+  gap: 16px;
+  padding: 24px;
 }
 
-/* ── STAR SYSTEM ── */
 .starRating {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
 }
-
 .starRating span {
   font-size: 28px;
   cursor: pointer;
   transition: transform 0.2s, color 0.2s;
   line-height: 1;
 }
-
-.starActive { 
-  color: var(--accent); 
+.starActive {
+  color: var(--accent);
   text-shadow: 0 0 10px rgba(201, 185, 154, 0.3);
 }
-
-.starInactive { 
-  color: #333; 
-}
-
-.starRating span:hover { 
-  transform: scale(1.2); 
-}
-
-/* ── TEXTAREA FIX ── */
-.textarea {
-  width: 100%; /* Ensures it doesn't shrink */
-  min-height: 120px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
-  color: #fff;
-  font-family: var(--font-body);
-  font-size: 14px;
-  line-height: 1.5;
-  outline: none;
-  resize: vertical; /* Only allow vertical resizing */
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.textarea:focus {
-  border-color: var(--accent);
-  background: rgba(201, 185, 154, 0.05);
-}
-
-/* ── BUTTON ALIGNMENT ── */
-.ratingForm .btn {
-  align-self: flex-start; /* Keeps the button from stretching to full width */
-  margin-top: 5px;
-}
-
-/* ── LOCKED STATE STYLING ── */
-.lockedSection {
-  position: relative;
-  opacity: 0.4;
-  filter: grayscale(0.8);
-  pointer-events: none; /* Prevents clicking stars while locked */
-  user-select: none;
-}
-
-.sectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-.lockedBadge {
-  font-size: 10px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  background: #222;
-  padding: 4px 12px;
-  border-radius: 4px;
-  border: 1px solid #333;
-}
-
-/* ── PAYMENT HISTORY & FORM ── */
-.historyGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 15px;
-  margin-bottom: 30px;
-}
-.historyCard {
-  background: #000;
-  border: 1px solid #222;
-  border-radius: 8px;
-  padding: 8px;
-}
-.smallThumb {
-  width: 100%;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 8px;
-}
-.historyInfo p { font-size: 12px; margin: 0; color: #fff; }
-.historyInfo small { font-size: 10px; color: #555; }
-
-.innerFormBox {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid #222;
-  border-radius: 12px;
-  padding: 25px;
-}
-.formLabel { font-size: 14px; color: var(--accent); margin-bottom: 15px; display: block; }
-.furtherForm {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* ── RATING FORM FIX ── */
-.ratingForm {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-}
-.starRating {
-  display: flex;
-  gap: 10px;
-}
-.starRating span {
-  font-size: 28px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.starActive { color: var(--accent); text-shadow: 0 0 10px rgba(201, 185, 154, 0.3); }
-.starInactive { color: #333; }
+.starInactive { color: var(--border2); }
 .starRating span:hover { transform: scale(1.2); }
 
 .textarea {
   width: 100%;
   min-height: 120px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.6;
+  outline: none;
   resize: vertical;
+  transition: border-color 0.2s, background 0.2s;
+}
+.textarea:focus {
+  border-color: var(--accent);
+  background: rgba(201, 185, 154, 0.04);
+}
+.textarea::placeholder { color: var(--muted); }
+.textarea:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Review Display ── */
+.reviewDisplay {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-/* Status Badges refinement */
-.statusBadge {
-  font-size: 10px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 4px;
-  text-transform: uppercase;
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.starRatingDisplay {
+  display: flex;
+  gap: 4px;
+}
+.starRatingDisplay span { font-size: 18px; }
+
+.reviewDate {
+  font-size: 11px;
+  color: var(--muted);
   letter-spacing: 0.05em;
 }
-.completed { background: rgba(76, 175, 80, 0.1); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.2); }
-.pending { background: #222; color: #888; border: 1px solid #333; }
-.fully_paid { background: rgba(201, 185, 154, 0.1); color: var(--accent); border: 1px solid rgba(201, 185, 154, 0.2); }
+
+.savedComment {
+  font-size: 14px;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 300;
+}
+
+.successBadge {
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 500;
+}
+
+/* ── Status Badges ── */
+.statusBadge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: var(--radius);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.completed {
+  background: rgba(76, 175, 80, 0.08);
+  color: #4CAF50;
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+.pending {
+  background: var(--surface2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.accepted {
+  background: rgba(33, 150, 243, 0.08);
+  color: #2196F3;
+  border: 1px solid rgba(33, 150, 243, 0.2);
+}
+.rejected {
+  background: rgba(var(--error-rgb, 224, 112, 112), 0.08);
+  color: var(--error);
+  border: 1px solid rgba(var(--error-rgb, 224, 112, 112), 0.2);
+}
+.unpaid {
+  background: rgba(224, 112, 112, 0.08);
+  color: var(--error);
+  border: 1px solid rgba(224, 112, 112, 0.2);
+}
+.partially_paid {
+  background: rgba(241, 196, 15, 0.08);
+  color: #f1c40f;
+  border: 1px solid rgba(241, 196, 15, 0.2);
+}
+.fully_paid {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid rgba(201, 185, 154, 0.2);
+}
+
+/* ── Lightbox ── */
+.lightboxWrapper {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.lightboxImg {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  display: block;
+}
+
+/* ── States ── */
+.loading {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 80px;
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.errorPage {
+  padding: 80px;
+  text-align: center;
+  color: var(--error);
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .layout { flex-direction: column; }
+  .summarySidebar { width: 100%; position: static; }
+}

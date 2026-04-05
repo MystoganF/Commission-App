@@ -10,61 +10,55 @@ export default function ExploreArtists() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Filter States
   const [search, setSearch] = useState('');
   const [minRating, setMinRating] = useState(0);
   const [selectedSkill, setSelectedSkill] = useState('All');
 
   useEffect(() => {
     api.get('/public/artists')
-      .then(res => {
-        setArtists(res.data);
-        setFiltered(res.data);
-      })
+      .then(res => { setArtists(res.data); setFiltered(res.data); })
       .catch(err => console.error("Error fetching artists:", err))
       .finally(() => setLoading(false));
   }, []);
 
-  // Filter Logic
   useEffect(() => {
-    let result = artists.filter(a => 
+    let result = artists.filter(a =>
       a.username.toLowerCase().includes(search.toLowerCase()) &&
       a.averageRating >= minRating
     );
-
-    if (selectedSkill !== 'All') {
-      result = result.filter(a => a.skills.includes(selectedSkill));
-    }
-
+    if (selectedSkill !== 'All') result = result.filter(a => a.skills.includes(selectedSkill));
     setFiltered(result);
   }, [search, minRating, selectedSkill, artists]);
 
-  // Extract all unique skills from the artist list for the dropdown
   const allSkills = ['All', ...new Set(artists.flatMap(a => a.skills))];
 
-  if (loading) return <div className={styles.loading}>Finding artists...</div>;
+  if (loading) return <div className={styles.loading}>Loading…</div>;
 
   return (
-    <div className={`${shared.pageFade} ${styles.container}`}>
+    <div className={`${shared.pageFade} ${styles.page}`}>
+
+      {/* ── Sidebar ── */}
       <aside className={styles.sidebar}>
-        <h3 className={styles.filterTitle}>Filters</h3>
-        
+        <div className={styles.filterTitleRow}>
+          <span className={styles.filterTitle}>Filters</span>
+        </div>
+
         <div className={styles.filterGroup}>
           <label className={styles.label}>Search Name</label>
-          <input 
-            className={styles.input} 
-            placeholder="Artist name..." 
+          <input
+            className={styles.input}
+            placeholder="Artist name…"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={e => setSearch(e.target.value)}
           />
         </div>
 
         <div className={styles.filterGroup}>
           <label className={styles.label}>Category / Skill</label>
-          <select 
-            className={styles.input} 
+          <select
+            className={styles.input}
             value={selectedSkill}
-            onChange={(e) => setSelectedSkill(e.target.value)}
+            onChange={e => setSelectedSkill(e.target.value)}
           >
             {allSkills.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
@@ -74,7 +68,7 @@ export default function ExploreArtists() {
           <label className={styles.label}>Minimum Rating</label>
           <div className={styles.ratingOptions}>
             {[0, 3, 4, 4.5].map(r => (
-              <button 
+              <button
                 key={r}
                 className={`${styles.rateBtn} ${minRating === r ? styles.rateActive : ''}`}
                 onClick={() => setMinRating(r)}
@@ -86,41 +80,57 @@ export default function ExploreArtists() {
         </div>
       </aside>
 
+      {/* ── Main ── */}
       <div className={styles.main}>
         <div className={styles.header}>
-          <h2>Explore Artists</h2>
-          <p>{filtered.length}  artists found</p>
+          <h2 className={styles.headerTitle}>Explore Artists</h2>
+          <p className={styles.headerSub}>{filtered.length} artists found</p>
         </div>
 
         {filtered.length === 0 ? (
-          <div className={styles.empty}>No artists match your current filters.</div>
+          <div className={shared.empty}>
+            <p className={shared.emptyText}>No artists match your current filters.</p>
+          </div>
         ) : (
           <div className={styles.grid}>
             {filtered.map(artist => (
-              <div 
-                key={artist.id} 
-                className={styles.artistCard}
-                onClick={() => navigate(`/client/artist/${artist.id}`)}
-              >
-                <div className={styles.cardTop}>
-                  <img src={artist.profilePictureUrl || 'https://via.placeholder.com/150'} alt={artist.username} className={styles.avatar} />
-                  <div className={styles.artistInfo}>
-                    <h3 className={styles.username}>{artist.username}</h3>
-                    <div className={styles.rating}>★ {artist.averageRating.toFixed(1)} <span className={styles.totalReviews}>({artist.totalReviews})</span></div>
+              <div key={artist.id} className={styles.artistCard}>
+
+                <div className={styles.cardCover} onClick={() => navigate(`/client/artist/${artist.id}`)}>
+                  <img
+                    src={artist.profilePictureUrl || `https://ui-avatars.com/api/?name=${artist.username}&background=1a1a1a&color=888`}
+                    alt={artist.username}
+                  />
+                  <div className={styles.ratingBadge}>★ {artist.averageRating.toFixed(1)}</div>
+                </div>
+
+                <div className={styles.cardContent}>
+                  <div className={styles.username}>{artist.username}</div>
+                  <div className={styles.reviewCount}>({artist.totalReviews} reviews)</div>
+
+                  <div className={styles.skillTags}>
+                    {artist.skills.slice(0, 3).map(skill => (
+                      <span key={skill} className={styles.skillTag}>{skill}</span>
+                    ))}
+                    {artist.skills.length > 3 && (
+                      <span className={styles.moreSkills}>+{artist.skills.length - 3}</span>
+                    )}
                   </div>
+
+                  <button
+                    className={styles.viewBtn}
+                    onClick={() => navigate(`/client/artist/${artist.id}`)}
+                  >
+                    View Portfolio
+                  </button>
                 </div>
-                <p className={styles.bio}>{artist.bio || "No bio available."}</p>
-                <div className={styles.skillTags}>
-                  {artist.skills.slice(0, 3).map(skill => (
-                    <span key={skill} className={styles.skillTag}>{skill}</span>
-                  ))}
-                  {artist.skills.length > 3 && <span className={styles.moreSkills}>+{artist.skills.length - 3} more</span>}
-                </div>
+
               </div>
             ))}
           </div>
         )}
       </div>
+
     </div>
   );
 }

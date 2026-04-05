@@ -12,15 +12,13 @@ export default function BookingDetails() {
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [lightbox, setLightbox] = useState(null); 
+  const [lightbox, setLightbox] = useState(null);
 
-  // ── RESTORED: Further Payment State ──
   const [newPayRef, setNewPayRef] = useState('');
   const [newPayFile, setNewPayFile] = useState(null);
   const [submittingPay, setSubmittingPay] = useState(false);
 
-  // Rating State
-  const [rating, setRating] = useState(0); 
+  const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [submittingRating, setSubmittingRating] = useState(false);
   const [toast, setToast] = useState('');
@@ -38,7 +36,6 @@ export default function BookingDetails() {
     }
   }
 
-  // ── RESTORED: Payment Upload Logic ──
   const handleFurtherPayment = async (e) => {
     e.preventDefault();
     if (!newPayFile) return showToast("Please select a proof image.");
@@ -46,14 +43,13 @@ export default function BookingDetails() {
     const formData = new FormData();
     formData.append('referenceId', newPayRef);
     formData.append('file', newPayFile);
-
     try {
       await api.post(`/client/bookings/${id}/payments`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      setNewPayRef(''); 
+      setNewPayRef('');
       setNewPayFile(null);
-      loadData(); 
+      loadData();
       showToast("Payment proof uploaded.");
     } catch {
       showToast("Upload failed.");
@@ -69,7 +65,7 @@ export default function BookingDetails() {
     try {
       await api.post(`/client/bookings/${id}/rate`, { rating, comment });
       showToast("Review submitted!");
-      loadData(); 
+      loadData();
     } catch {
       showToast("Rating submission failed.");
     } finally {
@@ -79,32 +75,38 @@ export default function BookingDetails() {
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000); };
 
-  if (loading) return <div className={styles.loading}>Synchronizing Details...</div>;
+  if (loading) return <div className={styles.loading}>Synchronizing Details…</div>;
   if (error || !booking) return <div className={styles.errorPage}>{error}</div>;
 
   const isCompleted = booking.status === 'COMPLETED';
 
   return (
     <div className={`${shared.pageFade} ${styles.container}`}>
+
       <button className={styles.backBtn} onClick={() => navigate('/client/my-bookings')}>
         ← Back to My Bookings
       </button>
 
       <div className={styles.layout}>
-        {/* ── SIDEBAR SUMMARY ── */}
+
+        {/* ── Sidebar ── */}
         <aside className={styles.summarySidebar}>
           <h2 className={styles.summaryTitle}>Booking Summary</h2>
+
           <div className={styles.servicePreview}>
-            {booking.serviceSample ? (
-              <img src={booking.serviceSample} alt="" className={styles.previewImg} />
-            ) : (
-              <div className={styles.noPreview}>No Image</div>
-            )}
+            {booking.serviceSample
+              ? <img src={booking.serviceSample} alt="" className={styles.previewImg} />
+              : <div className={styles.noPreview}>◻</div>
+            }
           </div>
-          <h3 className={styles.serviceName}>{booking.serviceName}</h3>
-          <p className={styles.artistLink} onClick={() => navigate(`/client/artist/${booking.artistId}`)}>
-            Artist: <span>{booking.artistName}</span>
-          </p>
+
+          <div className={styles.serviceName}>{booking.serviceName}</div>
+          <div
+            className={styles.artistLink}
+            onClick={() => navigate(`/client/artist/${booking.artistId}`)}
+          >
+            by <span>{booking.artistName}</span>
+          </div>
 
           <div className={styles.detailsBox}>
             <div className={styles.detailRow}>
@@ -121,110 +123,139 @@ export default function BookingDetails() {
             </div>
             <div className={styles.detailRow}>
               <span>Total Price</span>
-              <span className={styles.priceHighlight}>₱ {Number(booking.price).toLocaleString()}</span>
+              <span className={styles.priceHighlight}>
+                ₱ {Number(booking.price).toLocaleString()}
+              </span>
             </div>
           </div>
 
           {(booking.gcashNumber || booking.paymayaNumber) && (
             <div className={styles.paymentNotice}>
-              <p className={styles.payNoticeTitle}>Artist Payment Channels:</p>
-              {booking.gcashNumber && <div className={styles.payMethod}><strong>GCash:</strong> {booking.gcashNumber}<br/><small>({booking.gcashName})</small></div>}
-              {booking.paymayaNumber && <div className={styles.payMethod}><strong>Paymaya:</strong> {booking.paymayaNumber}<br/><small>({booking.paymayaName})</small></div>}
+              <p className={styles.payNoticeTitle}>Payment Channels</p>
+              {booking.gcashNumber && (
+                <div className={styles.payMethod}>
+                  <strong>GCash</strong> · {booking.gcashNumber}<br />
+                  <small>{booking.gcashName}</small>
+                </div>
+              )}
+              {booking.paymayaNumber && (
+                <div className={styles.payMethod}>
+                  <strong>Paymaya</strong> · {booking.paymayaNumber}<br />
+                  <small>{booking.paymayaName}</small>
+                </div>
+              )}
             </div>
           )}
         </aside>
 
-        {/* ── MAIN CONTENT ── */}
+        {/* ── Main Content ── */}
         <main className={styles.formMain}>
-          {/* Instructions Card */}
+
+          {/* Instructions */}
           <div className={styles.card}>
-            <h1 className={styles.formTitle}>Instructions & Progress</h1>
-            <label className={styles.label}>Instructions Sent</label>
-            <div className={styles.readOnlyContent}>{booking.details}</div>
-            
-            {booking.referenceImageUrl && (
-              <div style={{ marginTop: '30px' }}>
-                <label className={styles.label}>Visual Reference</label>
-                <div className={styles.thumbContainer} onClick={() => setLightbox(booking.referenceImageUrl)}>
-                  <img src={booking.referenceImageUrl} className={styles.thumbImg} alt="Ref" />
-                  <div className={styles.thumbOverlay}>View Full</div>
-                </div>
+            <div className={styles.cardHeader}>
+              <h1 className={styles.formTitle}>Instructions & Progress</h1>
+            </div>
+            <div className={styles.cardBody}>
+              <div>
+                <div className={styles.label} style={{ marginBottom: 8 }}>Instructions Sent</div>
+                <div className={styles.readOnlyContent}>{booking.details}</div>
               </div>
-            )}
+
+              {booking.referenceImageUrl && (
+                <div>
+                  <div className={styles.label} style={{ marginBottom: 8 }}>Visual Reference</div>
+                  <div className={styles.thumbContainer} onClick={() => setLightbox(booking.referenceImageUrl)}>
+                    <img src={booking.referenceImageUrl} className={styles.thumbImg} alt="Ref" />
+                    <div className={styles.thumbOverlay}>View Full</div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* ── RESTORED: PAYMENT HISTORY & FURTHER PAYMENT ── */}
-          <section className={styles.card}>
-            <h2 className={styles.subTitle}>Payment Proof History</h2>
-            {booking.paymentHistory?.length > 0 ? (
-              <div className={styles.historyGrid}>
-                {booking.paymentHistory.map((p, i) => (
-                  <div key={i} className={styles.historyCard}>
-                    <img 
-                      src={p.proofImageUrl} 
-                      className={styles.smallThumb} 
-                      onClick={() => setLightbox(p.proofImageUrl)} 
-                      alt="Proof"
-                    />
-                    <div className={styles.historyInfo}>
-                      <p>Ref: {p.referenceId || 'N/A'}</p>
-                      <small>{new Date(p.submittedAt).toLocaleDateString()}</small>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : <p className={styles.emptyMsg}>No payments recorded yet.</p>}
-
-            {booking.paymentStatus !== 'FULLY_PAID' && (
-              <div className={styles.innerFormBox}>
-                <h3 className={styles.formLabel}>Submit Further Payment</h3>
-                <form onSubmit={handleFurtherPayment} className={styles.furtherForm}>
-                  <div className={styles.field}>
-                    <label className={styles.label}>Reference ID</label>
-                    <input 
-                      className={styles.input} 
-                      placeholder="Ref #" 
-                      value={newPayRef} 
-                      onChange={(e) => setNewPayRef(e.target.value)} 
-                      required 
-                    />
-                  </div>
-                  <div className={styles.field}>
-                    <label className={styles.label}>Proof Image</label>
-                    <div className={styles.fileUploadWrapper}>
-                      <div className={styles.filePlaceholder}>
-                        {newPayFile ? newPayFile.name : "Select image..."} 
-                        <span>Browse</span>
+          {/* Payment History */}
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.subTitle}>Payment Proof History</h2>
+            </div>
+            <div className={styles.cardBody}>
+              {booking.paymentHistory?.length > 0 ? (
+                <div className={styles.historyGrid}>
+                  {booking.paymentHistory.map((p, i) => (
+                    <div key={i} className={styles.historyCard}>
+                      <img
+                        src={p.proofImageUrl}
+                        className={styles.smallThumb}
+                        onClick={() => setLightbox(p.proofImageUrl)}
+                        alt="Proof"
+                      />
+                      <div className={styles.historyInfo}>
+                        <p>Ref: {p.referenceId || 'N/A'}</p>
+                        <small>{new Date(p.submittedAt).toLocaleDateString()}</small>
                       </div>
-                      <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={(e) => setNewPayFile(e.target.files[0])} 
-                        required 
-                        className={styles.fileInput} 
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.emptyMsg}>No payments recorded yet.</p>
+              )}
+
+              {booking.paymentStatus !== 'FULLY_PAID' && (
+                <div className={styles.innerFormBox}>
+                  <div className={styles.formLabel}>Submit Further Payment</div>
+                  <form onSubmit={handleFurtherPayment} className={styles.furtherForm}>
+                    <div className={styles.field}>
+                      <label className={styles.label}>Reference ID</label>
+                      <input
+                        className={styles.input}
+                        placeholder="Ref #"
+                        value={newPayRef}
+                        onChange={e => setNewPayRef(e.target.value)}
+                        required
                       />
                     </div>
-                  </div>
-                  <button className={styles.btn} disabled={submittingPay}>
-                    {submittingPay ? 'Processing...' : 'Upload Proof →'}
-                  </button>
-                </form>
-              </div>
-            )}
-          </section>
+                    <div className={styles.field}>
+                      <label className={styles.label}>Proof Image</label>
+                      <div className={styles.fileUploadWrapper}>
+                        <div className={styles.filePlaceholder}>
+                          {newPayFile ? newPayFile.name : "Select image…"}
+                          <span>Browse</span>
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={e => setNewPayFile(e.target.files[0])}
+                          required
+                          className={styles.fileInput}
+                        />
+                      </div>
+                    </div>
+                    <button className={styles.btn} disabled={submittingPay}>
+                      {submittingPay ? 'Processing…' : 'Upload Proof →'}
+                    </button>
+                  </form>
+                </div>
+              )}
+            </div>
+          </div>
 
-          {/* ── FIXED: RATING SECTION ── */}
-          <section className={`${styles.card} ${!isCompleted ? styles.lockedSection : ''}`}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.subTitle}>Rate this Commission</h2>
-              {!isCompleted && <span className={styles.lockedBadge}>Unlocked after completion</span>}
+          {/* Rating */}
+          <div className={`${styles.card} ${!isCompleted ? styles.lockedSection : ''}`}>
+            <div className={styles.cardHeader}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.subTitle}>Rate this Commission</h2>
+                {!isCompleted && (
+                  <span className={styles.lockedBadge}>Unlocked after completion</span>
+                )}
+              </div>
             </div>
 
             {booking.rated ? (
               <div className={styles.reviewDisplay}>
                 <div className={styles.reviewHeader}>
                   <div className={styles.starRatingDisplay}>
-                    {[1, 2, 3, 4, 5].map((star) => (
+                    {[1,2,3,4,5].map(star => (
                       <span key={star} className={star <= booking.userRating ? styles.starActive : styles.starInactive}>★</span>
                     ))}
                   </div>
@@ -236,34 +267,39 @@ export default function BookingDetails() {
             ) : (
               <form onSubmit={handleRatingSubmit} className={styles.ratingForm}>
                 <div className={styles.starRating}>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span 
-                      key={star} 
+                  {[1,2,3,4,5].map(star => (
+                    <span
+                      key={star}
                       className={star <= rating ? styles.starActive : styles.starInactive}
                       onClick={() => isCompleted && setRating(star)}
                     >★</span>
                   ))}
                 </div>
-                <textarea 
-                  className={styles.textarea} 
-                  value={comment} 
-                  onChange={e => setComment(e.target.value)} 
+                <textarea
+                  className={styles.textarea}
+                  value={comment}
+                  onChange={e => setComment(e.target.value)}
                   disabled={!isCompleted}
-                  placeholder={isCompleted ? "Describe your experience working with this artist..." : "Finish commission to unlock feedback."}
+                  placeholder={isCompleted
+                    ? "Describe your experience working with this artist…"
+                    : "Finish commission to unlock feedback."
+                  }
                   required
                 />
                 <button className={styles.btn} disabled={!isCompleted || rating === 0}>
-                  {submittingRating ? 'Synchronizing...' : 'Submit Review'}
+                  {submittingRating ? 'Submitting…' : 'Submit Review'}
                 </button>
               </form>
             )}
-          </section>
+          </div>
+
         </main>
       </div>
 
-      {/* LIGHTBOX MODAL */}
       <Modal isOpen={!!lightbox} onClose={() => setLightbox(null)} title="Image Preview">
-        <div className={styles.lightboxWrapper}><img src={lightbox} className={styles.lightboxImg} alt="Preview" /></div>
+        <div className={styles.lightboxWrapper}>
+          <img src={lightbox} className={styles.lightboxImg} alt="Preview" />
+        </div>
       </Modal>
 
       {toast && <div className={shared.toast}>✦ &nbsp;{toast}</div>}
