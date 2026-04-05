@@ -319,3 +319,8 @@
   color: var(--accent);
   font-weight: 500;
 }
+.select option {
+  background-color: #111113; /* Matches your --surface dark background */
+  color: #f0ede8;            /* Matches your --text color */
+  padding: 12px;
+}

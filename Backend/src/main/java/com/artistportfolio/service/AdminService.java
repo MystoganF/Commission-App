@@ -7,7 +7,6 @@ import com.artistportfolio.dto.ServiceDtos.*;
 import com.artistportfolio.dto.StatsDtos.*;
 import com.artistportfolio.dto.ResumeDtos.*;
 import com.artistportfolio.entity.*;
-import com.artistportfolio.entity.Booking.BookingStatus;
 import com.artistportfolio.repository.*;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +38,7 @@ public class AdminService {
         res.totalWorks    = workRepo.countByArtistId(artist.getId());
         res.totalServices = serviceRepo.countByArtistId(artist.getId());
         res.totalBookings = bookingRepo.countByServiceArtistId(artist.getId());
-        res.pendingCount  = bookingRepo.countByServiceArtistIdAndStatus(artist.getId(), BookingStatus.PENDING);
+        res.pendingCount  = bookingRepo.countByServiceArtistIdAndStatus(artist.getId(), Booking.BookingStatus.PENDING);
         return res;
     }
 
@@ -123,10 +123,37 @@ public class AdminService {
                 .stream().map(this::toBookingResponse).collect(Collectors.toList());
     }
 
-    public BookingResponse updateBookingStatus(User artist, Long bookingId, StatusUpdateRequest req) {
-        Booking booking = bookingRepo.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found."));
+    @Transactional(readOnly = true)
+    public BookingResponse getBookingById(User artist, Long id) {
+        Booking booking = bookingRepo.findById(id).orElseThrow(() -> new RuntimeException("Booking not found."));
         if (!booking.getService().getArtist().getId().equals(artist.getId())) throw new RuntimeException("Unauthorized.");
-        booking.setStatus(req.status);
+        return toBookingResponse(booking);
+    }
+
+    @Transactional
+    public BookingResponse updateBookingStatus(User artist, Long bookingId, StatusUpdateRequest req) {
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found."));
+        if (!booking.getService().getArtist().getId().equals(artist.getId())) {
+            throw new RuntimeException("Unauthorized.");
+        }
+
+        booking.setStatus(Booking.BookingStatus.valueOf(req.status));
+
+        return toBookingResponse(bookingRepo.save(booking));
+    }
+
+    @Transactional
+    public BookingResponse updatePaymentStatus(User artist, Long bookingId, PaymentStatusUpdateRequest req) {
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found."));
+
+        if (!booking.getService().getArtist().getId().equals(artist.getId())) {
+            throw new RuntimeException("Unauthorized.");
+        }
+
+        booking.setPaymentStatus(Booking.PaymentStatus.valueOf(req.paymentStatus));
+
         return toBookingResponse(bookingRepo.save(booking));
     }
 
@@ -139,7 +166,6 @@ public class AdminService {
         res.instagram   = artist.getInstagram();
         res.twitter     = artist.getTwitter();
         res.profilePictureUrl = artist.getProfilePictureUrl();
-        // ── MAP THE NEW FIELDS ──
         res.gcashName = artist.getGcashName();
         res.gcashNumber = artist.getGcashNumber();
         res.paymayaName = artist.getPaymayaName();
@@ -154,7 +180,6 @@ public class AdminService {
         artist.setFacebook(req.facebook);
         artist.setInstagram(req.instagram);
         artist.setTwitter(req.twitter);
-        // ── SAVE THE NEW FIELDS ──
         artist.setGcashName(req.gcashName);
         artist.setGcashNumber(req.gcashNumber);
         artist.setPaymayaName(req.paymayaName);
@@ -168,7 +193,6 @@ public class AdminService {
         return getProfile(userRepo.save(artist));
     }
 
-    // ── Skills & Experience ──
     public List<SkillDto> getSkills(User artist) {
         return skillRepo.findByArtistId(artist.getId()).stream().map(s -> {
             SkillDto dto = new SkillDto(); dto.id = s.getId(); dto.name = s.getName(); return dto;
@@ -214,7 +238,6 @@ public class AdminService {
         experienceRepo.delete(e);
     }
 
-    // ── NEW: Education ──
     public List<EducationDto> getEducation(User artist) {
         return educationRepo.findByArtistIdOrderByEndYearDesc(artist.getId()).stream()
                 .map(this::mapToEducationDto).collect(Collectors.toList());
@@ -240,7 +263,6 @@ public class AdminService {
         educationRepo.delete(e);
     }
 
-    // ── NEW: Achievements ──
     public List<AchievementDto> getAchievements(User artist) {
         return achievementRepo.findByArtistIdOrderByYearDesc(artist.getId()).stream()
                 .map(this::mapToAchievementDto).collect(Collectors.toList());
@@ -264,7 +286,6 @@ public class AdminService {
         achievementRepo.delete(a);
     }
 
-    // ── Helpers ──
     private WorkResponse toWorkResponse(PortfolioWork w) {
         WorkResponse r = new WorkResponse();
         r.id = w.getId(); r.title = w.getTitle(); r.category = w.getCategory();
@@ -272,6 +293,7 @@ public class AdminService {
         r.createdAt = w.getCreatedAt();
         return r;
     }
+
     private ServiceResponse toServiceResponse(ArtistServiceEntity s) {
         ServiceResponse r = new ServiceResponse();
         r.id = s.getId(); r.name = s.getName(); r.price = s.getPrice();
@@ -280,18 +302,61 @@ public class AdminService {
         r.skills = s.getSkills() != null ? new java.util.ArrayList<>(s.getSkills()) : new java.util.ArrayList<>();
         return r;
     }
+
     private BookingResponse toBookingResponse(Booking b) {
-        BookingResponse r = new BookingResponse(); r.id = b.getId(); r.clientName = b.getClient().getUsername();
-        r.clientEmail = b.getClient().getEmail(); r.serviceName = b.getService().getName(); r.price = b.getService().getPrice();
-        r.status = b.getStatus().name(); r.createdAt = b.getCreatedAt();
+        BookingResponse r = new BookingResponse();
+        r.setId(b.getId());
+        r.setClientName(b.getClient() != null ? b.getClient().getUsername() : "Unknown");
+        r.setClientEmail(b.getClient() != null ? b.getClient().getEmail() : "");
+
+        if (b.getService() != null) {
+            r.setServiceName(b.getService().getName());
+            r.setServiceId(b.getService().getId());
+            r.setPrice(b.getService().getPrice());
+
+            if (b.getService().getSamples() != null && !b.getService().getSamples().isEmpty()) {
+                r.setServiceSample(b.getService().getSamples().get(0));
+            }
+
+            if (b.getService().getArtist() != null) {
+                User artist = b.getService().getArtist();
+                r.setArtistName(artist.getUsername());
+                r.setArtistId(artist.getId());
+                r.setGcashName(artist.getGcashName());
+                r.setGcashNumber(artist.getGcashNumber());
+                r.setPaymayaName(artist.getPaymayaName());
+                r.setPaymayaNumber(artist.getPaymayaNumber());
+            }
+        }
+
+        r.setStatus(b.getStatus() != null ? b.getStatus().name() : "PENDING");
+        r.setPaymentStatus(b.getPaymentStatus() != null ? b.getPaymentStatus().name() : "UNPAID");
+        r.setCreatedAt(b.getCreatedAt());
+        r.setDetails(b.getDetails());
+        r.setReferenceImageUrl(b.getReferenceImageUrl());
+
+        if (b.getPayments() != null && !b.getPayments().isEmpty()) {
+            r.setPaymentHistory(b.getPayments().stream().map(p -> {
+                BookingResponse.PaymentDto pdto = new BookingResponse.PaymentDto();
+                pdto.setReferenceId(p.getReferenceId());
+                pdto.setProofImageUrl(p.getProofImageUrl());
+                pdto.setSubmittedAt(p.getSubmittedAt());
+                return pdto;
+            }).collect(Collectors.toList()));
+        } else {
+            r.setPaymentHistory(new ArrayList<>());
+        }
+
         return r;
     }
+
     private EducationDto mapToEducationDto(Education e) {
         EducationDto dto = new EducationDto();
         dto.id = e.getId(); dto.degree = e.getDegree(); dto.institution = e.getInstitution();
         dto.startYear = e.getStartYear(); dto.endYear = e.getEndYear(); dto.imageUrl = e.getImageUrl();
         return dto;
     }
+
     private AchievementDto mapToAchievementDto(Achievement a) {
         AchievementDto dto = new AchievementDto();
         dto.id = a.getId(); dto.title = a.getTitle(); dto.year = a.getYear();

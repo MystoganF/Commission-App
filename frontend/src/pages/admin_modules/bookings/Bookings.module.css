@@ -1,26 +1,52 @@
 .page { 
   display: flex; 
   flex-direction: column; 
-  gap: 20px; 
-  /* Push content past the sidebar. Adjust 260px to your sidebar's actual width */
+  gap: 30px; 
+  /* Push content past the sidebar */
   margin-left: 260px; 
-  /* Add some padding so the content doesn't stick directly to the edges */
-  padding: 30px; 
+  padding: 40px; 
 }
 
-/* ── Filter tabs ── */
-.filters {
+/* ── Header ── */
+.headerTitleGroup {
   display: flex;
+  flex-direction: column;
   gap: 4px;
+  margin-bottom: 8px;
+}
+.label {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+.title {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 300;
+  color: var(--text);
+  margin: 0;
+}
+.subtitle {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ── Filter Tabs ── */
+.filterTabs {
+  display: flex;
+  gap: 8px;
   border-bottom: 1px solid var(--border);
   padding-bottom: 0;
+  margin-top: 10px;
 }
 
-.filterBtn {
+.tabBtn {
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
-  padding: 8px 16px 10px;
+  padding: 10px 16px 12px;
   font-family: var(--font-body);
   font-size: 12px;
   letter-spacing: 0.08em;
@@ -29,27 +55,30 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   transition: color 0.2s, border-color 0.2s;
   margin-bottom: -1px;
 }
-.filterBtn:hover { color: var(--text); }
-.filterActive {
+.tabBtn:hover { color: var(--text); }
+.tabActive {
   color: var(--text);
   border-bottom-color: var(--accent);
 }
 
-.filterCount {
+.tabCount {
   background: var(--accent-dim);
   color: var(--accent);
   font-size: 10px;
-  padding: 1px 6px;
+  padding: 2px 6px;
   border-radius: 10px;
   font-weight: 500;
 }
 
 /* ── Table ── */
-.tableWrap { overflow-x: auto; }
+.tableWrap { 
+  overflow-x: auto; 
+  padding: 0; /* Remove padding if shared.card has it, so table flushes to edge */
+}
 
 .table {
   width: 100%;
@@ -58,13 +87,14 @@
 
 .table thead tr {
   border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,0.2);
 }
 
 .table th {
-  padding: 12px 20px;
+  padding: 16px 24px;
   text-align: left;
   font-size: 11px;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
   font-weight: 500;
@@ -72,7 +102,7 @@
 }
 
 .table td {
-  padding: 14px 20px;
+  padding: 16px 24px;
   font-size: 14px;
   color: var(--text);
   font-weight: 300;
@@ -80,20 +110,67 @@
   vertical-align: middle;
 }
 
+.row {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
 .table tbody tr:last-child td { border-bottom: none; }
-.table tbody tr:hover td { background: rgba(255,255,255,0.015); }
 
-.clientName { font-weight: 400; }
-.clientEmail { font-size: 12px; color: var(--muted); margin-top: 2px; }
+/* ── Cell Typography ── */
+.clientName { font-weight: 400; color: #fff; }
+.clientEmail { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.serviceCell { color: #eee; }
 .dateCell  { color: var(--muted) !important; font-size: 13px !important; white-space: nowrap; }
-.priceCell { color: var(--accent) !important; font-weight: 400 !important; }
 
-.rowActions { display: flex; gap: 6px; align-items: center; }
-.noAction   { color: var(--border2); font-size: 14px; }
+.actionCell { text-align: right; }
+.viewBtn {
+  font-size: 12px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  opacity: 0.6;
+  transition: 0.2s;
+}
+.row:hover .viewBtn { opacity: 1; }
 
+/* ── Badges ── */
+.paymentBadge, .statusBadge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Payment Colors */
+.unpaid { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
+.partially_paid { background: rgba(241, 196, 15, 0.1); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.2); }
+.fully_paid { background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
+
+/* Progress Colors */
+.pending { background: rgba(255, 255, 255, 0.05); color: #aaa; border: 1px solid rgba(255, 255, 255, 0.1); }
+.in_progress { background: rgba(52, 152, 219, 0.1); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.2); }
+.almost_finished { background: rgba(155, 89, 182, 0.1); color: #9b59b6; border: 1px solid rgba(155, 89, 182, 0.2); }
+.completed { background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
+.cancelled { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
+
+/* Misc */
 .loading {
   font-size: 14px;
   color: var(--muted);
   padding: 48px;
   text-align: center;
+  margin-left: 260px;
 }
+/* Payment Colors */
+.unpaid { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
+.partially_paid { background: rgba(241, 196, 15, 0.1); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.2); }
+.fully_paid { background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
+.refunded { background: rgba(158, 158, 158, 0.1); color: #9e9e9e; border: 1px solid rgba(158, 158, 158, 0.2); } /* <-- ADD THIS LINE */

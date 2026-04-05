@@ -16,7 +16,13 @@ public class BookingDtos {
 
     @Data
     public static class StatusUpdateRequest {
-        public Booking.BookingStatus status;
+        public String status;
+    }
+
+    // ── MOVED THIS HERE: So the controller can find it! ──
+    @Data
+    public static class PaymentStatusUpdateRequest {
+        public String paymentStatus;
     }
 
     @Data
@@ -34,7 +40,6 @@ public class BookingDtos {
         public String referenceImageUrl;
         public LocalDateTime createdAt;
 
-        // ── ADD THESE TO REMOVE THE RED SQUIGGLES ──
         public String serviceSample;
         public String paymentStatus;
         public String gcashName;

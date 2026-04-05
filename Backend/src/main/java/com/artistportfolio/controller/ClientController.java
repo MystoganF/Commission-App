@@ -45,4 +45,26 @@ public class ClientController {
     public ResponseEntity<?> getMyBookings(@AuthenticationPrincipal User client) {
         return ResponseEntity.ok(clientService.getMyBookings(client));
     }
+
+    // ── PROFILE ENDPOINTS ──
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(@AuthenticationPrincipal User client) {
+        return ResponseEntity.ok(clientService.getProfile(client));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile(
+            @AuthenticationPrincipal User client,
+            @RequestBody com.artistportfolio.dto.ProfileDtos.ProfileUpdateRequest req) {
+        return ResponseEntity.ok(clientService.updateProfile(client, req));
+    }
+
+    @PostMapping(value = "/profile/picture", consumes = {"multipart/form-data"}) // Added consumes
+    public ResponseEntity<?> updateProfilePicture(
+            @AuthenticationPrincipal User client,
+            @RequestParam("file") MultipartFile file
+    ) throws Exception {
+        return ResponseEntity.ok(clientService.updateProfilePicture(client, file));
+    }
 }

@@ -1,63 +1,70 @@
-import { useEffect, useState } from 'react'
-import api from '../../../api/axios'
-import shared from '../../../styles/shared.module.css'
-import styles from './Bookings.module.css'
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../../api/axios';
+import shared from '../../../styles/shared.module.css';
+import styles from './Bookings.module.css';
 
-const STATUS_FILTERS = ['ALL', 'PENDING', 'APPROVED', 'DECLINED', 'COMPLETED']
+// ── CHANGED: Replaced 'DECLINED' with 'CANCELLED' ──
+const STATUS_FILTERS = ['ALL', 'PENDING', 'IN_PROGRESS', 'ALMOST_FINISHED', 'COMPLETED', 'CANCELLED'];
 
 export default function Bookings() {
-  const [bookings, setBookings] = useState([])
-  const [loading, setLoading]   = useState(true)
-  const [filter, setFilter]     = useState('ALL')
-  const [toast, setToast]       = useState('')
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('ALL');
+  const [toast, setToast] = useState('');
+  
+  const navigate = useNavigate();
 
-  useEffect(() => { fetchBookings() }, [])
+  useEffect(() => {
+    fetchBookings();
+  }, []);
 
   async function fetchBookings() {
     try {
-      const res = await api.get('/admin/bookings')
-      setBookings(res.data)
-    } catch {
-      showToast('Failed to load bookings.')
+      const res = await api.get('/admin/bookings');
+      setBookings(res.data);
+    } catch (err) {
+      showToast('Failed to sync with server.');
     } finally {
-      setLoading(false)
-    }
-  }
-
-  async function updateStatus(id, status) {
-    try {
-      const res = await api.patch(`/admin/bookings/${id}/status`, { status })
-      setBookings(prev => prev.map(b => b.id === id ? res.data : b))
-      showToast(`Booking marked as ${status.toLowerCase()}.`)
-    } catch {
-      showToast('Update failed.')
+      setLoading(false);
     }
   }
 
   function showToast(msg) {
-    setToast(msg)
-    setTimeout(() => setToast(''), 2800)
+    setToast(msg);
+    setTimeout(() => setToast(''), 3000);
   }
 
-  const visible = filter === 'ALL'
-    ? bookings
-    : bookings.filter(b => b.status === filter)
+  // Filter Logic
+  const visibleBookings = filter === 'ALL' 
+    ? bookings 
+    : bookings.filter(b => b.status === filter);
 
-  if (loading) return <div className={styles.loading}>Loading…</div>
+  if (loading) return <div className={styles.loading}>Synchronizing...</div>;
 
   return (
     <div className={`${shared.pageFade} ${styles.page}`}>
-      {/* Filter tabs */}
-      <div className={styles.filters}>
+      <header className={styles.header}>
+        <div className={styles.headerTitleGroup}>
+          <span className={styles.label}>Management</span>
+          <h1 className={styles.title}>Commission Requests</h1>
+        </div>
+        <p className={styles.subtitle}>
+          Review instructions, verify payments, and update project progress.
+        </p>
+      </header>
+
+      {/* ── Status Tabs ── */}
+      <div className={styles.filterTabs}>
         {STATUS_FILTERS.map(f => (
           <button
             key={f}
-            className={`${styles.filterBtn} ${filter === f ? styles.filterActive : ''}`}
+            className={`${styles.tabBtn} ${filter === f ? styles.tabActive : ''}`}
             onClick={() => setFilter(f)}
           >
-            {f.charAt(0) + f.slice(1).toLowerCase()}
+            {f.replace('_', ' ').charAt(0) + f.replace('_', ' ').slice(1).toLowerCase()}
             {f !== 'ALL' && (
-              <span className={styles.filterCount}>
+              <span className={styles.tabCount}>
                 {bookings.filter(b => b.status === f).length}
               </span>
             )}
@@ -65,11 +72,11 @@ export default function Bookings() {
         ))}
       </div>
 
-      {/* Table */}
-      {visible.length === 0 ? (
+      {/* ── Bookings Table ── */}
+      {visibleBookings.length === 0 ? (
         <div className={shared.empty}>
-          <div className={shared.emptyIcon}>◉</div>
-          <p className={shared.emptyText}>No bookings here yet.</p>
+          <div className={shared.emptyIcon}>✦</div>
+          <p className={shared.emptyText}>No requests found in this category.</p>
         </div>
       ) : (
         <div className={`${shared.card} ${styles.tableWrap}`}>
@@ -77,16 +84,40 @@ export default function Bookings() {
             <thead>
               <tr>
                 <th>Client</th>
-                <th>Service</th>
-                <th>Date</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>Service Type</th>
+                <th>Payment</th>
+                <th>Submission Date</th>
+                <th>Progress</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              {visible.map(b => (
-                <BookingRow key={b.id} booking={b} onUpdate={updateStatus} />
+              {visibleBookings.map((b) => (
+                <tr 
+                  key={b.id} 
+                  className={styles.row} 
+                  onClick={() => navigate(`/admin/bookings/${b.id}`)}
+                >
+                  <td>
+                    <div className={styles.clientName}>{b.clientName}</div>
+                    <div className={styles.clientEmail}>{b.clientEmail}</div>
+                  </td>
+                  <td className={styles.serviceCell}>{b.serviceName}</td>
+                  <td>
+                    <span className={`${styles.paymentBadge} ${styles[b.paymentStatus?.toLowerCase() || 'unpaid']}`}>
+                      {(b.paymentStatus || 'UNPAID').replace('_', ' ')}
+                    </span>
+                  </td>
+                  <td className={styles.dateCell}>{formatDate(b.createdAt)}</td>
+                  <td>
+                    <span className={`${styles.statusBadge} ${styles[b.status?.toLowerCase()]}`}>
+                      {b.status?.replace('_', ' ')}
+                    </span>
+                  </td>
+                  <td className={styles.actionCell}>
+                    <span className={styles.viewBtn}>Manage →</span>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
@@ -95,71 +126,16 @@ export default function Bookings() {
 
       {toast && <div className={shared.toast}>✦ &nbsp;{toast}</div>}
     </div>
-  )
+  );
 }
 
-function BookingRow({ booking: b, onUpdate }) {
-  const statusClass = {
-    PENDING:   shared.badgePending,
-    APPROVED:  shared.badgeApproved,
-    DECLINED:  shared.badgeDeclined,
-    COMPLETED: shared.badgeCompleted,
-  }[b.status] ?? shared.badgePending
-
-  return (
-    <tr>
-      <td>
-        <div className={styles.clientName}>{b.clientName}</div>
-        <div className={styles.clientEmail}>{b.clientEmail}</div>
-      </td>
-      <td>{b.serviceName}</td>
-      <td className={styles.dateCell}>{formatDate(b.createdAt)}</td>
-      <td className={styles.priceCell}>{b.price}</td>
-      <td>
-        <span className={`${shared.badge} ${statusClass}`}>{cap(b.status)}</span>
-      </td>
-      <td>
-        <div className={styles.rowActions}>
-          {b.status === 'PENDING' && (
-            <>
-              <button
-                className={`${shared.btn} ${shared.btnPrimary} ${shared.btnSm}`}
-                onClick={() => onUpdate(b.id, 'APPROVED')}
-              >
-                Approve
-              </button>
-              <button
-                className={`${shared.btn} ${shared.btnDanger} ${shared.btnSm}`}
-                onClick={() => onUpdate(b.id, 'DECLINED')}
-              >
-                Decline
-              </button>
-            </>
-          )}
-          {b.status === 'APPROVED' && (
-            <button
-              className={`${shared.btn} ${shared.btnGhost} ${shared.btnSm}`}
-              onClick={() => onUpdate(b.id, 'COMPLETED')}
-            >
-              Complete
-            </button>
-          )}
-          {(b.status === 'DECLINED' || b.status === 'COMPLETED') && (
-            <span className={styles.noAction}>—</span>
-          )}
-        </div>
-      </td>
-    </tr>
-  )
-}
+// ── Helpers ──
 
 function formatDate(iso) {
-  if (!iso) return '—'
+  if (!iso) return '—';
   return new Date(iso).toLocaleDateString('en-PH', {
-    year: 'numeric', month: 'short', day: 'numeric',
-  })
-}
-
-function cap(str) {
-  return str ? str.charAt(0) + str.slice(1).toLowerCase() : ''
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
 }

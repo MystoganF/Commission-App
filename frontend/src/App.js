@@ -9,13 +9,14 @@ import AdminLayout from './pages/admin_modules/Admin_Layout';
 import Overview from './pages/admin_modules/overview/Overview';
 import Portfolio from './pages/admin_modules/portfolio/Portfolio';
 import Bookings from './pages/admin_modules/bookings/Bookings';
+import AdminBookingDetail from './pages/admin_modules/bookings/AdminBookingDetail'; // <-- 1. ADDED THIS
 import Profile from './pages/admin_modules/profile/Profile';
 import ServicesList from './pages/admin_modules/services/ServicesList';
 import AddService from './pages/admin_modules/services/AddService';
 import ServiceDetail from './pages/admin_modules/services/ServiceDetail';
 
 // Client Modules
-import ClientLayout from './pages/client_modules/Client_Layout'; // Added this import
+import ClientLayout from './pages/client_modules/Client_Layout';
 import ClientHome from './pages/client_modules/home/Home';
 import ExploreArtists from './pages/client_modules/explore/ExploreArtists';
 import ClientServices from './pages/client_modules/services/ClientServices';
@@ -23,6 +24,8 @@ import MyBookings from './pages/client_modules/bookings/MyBookings';
 import ArtistPortfolioView from './pages/client_modules/explore/ArtistPortfolioView';
 import BookingForm from './pages/client_modules/bookings/BookingForm';
 import BookingDetails from './pages/client_modules/bookings/BookingDetails';
+import ClientProfile from './pages/client_modules/client_profile/ClientProfile';
+
 function App() {
   return (
     <BrowserRouter>
@@ -36,7 +39,10 @@ function App() {
           <Route index element={<Navigate to="overview" replace />} />
           <Route path="overview" element={<Overview />} />
           <Route path="portfolio" element={<Portfolio />} />
+          
           <Route path="bookings" element={<Bookings />} />
+          <Route path="bookings/:id" element={<AdminBookingDetail />} /> 
+          
           <Route path="profile" element={<Profile />} />
           <Route path="services" element={<ServicesList />} />
           <Route path="services/new" element={<AddService />} />
@@ -53,7 +59,7 @@ function App() {
           <Route path="my-bookings" element={<MyBookings />} />
           <Route path="bookings/:id" element={<BookingDetails />} />
           <Route path="artist/:id" element={<ArtistPortfolioView />} />
-          
+          <Route path="profile" element={<ClientProfile />} />
         </Route>
 
         {/* Utility Redirects */}

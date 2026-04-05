@@ -43,11 +43,11 @@ public class Booking {
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public enum BookingStatus { PENDING, APPROVED, DECLINED, COMPLETED }
+    public enum BookingStatus { PENDING, IN_PROGRESS, ALMOST_FINISHED, COMPLETED, CANCELLED }
 
     private String referenceImageUrl;
 
-    public enum PaymentStatus { UNPAID, PARTIALLY_PAID, FULLY_PAID }
+    public enum PaymentStatus { UNPAID, PARTIALLY_PAID, FULLY_PAID, REFUNDED }
 
     // Inside Booking class:
     @Enumerated(EnumType.STRING)

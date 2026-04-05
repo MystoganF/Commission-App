@@ -89,9 +89,19 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getBookings(artist));
     }
 
+    @GetMapping("/bookings/{id}")
+    public ResponseEntity<?> getBookingById(@AuthenticationPrincipal User artist, @PathVariable Long id) {
+        return ResponseEntity.ok(adminService.getBookingById(artist, id));
+    }
+
     @PatchMapping("/bookings/{id}/status")
     public ResponseEntity<?> updateBookingStatus(@AuthenticationPrincipal User artist, @PathVariable Long id, @RequestBody StatusUpdateRequest req) {
         return ResponseEntity.ok(adminService.updateBookingStatus(artist, id, req));
+    }
+
+    @PatchMapping("/bookings/{id}/payment-status")
+    public ResponseEntity<?> updatePaymentStatus(@AuthenticationPrincipal User artist, @PathVariable Long id, @RequestBody PaymentStatusUpdateRequest req) {
+        return ResponseEntity.ok(adminService.updatePaymentStatus(artist, id, req));
     }
 
     @GetMapping("/profile")
@@ -112,15 +122,16 @@ public class AdminController {
         return ResponseEntity.ok(adminService.updateProfilePicture(artist, file));
     }
 
-    // ── Skills & Experience ──
     @GetMapping("/skills")
     public ResponseEntity<?> getSkills(@AuthenticationPrincipal User artist) {
         return ResponseEntity.ok(adminService.getSkills(artist));
     }
+
     @PostMapping("/skills")
     public ResponseEntity<?> addSkill(@AuthenticationPrincipal User artist, @RequestBody SkillDto req) {
         return ResponseEntity.ok(adminService.addSkill(artist, req));
     }
+
     @DeleteMapping("/skills/{id}")
     public ResponseEntity<?> deleteSkill(@AuthenticationPrincipal User artist, @PathVariable Long id) {
         adminService.deleteSkill(artist, id);
@@ -131,21 +142,23 @@ public class AdminController {
     public ResponseEntity<?> getExperiences(@AuthenticationPrincipal User artist) {
         return ResponseEntity.ok(adminService.getExperiences(artist));
     }
+
     @PostMapping("/experiences")
     public ResponseEntity<?> addExperience(@AuthenticationPrincipal User artist, @RequestBody ExperienceDto req) {
         return ResponseEntity.ok(adminService.addExperience(artist, req));
     }
+
     @PutMapping("/experiences/{id}")
     public ResponseEntity<?> updateExperience(@AuthenticationPrincipal User artist, @PathVariable Long id, @RequestBody ExperienceDto req) {
         return ResponseEntity.ok(adminService.updateExperience(artist, id, req));
     }
+
     @DeleteMapping("/experiences/{id}")
     public ResponseEntity<?> deleteExperience(@AuthenticationPrincipal User artist, @PathVariable Long id) {
         adminService.deleteExperience(artist, id);
         return ResponseEntity.noContent().build();
     }
 
-    // ── NEW: Education (Multipart) ──
     @GetMapping("/education")
     public ResponseEntity<?> getEducation(@AuthenticationPrincipal User artist) {
         return ResponseEntity.ok(adminService.getEducation(artist));
@@ -182,7 +195,6 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // ── NEW: Achievements (Multipart) ──
     @GetMapping("/achievements")
     public ResponseEntity<?> getAchievements(@AuthenticationPrincipal User artist) {
         return ResponseEntity.ok(adminService.getAchievements(artist));
