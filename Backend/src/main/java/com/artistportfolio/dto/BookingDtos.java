@@ -4,6 +4,7 @@ import com.artistportfolio.entity.Booking;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class BookingDtos {
 
@@ -32,6 +33,21 @@ public class BookingDtos {
         public String details;
         public String referenceImageUrl;
         public LocalDateTime createdAt;
+
+        // ── ADD THESE TO REMOVE THE RED SQUIGGLES ──
         public String serviceSample;
+        public String paymentStatus;
+        public String gcashName;
+        public String gcashNumber;
+        public String paymayaName;
+        public String paymayaNumber;
+        public List<PaymentDto> paymentHistory;
+
+        @Data
+        public static class PaymentDto {
+            public String referenceId;
+            public String proofImageUrl;
+            public LocalDateTime submittedAt;
+        }
     }
 }

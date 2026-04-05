@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.artistportfolio.entity.ArtistServiceEntity;
 
 @Entity
@@ -12,6 +15,9 @@ import com.artistportfolio.entity.ArtistServiceEntity;
 @NoArgsConstructor
 @Table(name = "bookings")
 public class Booking {
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Payment> payments = new ArrayList<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +46,14 @@ public class Booking {
     public enum BookingStatus { PENDING, APPROVED, DECLINED, COMPLETED }
 
     private String referenceImageUrl;
+
+    public enum PaymentStatus { UNPAID, PARTIALLY_PAID, FULLY_PAID }
+
+    // Inside Booking class:
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus = PaymentStatus.UNPAID;
+
+
+
+
 }

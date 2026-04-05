@@ -13,57 +13,62 @@ export default function BookingForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  // Form State
+  // Project Content State
   const [details, setDetails] = useState('');
   const [references, setReferences] = useState('');
   const [refFile, setRefFile] = useState(null);
 
+  // Payment Submission State (Mandatory)
+  const [payRef, setPayRef] = useState('');
+  const [payFile, setPayFile] = useState(null);
+
   useEffect(() => {
-    // Fetch service details including artist payment info
     api.get(`/public/services/${serviceId}`)
       .then(res => setService(res.data))
-      .catch(() => {
-        setError("Service not found or unavailable.");
-        setLoading(false);
-      })
+      .catch(() => setError("Service unavailable."))
       .finally(() => setLoading(false));
   }, [serviceId]);
 
+  const downpayment = service ? Number(service.price) * 0.3 : 0;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
     if (!details.trim()) {
-      setError("Please provide instructions for the artist.");
+      setError("Please provide project instructions.");
+      return;
+    }
+    if (!payRef || !payFile) {
+      setError("Downpayment reference and proof image are required to secure your slot.");
       return;
     }
 
     setSubmitting(true);
     setError('');
 
-    // Use FormData for Multipart Upload
     const formData = new FormData();
     formData.append('serviceId', serviceId);
-    formData.append('details', `INSTRUCTIONS:\n${details}\n\nREFERENCES:\n${references || 'None provided'}`);
+    formData.append('details', `INSTRUCTIONS:\n${details}\n\nREFS:\n${references || 'None'}`);
     
-    if (refFile) {
-      formData.append('file', refFile);
-    }
+    if (refFile) formData.append('file', refFile);
+    formData.append('paymentReference', payRef);
+    formData.append('paymentFile', payFile);
 
     try {
       await api.post('/client/bookings', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-
       navigate('/client/my-bookings', { 
-        state: { toastMsg: "Commission requested successfully! The artist will review it soon." } 
+        state: { toastMsg: "Request sent! The artist will review your proof soon." } 
       });
-
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to submit booking. Please try again.");
+      setError("Failed to submit. Please check your connection or file size.");
       setSubmitting(false);
     }
   };
 
-  if (loading) return <div className={styles.loading}>Loading service details...</div>;
+  if (loading) return <div className={styles.loading}>Loading Service...</div>;
   if (!service) return <div className={styles.errorPage}>{error}</div>;
 
   return (
@@ -74,115 +79,116 @@ export default function BookingForm() {
         {/* ── LEFT SIDE: SUMMARY ── */}
         <aside className={styles.summarySidebar}>
           <h2 className={styles.summaryTitle}>Booking Summary</h2>
-          
           <div className={styles.servicePreview}>
-            {service.samples && service.samples.length > 0 ? (
-              <img src={service.samples[0]} alt={service.name} className={styles.previewImg} />
+            {service.samples?.length > 0 ? (
+              <img src={service.samples[0]} className={styles.previewImg} alt="" />
             ) : (
               <div className={styles.noPreview}>No Image</div>
             )}
           </div>
-          
           <h3 className={styles.serviceName}>{service.name}</h3>
-          
-          {/* Link to Artist Portfolio */}
-          <p 
-            className={styles.artistLink} 
-            onClick={() => navigate(`/client/artist/${service.artistId}`)}
-          >
+          <p className={styles.artistLink} onClick={() => navigate(`/client/artist/${service.artistId}`)}>
             Artist: <span>{service.artistName}</span>
           </p>
           
           <div className={styles.detailsBox}>
             <div className={styles.detailRow}>
-              <span>Base Price</span>
+              <span>Total Price</span>
               <span className={styles.priceHighlight}>₱ {Number(service.price).toLocaleString()}</span>
             </div>
-            {service.turnaround && (
-              <div className={styles.detailRow}>
-                <span>Estimated Delivery</span>
-                <span>{service.turnaround}</span>
-              </div>
-            )}
+            <div className={styles.detailRow}>
+              <span>Downpayment (30%)</span>
+              <span style={{color: '#fff', fontWeight: '700'}}>₱ {downpayment.toLocaleString()}</span>
+            </div>
           </div>
 
-          {/* Payment Info Display */}
           {(service.gcashNumber || service.paymayaNumber) && (
             <div className={styles.paymentNotice}>
-              <p className={styles.payNoticeTitle}>Payment Channels:</p>
+              <p className={styles.payNoticeTitle}>Artist Payment Channels:</p>
               {service.gcashNumber && (
                 <div className={styles.payMethod}>
-                  <strong>GCash:</strong> {service.gcashNumber} <br/>
-                  <small>{service.gcashName}</small>
+                  <strong>GCash:</strong> {service.gcashNumber} <br/><small>({service.gcashName})</small>
                 </div>
               )}
               {service.paymayaNumber && (
                 <div className={styles.payMethod}>
-                  <strong>Paymaya:</strong> {service.paymayaNumber} <br/>
-                  <small>{service.paymayaName}</small>
+                  <strong>Paymaya:</strong> {service.paymayaNumber} <br/><small>({service.paymayaName})</small>
                 </div>
               )}
             </div>
           )}
-          
-          <p className={styles.disclaimer}>
-            Payment is typically handled off-platform. Please coordinate with the artist once they accept your request.
-          </p>
+          <p className={styles.disclaimer}>Note: Work officially begins once the 30% downpayment is verified.</p>
         </aside>
 
-        {/* ── RIGHT SIDE: THE FORM ── */}
+        {/* ── RIGHT SIDE: FORM ── */}
         <main className={styles.formMain}>
-          <h1 className={styles.formTitle}>Commission Details</h1>
-          <p className={styles.formSubtitle}>Provide clear instructions and references for the artist.</p>
+          <div className={styles.formHeader}>
+            <span className={styles.formLabel}>New Commission</span>
+            <h1 className={styles.formTitle}>Request Details</h1>
+          </div>
 
           <form onSubmit={handleSubmit} className={styles.form}>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>
-                Project Instructions <span className={styles.required}>*</span>
-              </label>
+            {/* Instructions */}
+            <div className={styles.field}>
+              <label className={styles.label}>Instructions <span className={styles.required}>*</span></label>
               <textarea 
                 className={styles.textarea} 
-                placeholder="Describe poses, colors, character traits, etc."
-                value={details}
-                onChange={(e) => setDetails(e.target.value)}
-                rows={6}
-                required
+                value={details} 
+                onChange={(e) => setDetails(e.target.value)} 
+                rows={5} 
+                placeholder="Describe what you want the artist to create..."
+                required 
               />
             </div>
 
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Reference Links (Optional)</label>
-              <textarea 
-                className={styles.textarea} 
-                placeholder="Pinterest, Drive, or social media links..."
-                value={references}
-                onChange={(e) => setReferences(e.target.value)}
-                rows={2}
-              />
-            </div>
-
-            {/* Image Reference Upload */}
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Upload Reference Image (Optional)</label>
+            {/* Optional Reference Image */}
+            <div className={styles.field}>
+              <label className={styles.label}>Reference Image (Optional)</label>
               <div className={styles.fileUploadWrapper}>
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={(e) => setRefFile(e.target.files[0])}
-                  className={styles.fileInput}
-                />
+                <div className={styles.filePlaceholder}>
+                  {refFile ? refFile.name : "Select visual reference..."}
+                  <span>Browse</span>
+                </div>
+                <input type="file" accept="image/*" onChange={(e) => setRefFile(e.target.files[0])} className={styles.fileInput} />
               </div>
             </div>
 
-            {error && <div className={styles.errorAlert}>{error}</div>}
+            {/* MANDATORY PAYMENT SECTION */}
+            <div className={styles.paymentSubmissionBox}>
+               <div className={styles.formHeader} style={{marginBottom: '20px'}}>
+                  <span className={styles.formLabel}>Payment</span>
+                  <h3 className={styles.paymentTitle}>Secure your slot</h3>
+                  <p className={styles.paymentNote}>Submit proof of 30% downpayment (₱ {downpayment.toLocaleString()})</p>
+               </div>
+               
+               <div className={styles.field}>
+                 <label className={styles.label}>Payment Reference ID <span className={styles.required}>*</span></label>
+                 <input 
+                   className={styles.input} 
+                   placeholder="GCash or Paymaya Ref No." 
+                   value={payRef} 
+                   onChange={e => setPayRef(e.target.value)} 
+                   required
+                 />
+               </div>
 
+               <div className={styles.field} style={{marginTop: '15px'}}>
+                 <label className={styles.label}>Proof of Payment <span className={styles.required}>*</span></label>
+                 <div className={styles.fileUploadWrapper}>
+                    <div className={styles.filePlaceholder}>
+                      {payFile ? payFile.name : "Upload receipt/screenshot..."}
+                      <span>Browse</span>
+                    </div>
+                    <input type="file" accept="image/*" onChange={(e) => setPayFile(e.target.files[0])} required className={styles.fileInput} />
+                 </div>
+               </div>
+            </div>
+
+            {error && <div className={styles.errorAlert}>{error}</div>}
+            
             <div className={styles.formActions}>
-              <button 
-                type="submit" 
-                className={styles.submitBtn} 
-                disabled={submitting}
-              >
-                {submitting ? 'Sending Request...' : 'Send Commission Request'}
+              <button type="submit" className={styles.btn} disabled={submitting}>
+                {submitting ? <span className={styles.spinner} /> : 'Send Commission Request →'}
               </button>
             </div>
           </form>

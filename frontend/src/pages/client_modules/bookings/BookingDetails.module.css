@@ -1,93 +1,616 @@
-.container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
-.backBtn { background: none; border: none; color: #888; cursor: pointer; margin-bottom: 30px; font-size: 14px; }
-.backBtn:hover { color: #fff; }
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 100px;
+}
+.backBtn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+.backBtn:hover {
+  color: #fff;
+}
 
-.layout { display: flex; gap: 60px; align-items: flex-start; }
+.layout {
+  display: flex;
+  gap: 60px;
+  align-items: flex-start;
+}
 
 /* Sidebar Summary */
-.summarySidebar { width: 340px; background: #111; border: 1px solid #222; border-radius: 16px; padding: 30px; position: sticky; top: 100px; }
-.summaryTitle { font-size: 20px; color: #fff; margin: 0 0 20px 0; border-bottom: 1px solid #222; padding-bottom: 15px; }
+.summarySidebar {
+  width: 340px;
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 16px;
+  padding: 30px;
+  position: sticky;
+  top: 100px;
+}
+.summaryTitle {
+  font-size: 20px;
+  color: #fff;
+  margin: 0 0 20px 0;
+  border-bottom: 1px solid #222;
+  padding-bottom: 15px;
+}
 
-.servicePreview { width: 100%; height: 180px; border-radius: 8px; overflow: hidden; margin-bottom: 20px; background: #000; border: 1px solid #333; }
-.previewImg { width: 100%; height: 100%; object-fit: cover; }
-.noPreview { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #555; }
+.servicePreview {
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background: #000;
+  border: 1px solid #333;
+}
+.previewImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.noPreview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+}
 
-.serviceName { font-size: 22px; color: #fff; margin: 0 0 5px 0; }
-.artistLink { font-size: 14px; color: #888; margin: 0 0 25px 0; cursor: pointer; }
-.artistLink span { color: #ccc; text-decoration: underline; }
-.artistLink:hover span { color: #c9b99a; }
+.serviceName {
+  font-size: 22px;
+  color: #fff;
+  margin: 0 0 5px 0;
+}
+.artistLink {
+  font-size: 14px;
+  color: #888;
+  margin: 0 0 25px 0;
+  cursor: pointer;
+}
+.artistLink span {
+  color: #ccc;
+  text-decoration: underline;
+}
+.artistLink:hover span {
+  color: #c9b99a;
+}
 
-.detailsBox { background: #1a1a1a; padding: 15px; border-radius: 8px; border: 1px solid #333; margin-bottom: 20px; }
-.detailRow { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; color: #aaa; }
-.detailRow:last-child { margin-bottom: 0; }
-.priceHighlight { color: #c9b99a; font-weight: 700; font-size: 16px; }
+.detailsBox {
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  margin-bottom: 20px;
+}
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #aaa;
+}
+.detailRow:last-child {
+  margin-bottom: 0;
+}
+.priceHighlight {
+  color: #c9b99a;
+  font-weight: 700;
+  font-size: 16px;
+}
 
 /* Payment Channels Style */
-.paymentNotice { background: rgba(201, 185, 154, 0.05); border: 1px solid rgba(201, 185, 154, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-.payNoticeTitle { font-size: 11px; text-transform: uppercase; color: #c9b99a; font-weight: 700; margin-bottom: 10px; }
-.payMethod { font-size: 13px; color: #fff; margin-bottom: 8px; line-height: 1.4; }
-.payMethod small { color: #888; }
-.disclaimer { font-size: 12px; color: #666; font-style: italic; line-height: 1.4; }
+.paymentNotice {
+  background: rgba(201, 185, 154, 0.05);
+  border: 1px solid rgba(201, 185, 154, 0.2);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.payNoticeTitle {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #c9b99a;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.payMethod {
+  font-size: 13px;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.payMethod small {
+  color: #888;
+}
+.disclaimer {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+  line-height: 1.4;
+}
 
 /* Main Content Area */
-.formMain { flex: 1; }
-.formTitle { font-size: 36px; color: #fff; margin: 0 0 10px 0; }
-.formSubtitle { color: #888; font-size: 15px; margin-bottom: 40px; }
+.formMain {
+  flex: 1;
+}
+.formTitle {
+  font-size: 36px;
+  color: #fff;
+  margin: 0 0 10px 0;
+}
+.formSubtitle {
+  color: #888;
+  font-size: 15px;
+  margin-bottom: 40px;
+}
 
-.displayForm { display: flex; flex-direction: column; gap: 30px; }
-.displayGroup { display: flex; flex-direction: column; gap: 12px; }
-.label { font-size: 13px; font-weight: 700; color: #c9b99a; text-transform: uppercase; letter-spacing: 0.05em; }
+.displayForm {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.displayGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #c9b99a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
 
 /* Read-Only text box */
-.readOnlyContent { 
-  background: #111; border: 1px solid #222; color: #eee; padding: 20px; 
-  border-radius: 12px; font-size: 15px; line-height: 1.7; white-space: pre-wrap; 
+.readOnlyContent {
+  background: #111;
+  border: 1px solid #222;
+  color: #eee;
+  padding: 20px;
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.7;
+  white-space: pre-wrap;
   min-height: 150px;
 }
 
 /* Submitted Image Thumbnail (Small) */
-.referenceImageContainer { 
+.referenceImageContainer {
   position: relative;
-  max-width: 280px; 
-  height: 180px; 
-  border-radius: 8px; 
-  overflow: hidden; 
-  border: 1px solid #333; 
-  background: #000; 
+  max-width: 280px;
+  height: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #333;
+  background: #000;
   cursor: zoom-in;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.referenceImageContainer:hover { border-color: #c9b99a; }
-.referenceImg { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+.referenceImageContainer:hover {
+  border-color: #c9b99a;
+}
+.referenceImg {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
 
 /* Hover Overlay */
 .imageOverlay {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.5); color: #fff; display: flex;
-  align-items: center; justify-content: center; font-size: 12px;
-  font-weight: 600; opacity: 0; transition: 0.2s;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0;
+  transition: 0.2s;
 }
-.referenceImageContainer:hover .imageOverlay { opacity: 1; }
+.referenceImageContainer:hover .imageOverlay {
+  opacity: 1;
+}
 
 /* Modal Full Image (Large) */
-.fullImageWrapper { width: 100%; max-height: 80vh; display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; overflow: hidden; }
-.fullImage { max-width: 100%; max-height: 100%; object-fit: contain; }
-
-.backButtonLarge { 
-  background: #222; color: #fff; font-size: 16px; font-weight: 700; 
-  padding: 16px 30px; border: 1px solid #333; border-radius: 8px; cursor: pointer; 
-  transition: 0.2s; width: 100%;
+.fullImageWrapper {
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
 }
-.backButtonLarge:hover { background: #333; }
+.fullImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.backButtonLarge {
+  background: #222;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 16px 30px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+  width: 100%;
+}
+.backButtonLarge:hover {
+  background: #333;
+}
 
 /* Status Colors */
-.statusText { font-weight: 800; text-transform: uppercase; font-size: 12px; }
-.pending { color: #888; }
-.accepted { color: #2196F3; }
-.completed { color: #4CAF50; }
-.rejected { color: #F44336; }
+.statusText {
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.pending {
+  color: #888;
+}
+.accepted {
+  color: #2196f3;
+}
+.completed {
+  color: #4caf50;
+}
+.rejected {
+  color: #f44336;
+}
 
-.loading { padding: 150px; text-align: center; color: #444; }
-.errorPage { padding: 100px; text-align: center; color: #e74c3c; font-size: 18px; }
+.loading {
+  padding: 150px;
+  text-align: center;
+  color: #444;
+}
+.errorPage {
+  padding: 100px;
+  text-align: center;
+  color: #e74c3c;
+  font-size: 18px;
+}
+/* Sidebar and Layout matching original Booking.module.css */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 100px;
+}
+.layout {
+  display: flex;
+  gap: 50px;
+  align-items: flex-start;
+}
+.summarySidebar {
+  width: 340px;
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 16px;
+  padding: 25px;
+  position: sticky;
+  top: 100px;
+}
+
+/* Image Thumbnails */
+.thumbContainer {
+  width: 200px;
+  height: 140px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  cursor: zoom-in;
+  border: 1px solid #333;
+  background: #000;
+}
+.thumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.thumbOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.thumbContainer:hover .thumbOverlay {
+  opacity: 1;
+}
+
+/* Payment History */
+.historySection {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid #222;
+}
+.historyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+.historyCard {
+  background: #161616;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #222;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.smallThumb {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.historyInfo p {
+  margin: 0;
+  font-size: 13px;
+  color: #fff;
+}
+.historyInfo small {
+  color: #555;
+  font-size: 11px;
+}
+
+/* Further Payment Form */
+.furtherPaymentBox {
+  margin-top: 30px;
+  background: #111;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #222;
+}
+.furtherForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Status Styles */
+.statusText {
+  font-weight: 700;
+  font-size: 12px;
+}
+.pending {
+  color: #888;
+}
+.unpaid {
+  color: #e74c3c;
+}
+.partially_paid {
+  color: #f1c40f;
+}
+.fully_paid {
+  color: #2ecc71;
+}
+
+/* Lightbox Modal */
+.lightboxWrapper {
+  background: #000;
+  padding: 10px;
+  border-radius: 8px;
+}
+.lightboxImg {
+  max-width: 100%;
+  max-height: 80vh;
+  display: block;
+  margin: 0 auto;
+}
+/* --- Further Payment Section --- */
+.furtherPaymentBox {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  animation: fadeIn 0.8s ease both;
+}
+
+.furtherForm {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 480px; /* Keeps the form elegant and not too wide */
+}
+
+/* Custom File Input Styling to match Login Inputs */
+.fileUploadWrapper {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.fileUploadWrapper:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.fileInput {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+  width: 100%;
+}
+
+.fileInput::file-selector-button {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 2px;
+  margin-right: 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.fileInput::file-selector-button:hover {
+  background: rgba(201, 185, 154, 0.2);
+}
+
+/* Reusing your Login Button style */
+.btn {
+  align-self: flex-start;
+  background: var(--accent);
+  color: #0c0c0d;
+  border: none;
+  padding: 13px 32px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition: opacity 0.2s, transform 0.15s;
+  min-width: 160px;
+  margin-top: 8px;
+}
+
+.btn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+/* Reuse the spinner from your login.module.css */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(12, 12, 13, 0.3);
+  border-top-color: #0c0c0d;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Container for the file field - matches .field from Login */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* The Label - matches your Login uppercase style */
+.label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* This is the "Box" that replaces the ugly browser input */
+.fileUploadWrapper {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
+  min-height: 46px;
+}
+
+.fileUploadWrapper:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* The actual file input - hidden but clickable */
+.fileInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0; /* Makes it invisible */
+  cursor: pointer;
+}
+
+/* The "Fake" UI text inside the box */
+.filePlaceholder {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
+.filePlaceholder span {
+  color: var(--accent);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-left: 1px solid rgba(255,255,255,0.1);
+  padding-left: 12px;
+}
+
+.input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  width: 100%;
+}
+
+.input:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.input:focus {
+  border-color: var(--accent);
+  background: rgba(201, 185, 154, 0.05);
+}
+
+.input::placeholder {
+  color: rgba(110, 107, 102, 0.7);
+}

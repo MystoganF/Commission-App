@@ -38,7 +38,6 @@
   border-bottom: 1px solid #222;
   padding-bottom: 15px;
 }
-
 .servicePreview {
   width: 100%;
   height: 180px;
@@ -53,29 +52,21 @@
   height: 100%;
   object-fit: cover;
 }
-.noPreview {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #555;
-}
-
 .serviceName {
   font-size: 22px;
   color: #fff;
   margin: 0 0 5px 0;
 }
-.artistName {
+.artistLink {
   font-size: 14px;
   color: #888;
   margin: 0 0 25px 0;
+  cursor: pointer;
 }
-.artistName span {
+.artistLink span {
   color: #ccc;
+  text-decoration: underline;
 }
-
 .detailsBox {
   background: #1a1a1a;
   padding: 15px;
@@ -91,134 +82,11 @@
   font-size: 14px;
   color: #aaa;
 }
-.detailRow:last-child {
-  margin-bottom: 0;
-}
 .priceHighlight {
   color: #c9b99a;
   font-weight: 700;
   font-size: 16px;
 }
-
-.disclaimer {
-  font-size: 12px;
-  color: #666;
-  line-height: 1.5;
-  font-style: italic;
-}
-
-/* Main Form Area */
-.formMain {
-  flex: 1;
-}
-.formTitle {
-  font-size: 36px;
-  color: #fff;
-  margin: 0 0 10px 0;
-  letter-spacing: -1px;
-}
-.formSubtitle {
-  color: #888;
-  font-size: 15px;
-  margin-bottom: 40px;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #ddd;
-  letter-spacing: 0.5px;
-}
-.required {
-  color: #e74c3c;
-}
-
-.textarea {
-  background: #111;
-  border: 1px solid #333;
-  color: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  font-size: 15px;
-  resize: vertical;
-  outline: none;
-  line-height: 1.5;
-  transition: border-color 0.2s;
-}
-.textarea:focus {
-  border-color: #c9b99a;
-}
-
-.errorAlert {
-  background: rgba(231, 76, 60, 0.1);
-  color: #ff5e5e;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid rgba(231, 76, 60, 0.3);
-  font-size: 14px;
-}
-
-.formActions {
-  margin-top: 10px;
-  border-top: 1px solid #222;
-  padding-top: 25px;
-}
-.submitBtn {
-  background: #fff;
-  color: #000;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 16px 30px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-  width: auto;
-}
-.submitBtn:hover:not(:disabled) {
-  background: #c9b99a;
-}
-.submitBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.loading {
-  padding: 150px;
-  text-align: center;
-  color: #444;
-  font-size: 18px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-.errorPage {
-  padding: 100px;
-  text-align: center;
-  color: #e74c3c;
-  font-size: 20px;
-}
-/* Artist Portfolio Link */
-.artistLink { 
-  font-size: 14px; 
-  color: #888; 
-  margin: 0 0 25px 0; 
-  cursor: pointer; 
-  transition: color 0.2s;
-}
-.artistLink span { color: #ccc; text-decoration: underline; text-underline-offset: 3px; }
-.artistLink:hover span { color: #c9b99a; }
-
-/* Payment Notice Box */
 .paymentNotice {
   background: rgba(201, 185, 154, 0.05);
   border: 1px solid rgba(201, 185, 154, 0.2);
@@ -227,31 +95,227 @@
   margin-bottom: 20px;
 }
 .payNoticeTitle {
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
   color: #c9b99a;
-  letter-spacing: 0.05em;
-  margin-bottom: 10px;
   font-weight: 700;
+  margin-bottom: 10px;
 }
 .payMethod {
   font-size: 13px;
   color: #fff;
   margin-bottom: 8px;
+  line-height: 1.4;
 }
-.payMethod small { color: #888; }
+.disclaimer {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
 
-/* File Input Styling */
-.fileUploadWrapper {
-  background: #111;
-  border: 1px dashed #333;
-  border-radius: 8px;
-  padding: 10px;
-  transition: border-color 0.2s;
+/* Main Content Area */
+.formMain {
+  flex: 1;
 }
-.fileUploadWrapper:hover { border-color: #c9b99a; }
-.fileInput {
+.formHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 32px;
+}
+.formLabel {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+.formTitle {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 300;
+  color: #fff;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Reusable Field Styles (Robb App Design) */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   width: 100%;
-  color: #888;
+}
+.label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+.required {
+  color: var(--error);
+}
+
+.input,
+.textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--text);
+  outline: none;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+  width: 100%;
+}
+.textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+.input:focus,
+.textarea:focus {
+  border-color: var(--accent);
+  background: rgba(201, 185, 154, 0.05);
+}
+
+/* Masked File Input */
+.fileUploadWrapper {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.2s;
+  cursor: pointer;
+  min-height: 46px;
+}
+.fileUploadWrapper:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+.fileInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.filePlaceholder {
   font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+.filePlaceholder span {
+  color: var(--accent);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 12px;
+}
+
+/* Payment Box */
+.paymentSubmissionBox {
+  background: #111;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #222;
+  margin: 10px 0;
+}
+.paymentTitle {
+  color: #fff;
+  font-size: 20px;
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+.paymentNote {
+  color: #666;
+  font-size: 14px;
+}
+
+.errorAlert {
+  background: rgba(224, 112, 112, 0.05);
+  color: var(--error);
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(224, 112, 112, 0.2);
+  font-size: 14px;
+}
+
+/* Primary Button (Robb App Design) */
+.btn {
+  background: var(--accent);
+  color: #0c0c0d;
+  border: none;
+  padding: 14px 36px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition:
+    opacity 0.2s,
+    transform 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+}
+.btn:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(12, 12, 13, 0.3);
+  border-top-color: #0c0c0d;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  padding: 150px;
+  text-align: center;
+  color: #444;
+}
+.disclaimer {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.6; /* Increased for readability */
+  margin-top: 15px;
+}
+
+.disclaimer strong {
+  color: var(--accent);
+  font-weight: 500;
 }
