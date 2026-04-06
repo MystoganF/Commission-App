@@ -33,8 +33,18 @@ export default function Register() {
     try {
       const payload = { ...form, role }
       const res = await api.post('/auth/register', payload)
+      
+      // Save both token and role to local storage
       localStorage.setItem('token', res.data.token)
-      navigate('/dashboard')
+      localStorage.setItem('role', role) 
+
+      // Route based on role
+      if (role === 'ADMIN') {
+        navigate('/admin/overview');
+      } else {
+        navigate('/client/home');
+      }
+
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.')
     } finally {

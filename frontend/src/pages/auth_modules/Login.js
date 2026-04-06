@@ -19,14 +19,15 @@ export default function Login() {
     try {
       const res = await api.post('/auth/login', form)
       
+      // Save both token and role to local storage
       localStorage.setItem('token', res.data.token)
-      const userRole = res.data.role; // This should be 'ADMIN' or 'CLIENT'
+      const userRole = res.data.role; 
+      localStorage.setItem('role', userRole); 
 
+      // Route based on role
       if (userRole === 'ADMIN') {
-        // Portfolio owners go to the dashboard
         navigate('/admin/overview');
       } else if (userRole === 'CLIENT') {
-        // Customers go to the landing page
         navigate('/client/home');
       } else {
         setError('Unauthorized role. Please contact support.');
