@@ -110,6 +110,7 @@ export default function Portfolio() {
     } catch { showToast('Error saving experience.'); } 
   }
 
+  // FIXED: Removed manual headers for FormData
   async function handleSaveEducation(e) { 
     e.preventDefault(); 
     setUploading(true);
@@ -122,16 +123,17 @@ export default function Portfolio() {
       if (formData.file) uploadData.append('file', formData.file);
 
       if (formData.id) {
-        const res = await api.put(`/admin/education/${formData.id}`, uploadData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        const res = await api.put(`/admin/education/${formData.id}`, uploadData);
         setData(prev => ({ ...prev, education: prev.education.map(x => x.id === formData.id ? res.data : x) }));
       } else {
-        const res = await api.post('/admin/education', uploadData, { headers: { 'Content-Type': 'multipart/form-data' } }); 
+        const res = await api.post('/admin/education', uploadData); 
         setData(prev => ({ ...prev, education: [res.data, ...prev.education] })); 
       }
       closeModal(); showToast('Education saved.');
     } catch { showToast('Error saving education.'); } finally { setUploading(false); }
   }
 
+  // FIXED: Removed manual headers for FormData
   async function handleSaveAchievement(e) { 
     e.preventDefault(); 
     setUploading(true);
@@ -143,16 +145,17 @@ export default function Portfolio() {
       if (formData.file) uploadData.append('file', formData.file);
 
       if (formData.id) {
-        const res = await api.put(`/admin/achievements/${formData.id}`, uploadData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        const res = await api.put(`/admin/achievements/${formData.id}`, uploadData);
         setData(prev => ({ ...prev, achievements: prev.achievements.map(x => x.id === formData.id ? res.data : x) }));
       } else {
-        const res = await api.post('/admin/achievements', uploadData, { headers: { 'Content-Type': 'multipart/form-data' } }); 
+        const res = await api.post('/admin/achievements', uploadData); 
         setData(prev => ({ ...prev, achievements: [res.data, ...prev.achievements] })); 
       }
       closeModal(); showToast('Achievement saved.');
     } catch { showToast('Error saving achievement.'); } finally { setUploading(false); }
   }
 
+  // FIXED: Removed manual headers for FormData
   async function handleSubmitUpload(e) {
     e.preventDefault()
     if (!newWork.file) { showToast('Image is mandatory!'); return; }
@@ -162,7 +165,9 @@ export default function Portfolio() {
       const uploadData = new FormData()
       uploadData.append('title', newWork.title || newWork.file.name); uploadData.append('description', newWork.description || ''); 
       uploadData.append('category', finalCategory); uploadData.append('year', newWork.year.toString()); uploadData.append('file', newWork.file)
-      const res = await api.post('/admin/portfolio', uploadData, { headers: { 'Content-Type': 'multipart/form-data' } })
+      
+      const res = await api.post('/admin/portfolio', uploadData);
+      
       setData(prev => ({ ...prev, works: [res.data, ...prev.works] }))
       setIsUploadModalOpen(false); showToast('Work uploaded.');
     } catch { showToast('Upload failed.') } finally { setUploading(false) }
@@ -263,7 +268,7 @@ export default function Portfolio() {
             <div className={styles.contactItem}><p className={styles.contactLabel}>Twitter / X</p><p className={styles.contactValue}>{data.profile?.twitter || '—'}</p></div>
           </div>
 
-          {/* ── NEW: PAYMENT BOX ── */}
+          {/* Payment Box */}
           <div className={styles.sectionCard}>
             <div className={styles.sectionHeader}><h3 className={styles.sectionTitle}>Payment Details</h3><button className={styles.addTextBtn} onClick={() => openModal('profile')}>✎ Edit</button></div>
             <div className={styles.contactItem}>
@@ -333,6 +338,49 @@ export default function Portfolio() {
           </div>
           <div className={styles.formGroup}><label className={styles.label}>Description</label><textarea className={styles.textarea} value={formData.description || ''} onChange={e => setFormData({ ...formData, description: e.target.value })} /></div>
           <div className={styles.formActions}><button type="button" className={`${shared.btn} ${shared.btnGhost}`} onClick={closeModal}>Cancel</button><button type="submit" className={`${shared.btn} ${shared.btnPrimary}`}>Save Experience</button></div>
+        </form>
+      </Modal>
+
+      {/* ── EDUCATION MODAL (ADDED) ── */}
+      <Modal isOpen={activeModal === 'education'} onClose={closeModal} title={formData.id ? "Edit Education" : "Add Education"}>
+        <form onSubmit={handleSaveEducation}>
+          <div className={styles.formGroup}><label className={styles.label}>Degree / Program</label><input required className={styles.input} value={formData.degree || ''} onChange={e => setFormData({ ...formData, degree: e.target.value })} /></div>
+          <div className={styles.formGroup}><label className={styles.label}>Institution</label><input required className={styles.input} value={formData.institution || ''} onChange={e => setFormData({ ...formData, institution: e.target.value })} /></div>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <div className={styles.formGroup} style={{ flex: 1 }}><label className={styles.label}>Start Year</label><input required className={styles.input} value={formData.startYear || ''} onChange={e => setFormData({ ...formData, startYear: e.target.value })} /></div>
+            <div className={styles.formGroup} style={{ flex: 1 }}><label className={styles.label}>End Year</label><input className={styles.input} value={formData.endYear || ''} onChange={e => setFormData({ ...formData, endYear: e.target.value })} /></div>
+          </div>
+          <div className={styles.formGroup}><label className={styles.label}>Image / Logo</label><input type="file" className={styles.input} onChange={e => setFormData({ ...formData, file: e.target.files[0] })} /></div>
+          <div className={styles.formActions}><button type="button" className={`${shared.btn} ${shared.btnGhost}`} onClick={closeModal}>Cancel</button><button type="submit" disabled={uploading} className={`${shared.btn} ${shared.btnPrimary}`}>{uploading ? 'Saving...' : 'Save Education'}</button></div>
+        </form>
+      </Modal>
+
+      {/* ── ACHIEVEMENT MODAL (ADDED) ── */}
+      <Modal isOpen={activeModal === 'achievement'} onClose={closeModal} title={formData.id ? "Edit Achievement" : "Add Achievement"}>
+        <form onSubmit={handleSaveAchievement}>
+          <div className={styles.formGroup}><label className={styles.label}>Title</label><input required className={styles.input} value={formData.title || ''} onChange={e => setFormData({ ...formData, title: e.target.value })} /></div>
+          <div className={styles.formGroup}><label className={styles.label}>Year</label><input required className={styles.input} value={formData.year || ''} onChange={e => setFormData({ ...formData, year: e.target.value })} /></div>
+          <div className={styles.formGroup}><label className={styles.label}>Description</label><textarea className={styles.textarea} value={formData.description || ''} onChange={e => setFormData({ ...formData, description: e.target.value })} /></div>
+          <div className={styles.formGroup}><label className={styles.label}>Image / Certificate</label><input type="file" className={styles.input} onChange={e => setFormData({ ...formData, file: e.target.files[0] })} /></div>
+          <div className={styles.formActions}><button type="button" className={`${shared.btn} ${shared.btnGhost}`} onClick={closeModal}>Cancel</button><button type="submit" disabled={uploading} className={`${shared.btn} ${shared.btnPrimary}`}>{uploading ? 'Saving...' : 'Save Achievement'}</button></div>
+        </form>
+      </Modal>
+
+      {/* ── UPLOAD WORK MODAL (ADDED) ── */}
+      <Modal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} title="Add Featured Work">
+        <form onSubmit={handleSubmitUpload}>
+          <div className={styles.formGroup}><label className={styles.label}>Title</label><input required className={styles.input} value={newWork.title} onChange={e => setNewWork({ ...newWork, title: e.target.value })} /></div>
+          <div className={styles.formGroup}><label className={styles.label}>Category</label>
+            <select className={styles.input} value={newWork.categoryOption} onChange={e => setNewWork({ ...newWork, categoryOption: e.target.value })}>
+              {ART_STYLES.map(style => <option key={style} value={style}>{style}</option>)}
+              <option value="Other...">Other...</option>
+            </select>
+          </div>
+          {newWork.categoryOption === 'Other...' && <div className={styles.formGroup}><label className={styles.label}>Custom Category</label><input required className={styles.input} value={newWork.customCategory} onChange={e => setNewWork({ ...newWork, customCategory: e.target.value })} /></div>}
+          <div className={styles.formGroup}><label className={styles.label}>Year</label><input type="number" required className={styles.input} value={newWork.year} onChange={e => setNewWork({ ...newWork, year: e.target.value })} /></div>
+          <div className={styles.formGroup}><label className={styles.label}>Description</label><textarea className={styles.textarea} value={newWork.description} onChange={e => setNewWork({ ...newWork, description: e.target.value })} /></div>
+          <div className={styles.formGroup}><label className={styles.label}>Upload File</label><input required type="file" className={styles.input} onChange={e => setNewWork({ ...newWork, file: e.target.files[0] })} /></div>
+          <div className={styles.formActions}><button type="button" className={`${shared.btn} ${shared.btnGhost}`} onClick={() => setIsUploadModalOpen(false)}>Cancel</button><button type="submit" disabled={uploading} className={`${shared.btn} ${shared.btnPrimary}`}>{uploading ? 'Uploading...' : 'Upload Work'}</button></div>
         </form>
       </Modal>
 
