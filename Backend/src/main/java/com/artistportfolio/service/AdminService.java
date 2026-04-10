@@ -51,7 +51,13 @@ public class AdminService {
 
     public WorkResponse addWork(User artist, String title, String category,
                                 String year, String description, MultipartFile file) throws IOException {
-        String imageUrl = supabaseService.uploadFile(file);
+
+        String imageUrl = null;
+        // Added null check to prevent crashes!
+        if (file != null && !file.isEmpty()) {
+            imageUrl = supabaseService.uploadFile(file);
+        }
+
         PortfolioWork work = new PortfolioWork();
         work.setTitle(title);
         work.setCategory(category);

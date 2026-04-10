@@ -1,33 +1,51 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../api/axios';
 import { FaBell } from 'react-icons/fa';
 import styles from './Notification.module.css';
 
-// Added alignMenu prop ('left' or 'right')
 export default function NotificationDropdown({ alignMenu = 'right' }) {
   const [notifs, setNotifs] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation(); // Allows us to detect page changes
 
-  useEffect(() => {
-    fetchNotifs();
-    const interval = setInterval(fetchNotifs, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchNotifs = () => {
+  const fetchNotifs = useCallback(() => {
     const token = localStorage.getItem('token');
     if (!token) return; 
 
     api.get('/notifications')
       .then(res => setNotifs(res.data))
       .catch(err => console.error("Notification fetch failed", err));
-  };
+  }, []);
+
+  useEffect(() => {
+    // 1. Fetch immediately on load
+    fetchNotifs();
+
+    // 2. SHORT POLLING: Fetch every 5 seconds (instead of 60) for near real-time updates
+    const interval = setInterval(fetchNotifs, 5000);
+
+    // 3. Fetch immediately when the user switches back to this browser tab
+    const handleFocus = () => fetchNotifs();
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [fetchNotifs]);
+
+  // 4. Fetch immediately if the user navigates to a new page within the app
+  useEffect(() => {
+    fetchNotifs();
+  }, [location.pathname, fetchNotifs]);
 
   const handleAction = async (n) => {
     if (n.read === false) {
       try {
+        // Optimistically update UI so the badge disappears instantly
+        setNotifs(prev => prev.map(notif => notif.id === n.id ? { ...notif, read: true } : notif));
         await api.patch(`/notifications/${n.id}/read`);
       } catch (err) {
         console.error("Could not mark as read", err);
@@ -35,7 +53,6 @@ export default function NotificationDropdown({ alignMenu = 'right' }) {
     }
     setIsOpen(false);
     navigate(n.link); 
-    fetchNotifs(); 
   };
 
   const unreadCount = notifs.filter(n => n.read === false).length;
