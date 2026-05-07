@@ -24,13 +24,20 @@
   flex-shrink: 0;
   line-height: 1;
 }
-.brandName {
-  font-family: var(--font-display);
-  font-size: 25px;
-  font-weight: 300;
-  color: var(--text);
-  letter-spacing: -0.4px;
-  line-height: 1;
+/* Remove .brandName and add this: */
+.brandLogo {
+  height: 46px; /* Adjust this value to scale the logo up or down */
+  width: auto;
+  display: block;
+}
+
+.brandMark {
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 4px;
 }
 .brandMark {
   font-size: 10px;

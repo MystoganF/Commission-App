@@ -120,3 +120,54 @@
   .statsRow { grid-template-columns: repeat(2, 1fr); }
   .grid     { grid-template-columns: 1fr; }
 }
+
+/* ─── Status Badges ──────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: var(--radius, 4px);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Pending (Soft Gold/Amber) */
+.badgePending {
+  color: #e2c07a;
+  background: rgba(226, 192, 122, 0.1);
+  border: 1px solid rgba(226, 192, 122, 0.2);
+}
+
+/* In Progress (Soft Blue) */
+.badgeIn_progress {
+  color: #8ab4f8;
+  background: rgba(138, 180, 248, 0.1);
+  border: 1px solid rgba(138, 180, 248, 0.2);
+}
+
+/* Completed (Soft Green) */
+.badgeCompleted {
+  color: #81c995;
+  background: rgba(129, 201, 149, 0.1);
+  border: 1px solid rgba(129, 201, 149, 0.2);
+}
+
+/* Accepted (Soft Teal) */
+.badgeAccepted {
+  color: #4fd1c5;
+  background: rgba(79, 209, 197, 0.1);
+  border: 1px solid rgba(79, 209, 197, 0.2);
+}
+
+/* Cancelled / Rejected (Soft Rose/Red) */
+.badgeCancelled,
+.badgeRejected {
+  color: #f28b82;
+  background: rgba(242, 139, 130, 0.1);
+  border: 1px solid rgba(242, 139, 130, 0.2);
+}

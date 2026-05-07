@@ -4,6 +4,7 @@ import api from '../../api/axios';
 import Modal from '../../components/ui/Modal';
 import NotificationDropdown from '../notifications/NotificationDropdown';
 import styles from './ClientNavbar.module.css';
+import logoImg from '../../assets/logo.png';
 
 const NAV_ITEMS = [
   { to: '/client/home',       label: 'Home',       icon: '◈' },
@@ -38,9 +39,9 @@ export default function ClientNavbar() {
 
           {/* Brand */}
           <div className={styles.brand} onClick={() => navigate('/client/home')}>
-            <div className={styles.brandName}>Robb App</div>
-            <div className={styles.brandMark}>Client Portal</div>
-          </div>
+  <img src={logoImg} alt="CRTV ZONE" className={styles.brandLogo} />
+
+</div>
 
           {/* Nav Links */}
           <ul className={styles.nav}>

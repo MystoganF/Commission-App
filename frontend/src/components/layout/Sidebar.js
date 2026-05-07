@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth'
 import api from '../../api/axios'
 import NotificationDropdown from '../notifications/NotificationDropdown'
 import styles from './Sidebar.module.css'
+import logoImg from '../../assets/logo.png';
 
 const NAV_ITEMS = [
   { to: '/admin/overview',   label: 'Overview',  icon: '◈' },
@@ -30,12 +31,12 @@ export default function Sidebar() {
   return (
     <nav className={styles.sidebar}>
       <div className={styles.top}>
-        {/* Brand Container uses Flexbox to align Logo and Bell side-by-side */}
         <div className={styles.brandContainer}>
           <div>
-            <div className={styles.brand}>Robb App</div>
-            <div className={styles.mark}>Artist Studio</div>
+            <img src={logoImg} alt="CRTV ZONE" className={styles.brandLogo} />
+           
           </div>
+          
           {/* Tell dropdown to open towards the right so it doesn't clip */}
           <NotificationDropdown alignMenu="left" />
         </div>

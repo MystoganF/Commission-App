@@ -80,10 +80,11 @@ export default function Overview() {
                 </div>
                 <div className={styles.bookingRight}>
                   <span className={styles.bookingPrice}>{b.price}</span>
-                  <span className={`${shared.badge} ${shared[`badge${cap(b.status)}`]}`}>
-                    {b.status}
+                  {/* Changed 'shared' to 'styles', and added the underscore replace trick! */}
+                  <span className={`${styles.badge} ${styles[`badge${cap(b.status)}`]}`}>
+                    {b.status.replace('_', ' ')}
                   </span>
-                </div>
+                    </div>
               </div>
             ))}
           </div>

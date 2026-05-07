@@ -1,157 +1,11 @@
-
-:root {
-  --bg: #0c0c0d;
-  --surface: #111113;
-  --border: rgba(255,255,255,0.07);
-  --text: #f0ede8;
-  --muted: #6e6b66;
-  --accent: #c9b99a;
-  --accent-dim: rgba(201,185,154,0.12);
-  --error: #e07070;
-  --radius: 4px;
-  --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'DM Sans', 'Helvetica Neue', sans-serif;
-}
-
-
-.input:-webkit-autofill,
-.input:-webkit-autofill:hover,
-.input:-webkit-autofill:focus,
-.input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.04) inset !important;
-  -webkit-text-fill-color: var(--text) !important;
-  caret-color: var(--text);
-  border: 1px solid rgba(255,255,255,0.14);
-  transition: background-color 9999s ease-in-out 0s;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap');
-
-/* ─── Reset ──────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-
-.page {
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-  align-items: stretch;
-  position: relative;
-  overflow: hidden;
-}
-
-
-.bgOrb1 {
-  position: fixed;
-  top: -120px;
-  right: -80px;
-  width: 420px;
-  height: 420px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(201,185,154,0.06) 0%, transparent 70%);
-  pointer-events: none;
-}
-.bgOrb2 {
-  position: fixed;
-  bottom: -160px;
-  left: 30%;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(120,100,180,0.04) 0%, transparent 70%);
-  pointer-events: none;
-}
-.bgLine {
-  position: fixed;
-  top: 0; bottom: 0;
-  left: 38%;
-  width: 1px;
-  background: var(--border);
-  pointer-events: none;
-}
-
-
-.container {
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  animation: fadeIn 0.6s ease both;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-
-.aside {
-  width: 38%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 48px 52px;
-  border-right: 1px solid var(--border);
-  position: relative;
-}
-
-.asideMark {
-  font-size: 22px;
-  color: var(--accent);
-  opacity: 0.7;
-  animation: pulse 3s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
-
-.asideText { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-
-.brand {
-  font-family: var(--font-display);
-  font-size: clamp(52px, 6vw, 80px);
-  font-weight: 300;
-  letter-spacing: -1px;
-  color: var(--text);
-  line-height: 1;
-  margin-bottom: 16px;
-}
-
-.tagline {
-  font-size: 14px;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-  font-weight: 300;
-}
-
-.asideFooter {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-
-.main {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 64px;
-}
-
 .formWrap {
   width: 100%;
-  max-width: 400px;
+  max-width: 460px; /* Keep this whatever it currently is (460px for register, 400px for login) */
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 32px;
+  margin: auto; /* <-- This dynamically centers the form vertically and horizontally! */
 }
-
 
 .formHeader { display: flex; flex-direction: column; gap: 8px; }
 
@@ -170,7 +24,6 @@
   line-height: 1.1;
   color: var(--text);
 }
-
 
 .form { display: flex; flex-direction: column; gap: 24px; }
 
@@ -204,7 +57,6 @@
   background: rgba(201,185,154,0.05);
 }
 
-
 .error {
   font-size: 13px;
   color: var(--error);
@@ -213,7 +65,6 @@
   border-radius: var(--radius);
   background: rgba(224,112,112,0.05);
 }
-
 
 .btn {
   align-self: flex-start;
@@ -249,7 +100,6 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-
 .switchLink {
   color: var(--accent);
   text-decoration: none;
@@ -267,9 +117,6 @@
 }
 
 @media (max-width: 768px) {
-  .aside { display: none; }
-  .bgLine { display: none; }
-  .main { padding: 40px 28px; align-items: flex-start; padding-top: 80px; }
   .mobileSwitch { display: block; }
   .btn { align-self: stretch; }
 }

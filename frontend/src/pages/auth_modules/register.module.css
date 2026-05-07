@@ -1,142 +1,10 @@
-/* ─── Shared tokens (same design system as login) ───────── */
-:root {
-  --bg: #0c0c0d;
-  --surface: #111113;
-  --border: rgba(255,255,255,0.07);
-  --text: #f0ede8;
-  --muted: #6e6b66;
-  --accent: #c9b99a;
-  --accent-dim: rgba(201,185,154,0.12);
-  --error: #e07070;
-  --radius: 4px;
-  --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'DM Sans', 'Helvetica Neue', sans-serif;
-}
-
-
-
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap');
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-/* ─── Page ───────────────────────────────────────────────── */
-/* Fix Chrome autofill background + text color */
-.input:-webkit-autofill,
-.input:-webkit-autofill:hover,
-.input:-webkit-autofill:focus,
-.input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.04) inset !important;
-  -webkit-text-fill-color: var(--text) !important;
-  caret-color: var(--text);
-  border: 1px solid rgba(255,255,255,0.14);
-  transition: background-color 9999s ease-in-out 0s;
-}
-
-.page {
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-  align-items: stretch;
-  position: relative;
-  overflow: hidden;
-}
-
-.bgOrb1 {
-  position: fixed;
-  top: -100px; right: -60px;
-  width: 400px; height: 400px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(201,185,154,0.05) 0%, transparent 70%);
-  pointer-events: none;
-}
-.bgOrb2 {
-  position: fixed;
-  bottom: -140px; left: 32%;
-  width: 480px; height: 480px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(120,100,180,0.04) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-/* ─── Layout ─────────────────────────────────────────────── */
-.container {
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  animation: fadeIn 0.6s ease both;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ─── Aside ──────────────────────────────────────────────── */
-.aside {
-  width: 38%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 48px 52px;
-  border-right: 1px solid var(--border);
-}
-
-.asideMark {
-  font-size: 22px;
-  color: var(--accent);
-  opacity: 0.7;
-  animation: pulse 3s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
-
-.asideText { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-
-.brand {
-  font-family: var(--font-display);
-  font-size: clamp(52px, 6vw, 80px);
-  font-weight: 300;
-  letter-spacing: -1px;
-  color: var(--text);
-  line-height: 1;
-  margin-bottom: 16px;
-}
-
-.tagline {
-  font-size: 14px;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-  font-weight: 300;
-}
-
-.asideFooter {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-/* ─── Main ───────────────────────────────────────────────── */
-.main {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 64px;
-  overflow-y: auto;
-}
-
 .formWrap {
   width: 100%;
-  max-width: 460px;
+  max-width: 460px; /* Keep this whatever it currently is (460px for register, 400px for login) */
   display: flex;
   flex-direction: column;
   gap: 32px;
+  margin: auto; /* <-- This dynamically centers the form vertically and horizontally! */
 }
 
 /* ─── Step indicator ─────────────────────────────────────── */
@@ -183,7 +51,6 @@
 
 /* ─── Role Step ──────────────────────────────────────────── */
 .roleStep { display: flex; flex-direction: column; gap: 28px; }
-
 .roleCards { display: flex; flex-direction: column; gap: 12px; }
 
 .roleCard {
@@ -221,9 +88,7 @@
 
 /* ─── Form ───────────────────────────────────────────────── */
 .form { display: flex; flex-direction: column; gap: 20px; }
-
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
 .field { display: flex; flex-direction: column; gap: 8px; }
 
 .label {
@@ -393,11 +258,26 @@
   text-align: center;
 }
 
-/* ─── Responsive ─────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .aside { display: none; }
-  .main { padding: 40px 28px; align-items: flex-start; padding-top: 80px; }
   .row { grid-template-columns: 1fr; }
   .mobileSwitch { display: block; }
   .btn { flex: 1; }
+}
+
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpFade {
+  from { 
+    opacity: 0; 
+    transform: translateY(15px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
 }
