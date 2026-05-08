@@ -41,8 +41,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Add the dynamic frontendUrl here!
-        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173", frontendUrl));
+        // Hardcode your exact Vercel URL here to guarantee Spring Boot allows it
+        config.setAllowedOrigins(List.of(
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "https://crtvzone.vercel.app" // <-- ADD THIS EXACT STRING
+        ));
+
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
