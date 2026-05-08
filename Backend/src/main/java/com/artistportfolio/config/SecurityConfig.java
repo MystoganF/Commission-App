@@ -1,6 +1,7 @@
 package com.artistportfolio.config;
 
 import com.artistportfolio.security.JwtAuthFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,6 +24,10 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
+    // Tell Spring to grab the Vercel URL from application.properties
+    @Value("${app.cors.allowed-origins}")
+    private String frontendUrl;
+
     public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
     }
@@ -35,8 +40,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // Allow your frontend ports
-        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173"));
+
+        // Add the dynamic frontendUrl here!
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173", frontendUrl));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
